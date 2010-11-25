@@ -65,3 +65,4 @@ export CLASSPATH=$JAVA_LOCALLIB:/usr/lib/java/lib
 # but it doesn't hurt for Linux either, IIRC
 export TTFPATH=/usr/X11/lib/X11/fonts/truetype
 
+export EDITOR=`which vim`
