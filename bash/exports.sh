@@ -1,10 +1,10 @@
-PATHS_TO_PREPEND=$HOME/.local/bin:$HOME/local/bin:/usr/local/bin
+PATHS_TO_PREPEND=$HOME/bin:$HOME/.local/bin:$HOME/local/bin:/usr/local/bin
 PATHS_TO_APPEND=
 
 platform=`uname`
-if [[ $platform == 'Darwin']]; then
+if [[ "$platform" == 'Darwin' ]]; then
         python_version=`python -c "import sys; print '%d.%d' % sys.version_info[:2]"`
-        PATHS_TO_PREPEND=$PATHS_TO_ADD:$HOME/Library/Python/$python_version/bin
+        PATHS_TO_PREPEND=$PATHS_TO_PREPEND:$HOME/Library/Python/$python_version/bin
         PATHS_TO_APPEND=$PATHS_TO_APPEND:/Library/Python/$python_version/bin:/System/Library/Frameworks/Python.framework/Versions/$python_version/bin
 
         slickedit_path=`\ls -d /Applications/SlickEdit* | sort -rn | head -n 1`
@@ -20,7 +20,7 @@ if [[ $platform == 'Darwin']]; then
                 PATHS_TO_APPEND=$PATHS_TO_APPEND:/usr/local/texlive/2009/bin/universal-darwin
         fi
 fi
-if [[ $platform == 'Linux' ]]; then
+if [[ "$platform" == 'Linux' ]]; then
         if [ -d /opt/slickedit ]; then
                 PATHS_TO_PREPEND=$PATHS_TO_PREPEND:/opt/slickedit/bin
         fi
@@ -29,16 +29,16 @@ if [[ $platform == 'Linux' ]]; then
         fi
 fi
 
-if [[ $PATHS_TO_PREPEND != '' ]]; then
+if [[ "$PATHS_TO_PREPEND" != '' ]]; then
         export PATH=$PATHS_TO_PREPEND:$PATH
 fi
 
-if [[] $PATHS_TO_APPEND != '' ]]; then
+if [[ "$PATHS_TO_APPEND" != '' ]]; then
         export PATH=$PATH:$PATHS_TO_APPEND
 fi
 
 have_slickedit=`which vs`
-if [[ $have_slickedit != '' ]]; then
+if [[ "$have_slickedit" != '' ]]; then
         export VSLICKXNOPLUSNEWMSG=1
         
         if [ -f /usr/local/share/firefox/firefox ]; then
@@ -66,3 +66,4 @@ export CLASSPATH=$JAVA_LOCALLIB:/usr/lib/java/lib
 export TTFPATH=/usr/X11/lib/X11/fonts/truetype
 
 export EDITOR=`which vim`
+

@@ -1,10 +1,10 @@
 have_slickedit=`which vs`
-if [[ $have_slickedit != '' ]]; then
+if [[ '$have_slickedit' != '' ]]; then
         alias vs='vs -new'
 fi
 
-$platform=`uname`
-if [[ $platform == 'Darwin' ]]; then
+platform=`uname`
+if [[ "$platform" == 'Darwin' ]]; then
         alias twistd="/System/Library/Frameworks/Python.framework/Versions/Current/Extras/bin/twistd"
 
         alias du='du -h -d1'
@@ -15,7 +15,7 @@ if [[ $platform == 'Darwin' ]]; then
         if [[ $slickedit_path != '' ]]; then
                 alias vs='open -a /Applications/SlickEdit2007.app'
         fi
-        if [ -d $HOME/Applications/0xED.app]
+        if [ -d $HOME/Applications/0xED.app ]; then
                 alias he='open -a ~/Applications/0xED.app'
         fi
         if [ -d /Developer/Applications/Qt/Designer.app ]; then
@@ -23,7 +23,7 @@ if [[ $platform == 'Darwin' ]]; then
         fi
 fi
 
-if [[ $platform == 'Linux' ]]; then
+if [[ "$platform" == 'Linux' ]]; then
         alias du='du -bh --max-depth=1'
         alias scons='scons -u -j`cat /proc/cpuinfo | grep processor | wc -l`'
         alias make='nice -n 3 make -j`cat /proc/cpuinfo | grep processor | wc -l`'
@@ -59,7 +59,7 @@ if [ -f $JAVA_LOCALLIB/clojure.jar ]; then
         alias clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $JAVA_LOCALLIB/jline.jar:$JAVA_LOCALLIB/clojure.jar:$JAVA_LOCALLIB/clojure-contrib.jar jline.ConsoleRunner clojure.main"
 fi
 
-if [-d $HOME/projects/clojure ]; then
+if [ -d $HOME/projects/clojure ]; then
         alias dev-clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $JAVA_LOCALLIB/jline.jar:$HOME/projects/clojure/clojure.jar:$HOME/clojure-contrib.jar jline.ConsoleRunner clojure.main"
 fi
 
@@ -69,3 +69,4 @@ alias wget="wget --no-check-certificate"
 
 alias od='od -A x'
 alias traceroute='traceroute -n -w 2'
+
