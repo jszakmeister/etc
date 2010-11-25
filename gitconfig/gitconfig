@@ -1,0 +1,25 @@
+# enable color when possible
+[color]
+	ui = auto
+
+# add some short cuts... most of them familiar to those of us coming from
+# other VCSes.
+[alias]
+	ci = commit
+	co = checkout
+	st = status
+	br = branch
+	di = diff
+
+	# show difference between the HEAD and the index
+	staged = diff --cached
+
+	# show difference between working tree and the index
+	unstaged = diff
+
+	# show staged and unstaged changes (what would be committed with "git commit -a")
+	both = diff HEAD
+
+[core]
+	# make central area for git ignores
+	excludesfile = $HOME/.gitignore

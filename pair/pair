@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+import os
+import sys
+from subprocess import call
+
+# Configures the git author to be a list of developers when pair programming
+#
+# Usage: pair js dj (Sets the author to 'John Szakmeister and David Josef')
+#        pair       (Unsets the author so git global takes effect)
+#
+# This is a python version of the pair script located at:
+#    https://github.com/relevance/etc
+
+# Config
+
+PAIR_EMAIL = "pair@szakmeister.net"
+
+AUTHORS = {
+    "js": "John Szakmeister",
+    "dj": "David Josef",
+}
+
+# The real code
+
+if not os.path.exists(".git"):
+    print "This doesn't look like a git repo"
+    sys.exit(1)
+
+authors = []
+for initials in sys.argv[1:]:
+    initials = initials.lower()
+    if initials not in AUTHORS:
+        print "Couldn't find author name for '%s'" % initials
+        sys.exit(1)
+    authors.append(AUTHORS[initials])
+
+if len(authors):
+    if len(authors) == 1:
+        authors = authors[0]
+    elif len(authors) == 2:
+        authors = ' and '.join(authors)
+    else:
+        authors = ', '.join(authors[:-1]) + ' and ' + authors[-1]
+
+    initials = '/'.join(x.lower() for x in sys.argv[1:])
+
+    call(['git', 'config', 'user.name', authors])
+    call(['git', 'config', 'user.initials', initials])
+    call(['git', 'config', 'user.email', PAIR_EMAIL])
+
+    print "user.name = %s" % authors
+    print "user.initials = %s" % initials
+    print "user.email = %s" % PAIR_EMAIL
+else:
+    call(['git', 'config', '--unset', 'user.name'])
+    call(['git', 'config', '--unset', 'user.initials'])
+    call(['git', 'config', '--unset', 'user.email'])
+    
+    print "Unset user.name, user.initials, and user.email."
