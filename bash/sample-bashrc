@@ -1,0 +1,12 @@
+# For some news readers it makes sense to specify the NEWSSERVER variable here
+#export NEWSSERVER=your.news.server
+
+#export MAIL=~/.maildir/
+
+test -s ~/projects/etc/bash/exports.sh && . ~/projects/etc/bash/exports.sh
+test -s ~/projects/etc/bash/aliases.sh && . ~/projects/etc/bash/aliases.sh
+test -s ~/projects/etc/bash/functions.sh && . ~/projects/etc/bash/functions.sh
+test -s ~/projects/etc/bash/pickjdk.sh && . ~/projects/etc/bash/pickjdk.sh
+test -s ~/projects/etc/bash/fancy-prompt.sh && . ~/projects/etc/bash/fancy-prompt.sh
+test -s ~/projects/etc/bash/shell-options.sh && . ~/projects/etc/bash/shell-options.sh
+
