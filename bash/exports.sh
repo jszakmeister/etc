@@ -7,7 +7,7 @@ if [[ "$platform" == 'Darwin' ]]; then
         PATHS_TO_PREPEND=$PATHS_TO_PREPEND:$HOME/Library/Python/$python_version/bin
         PATHS_TO_APPEND=$PATHS_TO_APPEND:/Library/Python/$python_version/bin:/System/Library/Frameworks/Python.framework/Versions/$python_version/bin
 
-        slickedit_path=`\ls -d /Applications/SlickEdit* | sort -rn | head -n 1`
+        slickedit_path=`\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1`
         if [[ $slickedit_path != '' ]]; then
                 PATHS_TO_APPEND=$PATHS_TO_APPEND:$slickedit_path/Contents/slickedit/bin
         fi
