@@ -9,7 +9,12 @@ if [[ "$platform" == 'Darwin' ]]; then
 
         slickedit_path=`\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1`
         if [[ $slickedit_path != '' ]]; then
+            if [ -f $slickedit_path/Contents/slickedit/bin/vs ]; then
                 PATHS_TO_APPEND=$PATHS_TO_APPEND:$slickedit_path/Contents/slickedit/bin
+            fi
+            if [ -f $slickedit_path/Contents/MacOS/vs ]; then
+                PATHS_TO_APPEND=$PATHS_TO_APPEND:$slickedit_path/Contents/MacOS
+            fi
         fi
         
         if [ -d /opt/local/bin ]; then
