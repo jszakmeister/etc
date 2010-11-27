@@ -1,3 +1,6 @@
+# Add a line like the following to your .bashrc:
+#  export PYTHONSTARTUP="$HOME/projects/etc/python/startup.py"
+
 import readline, atexit, os, rlcompleter
  
 historypath = os.path.expanduser("~/.pyhistory")
