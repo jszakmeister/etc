@@ -21,6 +21,7 @@ if [[ "$platform" == 'Darwin' ]]; then
         if [ -d /Developer/Applications/Qt/Designer.app ]; then
                 alias qtd='open -a /Developer/Applications/Qt/Designer.app'
         fi
+        alias keychain='open -a /Applications/Utilities/Keychain\ Access.app'
 fi
 
 if [[ "$platform" == 'Linux' ]]; then
@@ -92,4 +93,5 @@ alias wget="wget --no-check-certificate"
 
 alias od='od -A x'
 alias traceroute='traceroute -n -w 2'
+alias netcat=nc
 
