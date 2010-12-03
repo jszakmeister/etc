@@ -10,3 +10,8 @@ test -s ~/projects/etc/bash/pickjdk.sh && . ~/projects/etc/bash/pickjdk.sh
 test -s ~/projects/etc/bash/fancy-prompt.sh && . ~/projects/etc/bash/fancy-prompt.sh
 test -s ~/projects/etc/bash/shell-options.sh && . ~/projects/etc/bash/shell-options.sh
 
+platform=`uname`
+if [[ "$platform" == 'Darwin' ]]; then
+    export PYTHONSTARTUP="$HOME/projects/etc/python/startup.py"
+fi
+
