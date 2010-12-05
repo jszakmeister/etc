@@ -85,7 +85,7 @@ if [[ "$clojure_jar" != '' ]]; then
 fi
 
 if [ -d $HOME/projects/clojure ]; then
-        alias dev-clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $jline_jar:$HOME/projects/clojure/clojure.jar:$HOME/projects/clojure-contrib/modules/standalone/target/\`(ls standalone-*.jar 2>/dev/null || echo standalone.jar) | head -n1\` jline.ConsoleRunner clojure.main"
+        alias dev-clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $jline_jar:$HOME/projects/clojure/clojure.jar:\`find_clj_contrib\` jline.ConsoleRunner clojure.main"
 fi
 
 alias wget="wget --no-check-certificate"
