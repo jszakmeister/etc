@@ -10,7 +10,7 @@ if [[ "$platform" == 'Darwin' ]]; then
         alias du='du -h -d1'
         alias scons='scons -u -j`sysctl -n hw.ncpu`'
         alias make='nice -n 3 make -j`sysctl -n hw.ncpu`'
-        alias ps='ps -aux'
+        alias ps='ps aux'
         slickedit_path=`\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1`
         if [[ $slickedit_path != '' ]]; then
                 alias vs='open -a $slickedit_path'
