@@ -4,33 +4,33 @@ PATHS_TO_APPEND=
 platform=`uname`
 if [[ "$platform" == 'Darwin' ]]; then
         python_version=`python -c "import sys; print '%d.%d' % sys.version_info[:2]"`
-        PATHS_TO_PREPEND=$PATHS_TO_PREPEND:$HOME/Library/Python/$python_version/bin
-        PATHS_TO_APPEND=$PATHS_TO_APPEND:/Library/Python/$python_version/bin:/System/Library/Frameworks/Python.framework/Versions/$python_version/bin
+        PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$HOME/Library/Python/$python_version/bin"`
+        PATHS_TO_APPEND=`append_path "$PATHS_TO_APPEND" "/Library/Python/$python_version/bin:/System/Library/Frameworks/Python.framework/Versions/$python_version/bin"`
 
         slickedit_path=`\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1`
         if [[ $slickedit_path != '' ]]; then
             if [ -f $slickedit_path/Contents/slickedit/bin/vs ]; then
-                PATHS_TO_APPEND=$PATHS_TO_APPEND:$slickedit_path/Contents/slickedit/bin
+                PATHS_TO_APPEND=`append_path "$PATHS_TO_APPEND" "$slickedit_path/Contents/slickedit/bin"`
             fi
             if [ -f $slickedit_path/Contents/MacOS/vs ]; then
-                PATHS_TO_APPEND=$PATHS_TO_APPEND:$slickedit_path/Contents/MacOS
+                PATHS_TO_APPEND=`append_path "$PATHS_TO_APPEND" "$slickedit_path/Contents/MacOS"`
             fi
         fi
         
         if [ -d /opt/local/bin ]; then
-                PATHS_TO_APPEND=$PATHS_TO_APPEND:/opt/local/bin
+                PATHS_TO_APPEND=`append_path "$PATHS_TO_APPEND" /opt/local/bin`
         fi
 
         if [ -d /usr/local/texlive/2009/bin/universal-darwin ]; then
-                PATHS_TO_APPEND=$PATHS_TO_APPEND:/usr/local/texlive/2009/bin/universal-darwin
+                PATHS_TO_APPEND=`append_path "$PATHS_TO_APPEND" "/usr/local/texlive/2009/bin/universal-darwin"`
         fi
 fi
 if [[ "$platform" == 'Linux' ]]; then
         if [ -d /opt/slickedit ]; then
-                PATHS_TO_PREPEND=$PATHS_TO_PREPEND:/opt/slickedit/bin
+                PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" /opt/slickedit/bin`
         fi
         if [ -d $HOME/.local/slickedit ]; then
-                PATHS_TO_PREPEND=$PATHS_TO_PREPEND:$HOME/.local/slickedit/bin
+                PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$HOME/.local/slickedit/bin"`
         fi
 fi
 
