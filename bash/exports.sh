@@ -34,6 +34,10 @@ if [[ "$platform" == 'Linux' ]]; then
         fi
 fi
 
+if [ -d "$HOME/projects/etc/git-addons" ]; then
+        PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$HOME/projects/etc/git-addons"`
+fi
+
 if [[ "$PATHS_TO_PREPEND" != '' ]]; then
         export PATH=$PATHS_TO_PREPEND:$PATH
 fi
