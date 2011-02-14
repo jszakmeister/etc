@@ -1,0 +1,84 @@
+# It's better to unpack these files and commit the raw source because
+# git has its own built in compression methods.
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.tar.gz
+*.zip
+*.bzip
+
+# Ignore svn stuff
+/.svn/*
+*/.svn/*
+
+# Ignore CVS
+/CVS/*
+*/CVS/*
+.cvsignore
+*/.cvsignore
+
+.*
+*~
+*.sw[a-p]
+
+# KDE
+.directory
+
+# Mac OS X related
+.DS_Store?
+Icon?
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# TextMate
+*.tmproj
+*.tmproject
+tmtags
+
+# Windows image file caches
+Thumbs.db 
+
+# Folder config file
+Desktop.ini
+
+# Eclipse
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# CDT-specific
+.cproject
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list
+tramp
+
+# Libs
+*.lib
+*.so
+*.dll
