@@ -11,6 +11,12 @@
 	br = branch
 	di = diff
 
+        # Show the type of the object
+        type = cat-file -t
+
+        # Pretty print the object
+        dump = cat-file -p
+
 	# show difference between the HEAD and the index
 	staged = diff --cached
 
