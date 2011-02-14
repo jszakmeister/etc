@@ -22,7 +22,7 @@ if [[ "$platform" == 'Darwin' ]]; then
                 alias qtd='open -a /Developer/Applications/Qt/Designer.app'
         fi
         alias keychain='open -a /Applications/Utilities/Keychain\ Access.app'
-        alias textedit='open -a /Application/TextEdit.app'
+        alias textedit='open -a /Applications/TextEdit.app'
 fi
 
 if [[ "$platform" == 'Linux' ]]; then
