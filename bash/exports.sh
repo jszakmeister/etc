@@ -86,3 +86,8 @@ if [ "$TERM" != "dumb" ]; then
   fi
 fi
 
+if [[ "$platform" == "Darwin" ]]; then
+        if [ -e $HOME/projects/etc/python/startup.py ]; then
+                export PYTHONSTARTUP="$HOME/projects/etc/python/startup.py"
+        fi
+fi
