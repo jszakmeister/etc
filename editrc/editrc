@@ -1,4 +1,5 @@
 bind -e
+bind \\t rl_complete
 bind "\e[A" ed-search-prev-history
 bind "\e[B" ed-search-next-history
 
