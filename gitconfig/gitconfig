@@ -27,5 +27,7 @@
 	both = diff HEAD
 
 [core]
-	# make central area for git ignores
-	excludesfile = $HOME/.gitignore
+	# make central area for git ignores. copy gitignores and change this to
+	#   excludesfile = ~/.gitignores
+	# if you need to customize it
+	excludesfile = ~/projects/etc/gitconfig/gitignores
