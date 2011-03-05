@@ -43,7 +43,7 @@ if [ -d $HOME/projects/subversion ]; then
         alias fsfsverify='$HOME/projects/subversion/contrib/server-side/fsfsverify.py'
 fi
 
-alias em=emacs
+alias em='emacs -nw'
 alias top='top -o cpu'
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
 alias svnup='svn up `pwd | sed "s|\(.*/projects/[^/]*\).*|\1|"`'
