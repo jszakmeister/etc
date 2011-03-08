@@ -81,12 +81,33 @@ do
 done
 
 if [[ "$clojure_jar" != '' ]]; then
-        alias clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $jline_jar:$clojure_jar:$clojure_contrib_jar jline.ConsoleRunner clojure.main"
+        classpath=`append_path "$clojure_contrib_jar" "$clojure_jar"`
+        jline_runner=
+        if [[ "$jline_jar" != '' ]]; then
+                classpath=`append_path "$classpath" "$jline_jar"`
+                jline_runner="jline.ConsoleRunner"
+        fi
+
+        alias clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $classpath $jline_runner clojure.main"
 fi
 
 if [ -d $HOME/projects/clojure ]; then
-        alias dev-clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $jline_jar:$HOME/projects/clojure/clojure.jar:\`find_clj_contrib\` jline.ConsoleRunner clojure.main"
+        classpath=`append_path "$jline_jar" $HOME/projects/clojure/clojure.jar:\`find_clj_contrib\``
+        jline_runner=
+        if [[ "$jline_jar" != '' ]]; then
+                jline_runner="jline.ConsoleRunner"
+        fi
+
+        alias dev-clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $classpath $jline_runner clojure.main"
 fi
+
+unset search_path
+unset search_paths
+unset clojure_jar
+unset clojure_contrib_jar
+unset jline_jar
+unset jline_runner
+unset classpath
 
 alias wget="wget --no-check-certificate"
 
