@@ -73,13 +73,17 @@ function getPWD
 {
     # How many characters of the $PWD should be kept
     # courtesy Giles Orr's bash prompt HOWTO (tweaked to be a function)
-    local pwd_length=$(($COLUMNS-43))
-    #40
-    if [ $(echo -n $PWD | wc -c | tr -d " ") -gt $pwd_length ]
-    then
-	newPWD=...$(echo -n $PWD | sed -e "s/.*\(.\{$pwd_length\}\)/\1/")
+
+    if [[ "$COLUMNS" != "" ]]; then
+        local pwd_length=$(($COLUMNS-43))
+        if [ $(echo -n $PWD | wc -c | tr -d " ") -gt $pwd_length ]
+        then
+            newPWD=...$(echo -n $PWD | sed -e "s/.*\(.\{$pwd_length\}\)/\1/")
+        else
+            newPWD=$(echo -n $PWD)
+        fi
     else
-	newPWD=$(echo -n $PWD)
+            newPWD=$(echo -n $PWD)
     fi
     echo $newPWD
 }
