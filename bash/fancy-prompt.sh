@@ -63,8 +63,6 @@ local NRML="\[\033[0;0m\]"	# normal term color
 	;;
     esac
 
-#    export PS1="$PARN($NCLR\u$ATCLR@$HCLR\H$PARN)$DCLR-$PARN($TCLR\$(date '+%I')$COCLR:$TCLR\$(date '+%M %p') $SCLR/ $DTCLR\d$PARN)\n$BRKT[$DIR\$(getPWD)$BRKT]$UCLR$UCHR$TXT"
-#    export PS2="$CCLR$CCHR$TXT"
     export PS1="$NCLR\u$ATCLR@$HCLR\H$COCLR:$DIR\$(getPWD)\n$eGR\$(parse_git_branch)$UCLR$UCHR$TXT"
     export PS2="$CCLR$CCHR$TXT"
 }
