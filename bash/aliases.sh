@@ -23,6 +23,8 @@ if [[ "$platform" == 'Darwin' ]]; then
         fi
         alias keychain='open -a /Applications/Utilities/Keychain\ Access.app'
         alias textedit='open -a /Applications/TextEdit.app'
+	alias ls='ls -hFGA'
+	alias ll='ls -hFlG'
 fi
 
 if [[ "$platform" == 'Linux' ]]; then
@@ -30,10 +32,9 @@ if [[ "$platform" == 'Linux' ]]; then
         alias scons='scons -u -j`cat /proc/cpuinfo | grep processor | wc -l`'
         alias make='nice -n 3 make -j`cat /proc/cpuinfo | grep processor | wc -l`'
         alias ps='ps -ef'
+	alias ls='ls -hFGA --color=auto'
+	alias ll='ls -hFlG --color=auto'
 fi
-
-alias ls='ls -hFGA'
-alias ll='ls -hFlG'
 
 # cd-related
 alias mkisofs='mkisofs -iso-level 3 -J -L -r'
