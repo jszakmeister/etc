@@ -1,3 +1,7 @@
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
 # For some news readers it makes sense to specify the NEWSSERVER variable here
 #export NEWSSERVER=your.news.server
 
