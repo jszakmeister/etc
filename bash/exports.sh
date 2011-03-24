@@ -46,7 +46,7 @@ if [[ "$PATHS_TO_APPEND" != '' ]]; then
         export PATH=$PATH:$PATHS_TO_APPEND
 fi
 
-have_slickedit=`which vs`
+have_slickedit=`which vs 2>/dev/null`
 if [[ "$have_slickedit" != '' ]]; then
         export VSLICKXNOPLUSNEWMSG=1
         

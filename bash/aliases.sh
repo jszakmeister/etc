@@ -1,4 +1,4 @@
-have_slickedit=`which vs`
+have_slickedit=`which vs 2>/dev/null`
 if [[ '$have_slickedit' != '' ]]; then
         alias vs='vs -new'
 fi
