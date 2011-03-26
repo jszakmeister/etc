@@ -25,6 +25,7 @@ if [[ "$platform" == 'Darwin' ]]; then
         alias textedit='open -a /Applications/TextEdit.app'
 	alias ls='ls -hFGA'
 	alias ll='ls -hFlG'
+	alias top='top -o cpu -i 1'
 fi
 
 if [[ "$platform" == 'Linux' ]]; then
@@ -34,6 +35,7 @@ if [[ "$platform" == 'Linux' ]]; then
         alias ps='ps -ef'
 	alias ls='ls -hFGA --color=auto'
 	alias ll='ls -hFlG --color=auto'
+	alias top='top -d 1'
 fi
 
 # cd-related
@@ -45,7 +47,6 @@ if [ -d $HOME/projects/subversion ]; then
 fi
 
 alias em='emacs -nw'
-alias top='top -o cpu'
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
 alias svnup='svn up `pwd | sed "s|\(.*/projects/[^/]*\).*|\1|"`'
 
