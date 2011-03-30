@@ -31,9 +31,9 @@ if [[ "$platform" == 'Darwin' ]]; then
                 alias gemacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs"
                 alias em="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
         fi
-	alias ls='ls -hFGA'
-	alias ll='ls -hFlG'
-	alias top='top -o cpu -i 1'
+        alias ls='ls -hFGA'
+        alias ll='ls -hFlG'
+        alias top='top -o cpu -i 1'
 fi
 
 if [[ "$platform" == 'Linux' ]]; then
@@ -41,9 +41,9 @@ if [[ "$platform" == 'Linux' ]]; then
         alias scons='scons -u -j`cat /proc/cpuinfo | grep processor | wc -l`'
         alias make='nice -n 3 make -j`cat /proc/cpuinfo | grep processor | wc -l`'
         alias ps='ps -ef'
-	alias ls='ls -hFGA --color=auto'
-	alias ll='ls -hFlG --color=auto'
-	alias top='top -d 1'
+        alias ls='ls -hFGA --color=auto'
+        alias ll='ls -hFlG --color=auto'
+        alias top='top -d 1'
 fi
 
 # cd-related
