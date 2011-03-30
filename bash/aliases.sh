@@ -23,6 +23,10 @@ if [[ "$platform" == 'Darwin' ]]; then
         fi
         alias keychain='open -a /Applications/Utilities/Keychain\ Access.app'
         alias textedit='open -a /Applications/TextEdit.app'
+        if [ -d $HOME/Applications/Emacs.app ]; then
+                alias emacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
+                alias gemacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs"
+        fi
 	alias ls='ls -hFGA'
 	alias ll='ls -hFlG'
 	alias top='top -o cpu -i 1'
