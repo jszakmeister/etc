@@ -1,3 +1,6 @@
+# May be overridden later
+alias em='emacs -nw'
+
 have_slickedit=`which vs 2>/dev/null`
 if [[ '$have_slickedit' != '' ]]; then
         alias vs='vs -new'
@@ -26,6 +29,7 @@ if [[ "$platform" == 'Darwin' ]]; then
         if [ -d $HOME/Applications/Emacs.app ]; then
                 alias emacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
                 alias gemacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs"
+                alias em="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
         fi
 	alias ls='ls -hFGA'
 	alias ll='ls -hFlG'
@@ -50,7 +54,6 @@ if [ -d $HOME/projects/subversion ]; then
         alias fsfsverify='$HOME/projects/subversion/contrib/server-side/fsfsverify.py'
 fi
 
-alias em='emacs -nw'
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
 alias svnup='svn up `pwd | sed "s|\(.*/projects/[^/]*\).*|\1|"`'
 
