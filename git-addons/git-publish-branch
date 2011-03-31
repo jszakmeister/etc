@@ -55,6 +55,11 @@ def get_remote_config(local_branch):
                    check_ret=False)
 
 
+def get_remote_url(repository):
+    return run_git('config', 'remote.%s.url' % repository,
+                   check_ret=False)
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog='git-publish-branch',
@@ -84,6 +89,10 @@ def main():
         args.branch = get_current_branch()
 
     local_ref = get_local_ref(args.branch)
+
+    if not get_remote_url(args.repository):
+        raise ScriptError(
+            "There is no remote repository named '%s'" % args.repository)
 
     if args.delete:
         print run_git('push', args.repository, ':refs/heads/%s' % args.branch)
