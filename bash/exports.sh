@@ -96,3 +96,7 @@ if [[ "$platform" == "Darwin" ]]; then
                 export PYTHONSTARTUP="$HOME/projects/etc/python/startup.py"
         fi
 fi
+
+# Ignore duplicate entries, and the exit command.
+export HISTIGNORE="&:exit"
+
