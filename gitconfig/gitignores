@@ -25,6 +25,7 @@
 */.cvsignore
 
 .*
+!.gitignore
 *~
 *.sw[a-p]
 
