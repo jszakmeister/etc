@@ -34,6 +34,7 @@ if [[ "$platform" == 'Darwin' ]]; then
         alias ls='ls -hFGA'
         alias ll='ls -hFlG'
         alias top='top -o cpu -i 1'
+        alias arp-clear='dscacheutil -flushcache'
 fi
 
 if [[ "$platform" == 'Linux' ]]; then
