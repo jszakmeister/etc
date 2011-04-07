@@ -1,0 +1,162 @@
+#!/usr/bin/env python
+import os
+import sys
+import re
+from subprocess import Popen, PIPE
+
+
+class ScriptError(Exception):
+    pass
+
+
+show_commands = False
+
+
+def get_top_level():
+    try:
+        return run('git', 'rev-parse', '--show-toplevel')[0]
+    except ScriptError:
+        pass
+
+    return None
+
+
+def create_args(*args):
+    return ' '.join(('"' + x + '"') for x in args)
+
+
+def run(*args, **kwargs):
+    env = kwargs.get('env', None)
+    cmd = create_args(*args)
+    if env is None:
+        env = os.environ.copy()
+    if show_commands:
+        print "cmd: %s (%s)" % (cmd, os.getcwd())
+    popen = Popen(cmd, shell=True, stdout=PIPE, env=env)
+    pipe = popen.stdout
+    output = pipe.read().rstrip()
+    retcode = popen.wait()
+    if retcode != 0:
+        raise ScriptError("Command failed to execute: '%s'" % (cmd,))
+    return (output and output.split('\n')) or []
+
+
+def run_git(path, *args):
+    git_dir = os.path.join(path, '.git')
+    return run('git', '--git-dir=%s' % git_dir,
+               '--work-tree=%s' % path, *args)
+
+
+def get_externals(path):
+    external_path = os.path.join(path, '.git', '.externals')
+    if not os.path.exists(external_path):
+        return set([])
+
+    with open(external_path, 'rb') as f:
+        externals = f.read().splitlines()
+
+    return set(externals)
+
+
+def find_git_repos(path, max_depth, current_depth=0):
+    """Finds git repos that are no more than max_depth
+    from the provided path
+
+    Arguments:
+    - `path`:
+    - `max_depth`:
+    """
+    git_repos = []
+    entries = set(os.listdir(path))
+
+    if '.git' in entries:
+        entries.remove('.git')
+        git_repos.append(path)
+
+    entries = [os.path.join(path, e) for e in os.listdir(path)]
+    dirs = set([e for e in entries if os.path.isdir(e)])
+
+    if current_depth < max_depth:
+        for d in dirs:
+            git_repos.extend(
+                find_git_repos(d, max_depth, current_depth+1))
+
+    return git_repos
+
+
+def compute_rel(cwd, path):
+    cwd = cwd.split('/')
+    path = path.split('/')
+
+    while True:
+        if len(path) == 0 or len(cwd) == 0:
+            break
+
+        if cwd[0] != path[0]:
+            break
+
+        del cwd[0]
+        del path[0]
+
+    return os.path.join('/'.join(['..'] * len(cwd)), '/'.join(path))
+
+
+if len(sys.argv) == 1:
+    branches = set(find_git_repos('.', 1))
+else:
+    dirs = []
+    for arg in sys.argv[1:]:
+        dirs.extend(find_git_repos(arg, 1))
+    branches = set(dirs)
+
+cwd = os.getcwd()
+
+branches = [os.path.abspath(x) for x in sorted(branches)]
+
+status_re = re.compile(r'(?P<status>..) (?P<path>.*)')
+header_re = re.compile(
+    r'## (?P<lbranch>[^.]*)(?:\.\.\.(?P<rbranch>[^ ]*))?(?: \[(?P<ahead>.+ .+)\])?')
+
+for branch in branches:
+    lines = run_git(branch, 'status', '-sb')
+    if len(lines) == 1 and lines[0] == '## master':
+        continue
+
+    for l in lines:
+        m = header_re.match(l)
+        if m:
+            if cwd.startswith(branch):
+                lbranch = m.group('lbranch')
+            else:
+                lbranch = compute_rel(cwd,
+                                      os.path.join(branch, m.group('lbranch')))
+            lbranch = "\x1b[33;32m%s\x1b[m" % lbranch
+            if m.group('rbranch'):
+                rbranch = "...\x1b[33;31m%s\x1b[m" % m.group('rbranch')
+            else:
+                rbranch = ''
+
+            if m.group('ahead'):
+                ahead = m.group('ahead').split(' ')
+                if int(ahead[1]) >= 0:
+                    color = '32'
+                else:
+                    color = '31'
+                ahead = ' [%s \x1b[33;%sm%s\x1b[m]' % (
+                    ahead[0], color, ahead[1])
+            else:
+                ahead = ''
+
+            print '## %s%s%s' % ( lbranch, rbranch, ahead)
+        else:
+            m = status_re.match(l)
+            if not m:
+                print l
+                continue
+
+            status = '\x1b[33;31m%s\x1b[m' % m.group('status')
+            if cwd.startswith(branch):
+                path = m.group('path')
+            else:
+                path = compute_rel(cwd, os.path.join(branch, m.group('path')))
+            print '%s %s' % (status, path)
