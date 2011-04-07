@@ -125,7 +125,7 @@ def main():
             except ScriptError:
                 print >>sys.stderr, \
                     "WARNING: Couldn't fetch %r.  " \
-                    "Probably because we can't reach the repo."
+                    "Probably because we can't reach the repo." % (r)
 
 
 if __name__ == '__main__':
