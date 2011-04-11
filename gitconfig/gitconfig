@@ -26,6 +26,9 @@
 	# show staged and unstaged changes (what would be committed with "git commit -a")
 	both = diff HEAD
 
+	# Show all files that are being ignored
+	ignored = ls-files --others -i --exclude-standard
+
 [core]
 	# make central area for git ignores. copy gitignores and change this to
 	#   excludesfile = ~/.gitignores
