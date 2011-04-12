@@ -64,8 +64,8 @@ if [ -d $HOME/local/erlang ]; then
         alias erlc="$HOME/local/erlang/bin/erlc"
 fi
 if [ -d $HOME/.local/erlang ]; then
-        alias erl="$HOME/local/erlang/bin/erl"
-        alias erlc="$HOME/local/erlang/bin/erlc"
+        alias erl="$HOME/.local/erlang/bin/erl"
+        alias erlc="$HOME/.local/erlang/bin/erlc"
 fi
 
 # Hunt down the installed clojure files
