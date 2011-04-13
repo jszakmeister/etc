@@ -63,7 +63,15 @@ local NRML="\[\033[0;0m\]"	# normal term color
 	;;
     esac
 
-    export PS1="$NCLR\u$ATCLR@$HCLR\H$COCLR:$DIR\$(getPWD)\n$eGR\$(parse_git_branch)$UCLR$UCHR$TXT"
+    case $TERM in
+        xterm*)
+            local TITLEBAR='\[\e]0;\u@\h:\w\a\]'
+            ;;
+        *)
+            local TITLEBAR=''
+            ;;
+    esac
+    export PS1="$TITLEBAR$NCLR\u$ATCLR@$HCLR\H$COCLR:$DIR\$(getPWD)\n$eGR\$(parse_git_branch)$UCLR$UCHR$TXT"
     export PS2="$CCLR$CCHR$TXT"
 }
 
