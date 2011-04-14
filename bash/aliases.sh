@@ -36,6 +36,7 @@ if [[ "$platform" == 'Darwin' ]]; then
         alias top='top -o cpu -i 1'
         alias arp-clear='dscacheutil -flushcache'
         alias eject='diskutil eject'
+        alias flush-dns='dscacheutil -flushcache'
 fi
 
 if [[ "$platform" == 'Linux' ]]; then
