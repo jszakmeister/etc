@@ -1,5 +1,7 @@
 # May be overridden later
 alias em='emacs -nw'
+alias ec='emacsclient'
+alias gemacs='emacs'
 
 have_slickedit=`which vs 2>/dev/null`
 if [[ '$have_slickedit' != '' ]]; then
@@ -30,6 +32,7 @@ if [[ "$platform" == 'Darwin' ]]; then
                 alias emacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
                 alias gemacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs"
                 alias em="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
+                alias ec="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
         fi
         alias ls='ls -hFGA'
         alias ll='ls -hFlG'
