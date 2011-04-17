@@ -11,6 +11,18 @@
 	br = branch
 	di = diff
 
+        # A handy graph-based log view
+        lol = log --abbrev-commit --graph --decorate
+
+        # Fast-forward pull
+        ff = pull --ff-only
+
+        # Fetch all branches
+        fa = fetch --all
+
+        # Fetch all tags
+        ft = fetch --tags
+
         # Show the type of the object
         type = cat-file -t
 
