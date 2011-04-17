@@ -46,9 +46,24 @@ local NRML="\[\033[0;0m\]"	# normal term color
 	*) # mere mortals
 	    local UCHR=":: "		# user prompt character
 	    local UCLR=$eBL		# user prompt color
-	    local NCLR=$eYW		# username color
-	    local ATCLR=$CY		# @ sign color
-	    local HCLR=$eBL		# host name color
+            if [ -n "$SSH_TTY" ]; then
+                # username color
+                local NCLR="\[\e[1;4;33m\]"
+                # host name color
+	        local HCLR="\[\e[1;4;34m\]"
+                # @ sign color
+	        local ATCLR="\[\e[1;4;36m\]"
+                # Characters to signify that we're remote
+                local SRMT="{"
+                local ERMT="}"
+            else
+                local NCLR=$eYW		# username color
+	        local HCLR=$eBL		# host name color
+	        local ATCLR=$CY		# @ sign color
+                local SRMT=""           # Not remote
+                local ERMT=""           # Not remote
+            fi
+
 	    local BRKT=$eBL		# bracket color
 	    local PARN=$CY		# parens color
 	    local DCLR=$CY		# dash color
@@ -71,7 +86,7 @@ local NRML="\[\033[0;0m\]"	# normal term color
             local TITLEBAR=''
             ;;
     esac
-    export PS1="$TITLEBAR$NCLR\u$ATCLR@$HCLR\H$COCLR:$DIR\$(getPWD)\n$eGR\$(parse_git_branch)$UCLR$UCHR$TXT"
+    export PS1="$TITLEBAR$NRML$SRMT$NCLR\u$ATCLR@$HCLR\H$NRML$ERMT$COCLR:$DIR\$(getPWD)\n$eGR\$(parse_git_branch)$UCLR$UCHR$TXT"
     export PS2="$CCLR$CCHR$TXT"
 }
 
