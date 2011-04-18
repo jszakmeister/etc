@@ -13,7 +13,7 @@ test -s ~/projects/etc/bash/aliases.sh && . ~/projects/etc/bash/aliases.sh
 test -s ~/projects/etc/bash/pickjdk.sh && . ~/projects/etc/bash/pickjdk.sh
 test -s ~/projects/etc/bash/fancy-prompt.sh && . ~/projects/etc/bash/fancy-prompt.sh
 test -s ~/projects/etc/bash/shell-options.sh && . ~/projects/etc/bash/shell-options.sh
-test -s ~/projects/etc/bash/completion.sh && . ~/projects/etc/bash/completion.sh
+test -s ~/projects/etc/bash/completions.sh && . ~/projects/etc/bash/completions.sh
 
 platform=`uname`
 if [[ "$platform" == 'Darwin' ]]; then
