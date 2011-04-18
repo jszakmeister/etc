@@ -9,3 +9,4 @@
 "\e[5~": beginning-of-history
 "\e[6~": end-of-history
 
+set show-all-if-ambiguous on
