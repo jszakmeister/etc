@@ -81,6 +81,8 @@ export EDITOR=`which vim`
 export GEM_HOME=$HOME/.local/lib/ruby/gems/1.8
 export RUBYLIB=$HOME/.local/lib/ruby:$HOME/.local/lib/site_ruby/1.8
 
+export PATH=$GEM_HOME/bin:$PATH
+
 # Add a default LS_COLORS
 if [ "$TERM" != "dumb" ]; then
   if [ -x /usr/bin/dircolors ]; then
