@@ -48,6 +48,8 @@ if [[ "$platform" == 'Linux' ]]; then
         alias ls='ls -hFGA --color=auto'
         alias ll='ls -hFlG --color=auto'
         alias top='top -d 1'
+        alias pbcopy='xsel --clipboard --input'
+        alias pbpaste='xsel --clipboard --output'
 fi
 
 # cd-related
