@@ -33,5 +33,6 @@ function append_path
 }
 
 function parse_git_branch {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
+  declare -F __git_ps1 &>/dev/null && __git_ps1 "[%s]"
+  declare -F __git_ps1 &>/dev/null || git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
 }
