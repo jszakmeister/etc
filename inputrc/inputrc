@@ -1,3 +1,5 @@
+$include /etc/inputrc
+
 # Link this to ~/.inputrc in your home folder
 "\e[A": history-search-backward
 "\e[B": history-search-forward
