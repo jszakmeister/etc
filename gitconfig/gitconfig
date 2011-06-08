@@ -46,3 +46,7 @@
 	#   excludesfile = ~/.gitignores
 	# if you need to customize it
 	excludesfile = ~/projects/etc/gitconfig/gitignores
+
+[diff]
+	# Does rename detection during diff operation
+	renames = true
