@@ -41,6 +41,9 @@
 	# Show all files that are being ignored
 	ignored = ls-files --others -i --exclude-standard
 
+	# Have info show the remote url
+	info = config remote.origin.url
+
 [core]
 	# make central area for git ignores. copy gitignores and change this to
 	#   excludesfile = ~/.gitignores
