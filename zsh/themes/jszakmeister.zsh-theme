@@ -73,7 +73,7 @@ _vcs_status() {
 local current_dir='%{$terminfo[bold]$fg[yellow]%}[%{$fg_no_bold[magenta]%}${PWD/#$HOME/~}%{$fg[yellow]%}]%{$reset_color%}'
 local topline="${user_host} ${current_dir} \$(_vcs_status)"
 PROMPT="${topline}
-${separator}${separator}"
+${separator}${separator} "
 
 local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 RPS1="${return_code}"
