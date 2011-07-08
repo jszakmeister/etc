@@ -1,0 +1,20 @@
+test -s ~/projects/etc/zsh/shell-options.zsh && . ~/projects/etc/zsh/shell-options.zsh
+
+test -s ~/projects/etc/shell-common/functions.sh && . ~/projects/etc/shell-common/functions.sh
+test -s ~/projects/etc/shell-common/exports.sh && . ~/projects/etc/shell-common/exports.sh
+test -s ~/projects/etc/shell-commond/aliases.sh && . ~/projects/etc/shell-common/aliases.sh
+
+# add a function path
+fpath=(~/projects/etc/zsh/functions ~/projects/etc/zsh/completions $fpath)
+
+# Load all of the config files in ~/oh-my-zsh that end in .zsh
+# TIP: Add files you don't want in git to .gitignore
+for config_file (~/projects/etc/zsh/lib/*.zsh) source $config_file
+
+platform=`uname`
+if [[ "$platform" == 'Darwin' ]]; then
+    export PYTHONSTARTUP="$HOME/projects/etc/python/startup.py"
+fi
+
+source "$HOME/projects/etc/zsh/themes/${ZSH_THEME:-jszakmeister}.zsh-theme"
+
