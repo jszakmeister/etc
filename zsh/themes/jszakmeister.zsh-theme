@@ -26,30 +26,33 @@ _vcs_status() {
         fi
 
         if [[ -n $upstream ]]; then
-            count=${(ps:\t:)$(git rev-list --count --left-right $upstream...HEAD)}
+            count=$(git rev-list --count --left-right $upstream...HEAD)
             upstream="...%{$fg_no_bold[white]%}${upstream#refs/remotes/}%{$reset_color%}"
+        elif [[ -n $(git show-ref HEAD) ]]; then
+            count=$(git rev-list --count --left-right master...HEAD)
         else
-            count=${(ps:\t:)$(git rev-list --count --left-right master...HEAD)}
+            count="0 0"
         fi
 
-            if (( ${count[1]} > 0 )); then
-                behind="%{$fg_no_bold[white]%}behind %{$fg_bold[red]%}${count[1]}%{$reset_color%}"
-            else
-                behind=""
-            fi
-            if (( $count[3] > 0 )); then
-                ahead="%{$fg_no_bold[white]%}ahead %{$fg_bold[green]%}${count[3]}%{$reset_color%}"
-            else
-                ahead=""
-            fi
-            if [[ -n $ahead && -n $behind ]]; then
-                divergent=" [${behind}, ${ahead}]"
-            elif [[ -n $ahead || -n $behind ]]; then
-                divergent=" [${behind}${ahead}]"
-            else
-                divergent=""
-            fi
+        if (( ${count[(w)1]} > 0 )); then
+            behind="%{$fg_no_bold[white]%}behind %{$fg_bold[red]%}${count[(w)1]}%{$reset_color%}"
+        else
+            behind=""
+        fi
 
+        if (( $count[(w)2] > 0 )); then
+            ahead="%{$fg_no_bold[white]%}ahead %{$fg_bold[green]%}${count[(w)2]}%{$reset_color%}"
+        else
+            ahead=""
+        fi
+
+        if [[ -n $ahead && -n $behind ]]; then
+            divergent=" [${behind}, ${ahead}]"
+        elif [[ -n $ahead || -n $behind ]]; then
+            divergent=" [${behind}${ahead}]"
+        else
+            divergent=""
+        fi
 
         echo "on ${ref}${dirty}${upstream}${divergent}"
         return 0
