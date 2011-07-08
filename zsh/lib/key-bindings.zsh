@@ -28,6 +28,3 @@ unset k
 [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
 [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
 
-set show-all-if-ambiguous on
-set completion-query-items 1000
-set expand-tilde off
