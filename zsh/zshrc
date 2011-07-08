@@ -2,7 +2,7 @@ test -s ~/projects/etc/zsh/shell-options.zsh && . ~/projects/etc/zsh/shell-optio
 
 test -s ~/projects/etc/shell-common/functions.sh && . ~/projects/etc/shell-common/functions.sh
 test -s ~/projects/etc/shell-common/exports.sh && . ~/projects/etc/shell-common/exports.sh
-test -s ~/projects/etc/shell-commond/aliases.sh && . ~/projects/etc/shell-common/aliases.sh
+test -s ~/projects/etc/shell-common/aliases.sh && . ~/projects/etc/shell-common/aliases.sh
 
 # add a function path
 fpath=(~/projects/etc/zsh/functions ~/projects/etc/zsh/completions $fpath)
