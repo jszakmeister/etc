@@ -2,6 +2,7 @@
 # to add other keys to this hash, see: man 5 terminfo
 typeset -A key
 
+# Home and End seem to be empty on the Mac
 key[Home]=${terminfo[khome]}
 key[End]=${terminfo[kend]}
 key[Insert]=${terminfo[kich1]}
@@ -19,12 +20,24 @@ for k in ${(k)key} ; do
 done
 unset k
 
+# default to emacs bindings, just like bash
+bindkey -e
+
 # setup key accordingly
-[[ -n "${key[Home]}"    ]]  && bindkey  "${key[Home]}"    beginning-of-line
-[[ -n "${key[End]}"     ]]  && bindkey  "${key[End]}"     end-of-line
 [[ -n "${key[Delete]}"  ]]  && bindkey  "${key[Delete]}"  delete-char
 [[ -n "${key[Up]}"      ]]  && bindkey  "${key[Up]}"      history-search-backward
 [[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    history-search-forward
 [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
 [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
 
+# Home
+bindkey "^[[H" beginning-of-line
+
+# End
+bindkey "^[[F" end-of-line
+
+# Ctrl-left
+bindkey "^[[5D" backward-word
+
+# Ctrl-right
+bindkey "^[[5C" forward-word
