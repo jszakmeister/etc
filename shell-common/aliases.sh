@@ -62,6 +62,8 @@ fi
 
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
 alias svnup='svn up `pwd | sed "s|\(.*/projects/[^/]*\).*|\1|"`'
+alias grep="grep --color=auto"
+alias egrep="egrep --color=auto"
 
 if [ -d $HOME/local/erlang ]; then
         alias erl="$HOME/local/erlang/bin/erl"
