@@ -1,8 +1,5 @@
 # jszakmeister@localhost [~/path/to/somewhere] [version-control-status] -------------------------------------------- [something?]
 
-local separator='%{$fg_bold[blue]%}:%{$reset_color%}'
-local user_host='%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M%{$reset_color%}'
-
 _vcs_status() {
     function git_status {
         git rev-parse --git-dir >& /dev/null || return 1
@@ -81,11 +78,19 @@ _vcs_status() {
 unsetopt promptsp
 function precmd { print -nP "${(l:$((COLUMNS-1)):::):-}\r" }
 
-local current_dir='%{$terminfo[bold]$fg[yellow]%}[%{$fg_no_bold[magenta]%}${PWD/#$HOME/~}%{$fg[yellow]%}]%{$reset_color%}'
-local topline="${user_host} ${current_dir} \$(_vcs_status)"
-PROMPT="${topline}
+_jszakmeister_prompt() {
+    local separator='%{$fg_bold[blue]%}:%{$reset_color%}'
+    local user_host='%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M%{$reset_color%}'
+
+    local current_dir='%{$terminfo[bold]$fg[yellow]%}[%{$fg_no_bold[magenta]%}${PWD/#$HOME/~}%{$fg[yellow]%}]%{$reset_color%}'
+    local topline="${user_host} ${current_dir} \$(_vcs_status)"
+
+    echo "${topline}
 ${separator}${separator} "
 
-local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
-RPS1="${return_code}"
+}
+
+PROMPT="$(_jszakmeister_prompt)"
+
+RPS1="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
