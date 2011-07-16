@@ -71,6 +71,16 @@ _vcs_status() {
     git_status || svn_status || bzr_status || hg_status
 }
 
+# Turn off the darn % at the end of a partial line.  Use the technique
+# mentioned here:
+#     http://zsh.sourceforge.net/FAQ/zshfaq03.html  (3.23)
+# to just force us to the next line.
+#
+# Later versions of zsh support PROMPT_EOL_MARK, but unfortunately
+# the zsh that comes with Snow Leopard does not.
+unsetopt promptsp
+function precmd { print -nP "${(l:$((COLUMNS-1)):::):-}\r" }
+
 local current_dir='%{$terminfo[bold]$fg[yellow]%}[%{$fg_no_bold[magenta]%}${PWD/#$HOME/~}%{$fg[yellow]%}]%{$reset_color%}'
 local topline="${user_host} ${current_dir} \$(_vcs_status)"
 PROMPT="${topline}
