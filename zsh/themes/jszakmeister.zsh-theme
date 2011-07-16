@@ -4,8 +4,6 @@ local separator='%{$fg_bold[blue]%}:%{$reset_color%}'
 local user_host='%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M%{$reset_color%}'
 
 _vcs_status() {
-    local start="%{$fg_bold[yellow]%}(%{$fg[green]%}"
-    local stop="%{$fg_bold[yellow]%})%{$reset_color%}"
     function git_status {
         git rev-parse --git-dir >& /dev/null || return 1
         local ref dirty count ahead behind divergent upstream
