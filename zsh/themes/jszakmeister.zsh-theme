@@ -82,7 +82,7 @@ _jszakmeister_prompt() {
     local separator='%{$fg_bold[blue]%}:%{$reset_color%}'
     local user_host='%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M%{$reset_color%}'
 
-    local current_dir='%{$terminfo[bold]$fg[yellow]%}[%{$fg_no_bold[magenta]%}${PWD/#$HOME/~}%{$fg[yellow]%}]%{$reset_color%}'
+    local current_dir='%{$fg_bold[yellow]%}[%{$fg_no_bold[magenta]%}${PWD/#$HOME/~}%{$fg_bold[yellow]%}]%{$reset_color%}'
     local topline="${user_host} ${current_dir} \$(_vcs_status)"
 
     echo "${topline}
