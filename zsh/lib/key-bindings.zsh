@@ -10,7 +10,11 @@ key[Delete]=${terminfo[kdch1]}
 key[Up]=${terminfo[kcuu1]}
 key[Down]=${terminfo[kcud1]}
 key[Left]=${terminfo[kcub1]}
+key[SLeft]=${terminfo[kLFT]}
+key[CLeft]=${terminfo[kLFT5]}
 key[Right]=${terminfo[kcuf1]}
+key[SRight]=${terminfo[kRIT]}
+key[CRight]=${terminfo[kRIT5]}
 key[PageUp]=${terminfo[kpp]}
 key[PageDown]=${terminfo[knp]}
 
@@ -28,16 +32,8 @@ bindkey -e
 [[ -n "${key[Up]}"      ]]  && bindkey  "${key[Up]}"      history-beginning-search-backward
 [[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    history-beginning-search-forward
 [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
+[[ -n "${key[CLeft]}"   ]]  && bindkey  "${key[CLeft]}"   backward-word
 [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
-
-# Home
-bindkey "^[[H" beginning-of-line
-
-# End
-bindkey "^[[F" end-of-line
-
-# Ctrl-left
-bindkey "^[[5D" backward-word
-
-# Ctrl-right
-bindkey "^[[5C" forward-word
+[[ -n "${key[CRight]}"  ]]  && bindkey  "${key[CRight]}"  forward-word
+[[ -n "${key[Home]}"    ]]  && bindkey  "${key[Home]}"    beginning-of-line
+[[ -n "${key[End]}"     ]]  && bindkey  "${key[End]}"     end-of-line
