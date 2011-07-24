@@ -8,6 +8,13 @@ setopt prompt_subst
 autoload -U compinit
 compinit -i
 
+# Load the bash compatibility completion engine
+autoload -Uz bashcompinit
+bashcompinit
+
+test -s ~/projects/etc/bash/bash_completion.sh && . ~/projects/etc/bash/bash_completion.sh
+test -s ~/projects/etc/bash/git-autocomplete.sh && . ~/projects/etc/bash/git-autocomplete.sh
+
 autoload colors
 colors
 
