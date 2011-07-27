@@ -50,6 +50,17 @@ if [[ "$platform" == 'Linux' ]]; then
         alias top='top -d 1'
         alias pbcopy='xsel --clipboard --input'
         alias pbpaste='xsel --clipboard --output'
+        if ( which xdg-open >& /dev/null ); then
+            alias open="xdg-open"
+        elif [[ "$DESKTOP_SESSION" == "gnome" ]]; then
+            alias open="gnome-open"
+        elif [[ "$DESKTOP_SESSION" == "kde" ]]; then
+            alias open="kde-open"
+        else
+            # Default to xdg open... it'll at least remind me to install
+            # xdg-utils (or the equivalent).
+            alias open="xdg-open"
+        fi
 fi
 
 # cd-related
