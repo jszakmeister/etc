@@ -76,7 +76,20 @@ _vcs_status() {
 # Later versions of zsh support PROMPT_EOL_MARK, but unfortunately
 # the zsh that comes with Snow Leopard does not.
 unsetopt promptsp
-function precmd { print -nP "${(l:$((COLUMNS-1)):::):-}\r" }
+function precmd {
+    print -nP "${(l:$((COLUMNS-1)):::):-}\r"
+
+    case "$TERM" in
+    xterm*|rxvt*)
+        echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD/#$HOME/~}\007"
+        ;;
+    screen)
+        echo -ne "\033_${USER}@${HOST%%.*}:${PWD/#$HOME/~}\007"
+        ;;
+    *)
+        ;;
+    esac
+}
 
 _jszakmeister_prompt() {
     local separator='%{$fg_bold[blue]%}:%{$reset_color%}'
