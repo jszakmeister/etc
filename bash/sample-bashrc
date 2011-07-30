@@ -9,7 +9,7 @@ fi
 
 test -s ~/projects/etc/shell-common/functions.sh && . ~/projects/etc/shell-common/functions.sh
 test -s ~/projects/etc/shell-common/exports.sh && . ~/projects/etc/shell-common/exports.sh
-test -s ~/projects/etc/shell-commond/aliases.sh && . ~/projects/etc/shell-common/aliases.sh
+test -s ~/projects/etc/shell-common/aliases.sh && . ~/projects/etc/shell-common/aliases.sh
 test -s ~/projects/etc/bash/pickjdk.sh && . ~/projects/etc/bash/pickjdk.sh
 test -s ~/projects/etc/bash/fancy-prompt.sh && . ~/projects/etc/bash/fancy-prompt.sh
 test -s ~/projects/etc/bash/shell-options.sh && . ~/projects/etc/bash/shell-options.sh
