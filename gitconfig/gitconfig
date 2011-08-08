@@ -58,6 +58,16 @@
         tips = "!_() { t=$(git rev-list --no-merges --max-count=1 \"$@\"); if test -n \"$t\"; then echo $t; _ \"$@\" ^$t; fi; }; _"
         oneline = !xargs -L1 git log --decorate --max-count=1 --oneline
 
+	# Taken from https://git.wiki.kernel.org/index.php/Aliases#Finding_the_right_commit
+
+	# Getting pretty logs.
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+
+	# If you use shortened hashes, sometimes you may encounter a
+	# collision. The following alias prints out all commits whose
+	# hash start with given string.
+	abbr = "!sh -c 'git rev-list --all | grep ^$1 | while read commit; do git --no-pager log -n1 --pretty=format:\"%H %ci %an %s%n\" $commit; done' -"
+
 [core]
 	# make central area for git ignores. copy gitignores and change this to
 	#   excludesfile = ~/.gitignores
