@@ -50,6 +50,14 @@
 	# Prune all stale remote branches from the local repository
 	prune-all = !git remote | xargs -n 1 git remote prune
 
+        # Handy alias to show all relevant tips.  Using this like:
+        #     git tips origin/pu ^origin/next | git oneline
+        #
+        # would show all branches in pu that are not in next.
+        # Thanks to Jon Seymour for posting this on the git list.
+        tips = "!_() { t=$(git rev-list --no-merges --max-count=1 \"$@\"); if test -n \"$t\"; then echo $t; _ \"$@\" ^$t; fi; }; _"
+        oneline = !xargs -L1 git log --decorate --max-count=1 --oneline
+
 [core]
 	# make central area for git ignores. copy gitignores and change this to
 	#   excludesfile = ~/.gitignores
