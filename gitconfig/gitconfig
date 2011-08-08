@@ -44,11 +44,11 @@
 	# Have info show the remote url
 	info = config remote.origin.url
 
-        # diffstat output, without the pager
-        diffstat = !git --no-pager diff --stat -r
+	# diffstat output, without the pager
+	diffstat = !git --no-pager diff --stat -r
 
 	# Prune all stale remote branches from the local repository
-        prune-all = !git remote | xargs -n 1 git remote prune
+	prune-all = !git remote | xargs -n 1 git remote prune
 
 [core]
 	# make central area for git ignores. copy gitignores and change this to
