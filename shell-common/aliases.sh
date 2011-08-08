@@ -145,3 +145,12 @@ alias od='od -A x'
 alias traceroute='traceroute -n -w 2'
 alias netcat=nc
 alias tree='tree -F -v'
+
+# rvm-related
+if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+    # yes, this essentially replaces the system gem... but I like to install
+    # libraries for me, and not f-up my entire system.
+    alias gem="rvm gem"
+    alias compass="rvm exec compass"
+    alias rake="rvm rake"
+fi
