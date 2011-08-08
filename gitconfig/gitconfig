@@ -44,6 +44,9 @@
 	# Have info show the remote url
 	info = config remote.origin.url
 
+        # diffstat output, without the pager
+        diffstat = !git --no-pager diff --stat -r
+
 [core]
 	# make central area for git ignores. copy gitignores and change this to
 	#   excludesfile = ~/.gitignores
