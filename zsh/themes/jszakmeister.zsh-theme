@@ -5,7 +5,7 @@ _vcs_status() {
         git rev-parse --git-dir >& /dev/null || return 1
         local ref dirty count ahead behind divergent upstream
 
-        ref=$(git symbolic-ref HEAD 2> /dev/null)
+        ref=$(git symbolic-ref HEAD 2> /dev/null || git describe --tags --exact-match HEAD 2>/dev/null || git describe --contains --all HEAD)
         ref="%{$fg_no_bold[yellow]%}${ref#refs/heads/}%{$reset_color%}"
         upstream=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
         if [[ $upstream == "@{upstream}" ]]; then
