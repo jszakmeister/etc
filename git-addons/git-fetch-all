@@ -106,7 +106,7 @@ def main():
     parser.add_argument(
         '-n', '--dry-run', dest='dry_run', action='store_true',
         default=False,
-        help="Don't actually publish and track the branch.")
+        help="Don't actually fetch anything from the remotes.")
     parser.add_argument(
         'paths', nargs='*', default=['.'],
         help='The paths to search for git repos.')
