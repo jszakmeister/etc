@@ -57,7 +57,13 @@ fi
 
 # Quite often, I want to see the last output of less on the screen...
 # Stop the default behavior of wiping the screen
-export LESS=erX
+# e - exit at the end of the file
+# F - Quit automatically if there is only one screen worth of data
+# R - Only show ANSI raw characters.  Allows color to work, while still
+#     maintaining the format of the screen.
+# X - Stop termcap init and deinit.  It tends to clear the screen, and I
+#     don't like that.
+export LESS=eFRX
 
 export GDKUSEXFT=1
 
