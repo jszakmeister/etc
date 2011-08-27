@@ -62,6 +62,10 @@
         tips = "!_() { t=$(git rev-list --no-merges --max-count=1 \"$@\"); if test -n \"$t\"; then echo $t; _ \"$@\" ^$t; fi; }; _"
         oneline = !xargs -L1 git log --decorate --max-count=1 --oneline
 
+        # Lists all the defined aliases
+	# Taken from https://git.wiki.kernel.org/index.php/Aliases#alias
+        aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
+
 	# Taken from https://git.wiki.kernel.org/index.php/Aliases#Finding_the_right_commit
 
 	# Getting pretty logs.
