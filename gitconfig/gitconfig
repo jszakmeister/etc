@@ -42,7 +42,7 @@
 	ignored = ls-files --others -i --exclude-standard
 
 	# Have info show the remote url
-	info = config remote.origin.url
+	info = config --get remote.origin.url
 
 	# diffstat output, without the pager
 	diffstat = !git --no-pager diff --stat -r
