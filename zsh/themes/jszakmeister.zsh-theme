@@ -2,10 +2,26 @@
 
 _vcs_status() {
     function git_status {
-        git rev-parse --git-dir >& /dev/null || return 1
-        local ref dirty count ahead behind divergent upstream
+        local ref dirty count ahead behind divergent upstream g
+	g=$(git rev-parse --git-dir 2>/dev/null)
+        if [[ -z $g ]]; then
+		return 1
+	fi
 
-        ref=$(git symbolic-ref HEAD 2> /dev/null || git describe --tags --exact-match HEAD 2>/dev/null || git describe --contains --all HEAD)
+        git rev-parse --git-dir >& /dev/null || return 1
+
+	ref="$(git symbolic-ref HEAD 2>/dev/null)" || {
+		ref=$(
+			git describe --tags --exact-match HEAD ||
+			git describe --contains --all HEAD ||
+			git describe --contains HEAD ||
+			git describe HEAD
+		) 2>/dev/null ||
+		ref="$(cut -c1-7 "$g/HEAD" 2>/dev/null)..." ||
+		ref="unknown"
+		ref="($ref)"
+	}
+
         ref="%{$fg_no_bold[yellow]%}${ref#refs/heads/}%{$reset_color%}"
         upstream=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
         if [[ $upstream == "@{upstream}" ]]; then
