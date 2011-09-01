@@ -76,9 +76,8 @@ alias svnup='svn up `pwd | sed "s|\(.*/projects/[^/]*\).*|\1|"`'
 alias grep="grep -n --color=auto"
 alias egrep="egrep -n --color=auto"
 
-if [ -n $(which colordiff) ]; then
+hash colordiff > /dev/null 2>&1 &&
         alias diff="colordiff"
-fi
 
 if [ -d $HOME/local/erlang ]; then
         alias erl="$HOME/local/erlang/bin/erl"
