@@ -4,11 +4,6 @@ fi
 
 ETC_HOME=${ETC_HOME:-~/projects/etc}
 
-# For some news readers it makes sense to specify the NEWSSERVER variable here
-#export NEWSSERVER=your.news.server
-
-#export MAIL=~/.maildir/
-
 test -s "$ETC_HOME/shell-common/functions.sh" && . "$ETC_HOME/shell-common/functions.sh"
 test -s "$ETC_HOME/shell-common/exports.sh" && . "$ETC_HOME/shell-common/exports.sh"
 test -s "$ETC_HOME/shell-common/aliases.sh" && . "$ETC_HOME/shell-common/aliases.sh"
