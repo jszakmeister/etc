@@ -2,13 +2,13 @@
 .gitignore	export-ignore
 
 *.txt           text
-*.c		text
-*.cpp		text
-*.h		text
-*.hpp		text
 *.C		text
 *.rst		text
 
+*.c		text diff=cpp
+*.cpp		text diff=cpp
+*.h		text diff=cpp
+*.hpp		text diff=cpp
 *.py		text diff=python
 *.tex		text diff=tex
 *.java		text diff=java
