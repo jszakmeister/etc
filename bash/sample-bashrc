@@ -2,21 +2,17 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+ETC_HOME=${ETC_HOME:-~/projects/etc}
+
 # For some news readers it makes sense to specify the NEWSSERVER variable here
 #export NEWSSERVER=your.news.server
 
 #export MAIL=~/.maildir/
 
-test -s ~/projects/etc/shell-common/functions.sh && . ~/projects/etc/shell-common/functions.sh
-test -s ~/projects/etc/shell-common/exports.sh && . ~/projects/etc/shell-common/exports.sh
-test -s ~/projects/etc/shell-common/aliases.sh && . ~/projects/etc/shell-common/aliases.sh
-test -s ~/projects/etc/bash/pickjdk.sh && . ~/projects/etc/bash/pickjdk.sh
-test -s ~/projects/etc/bash/fancy-prompt.sh && . ~/projects/etc/bash/fancy-prompt.sh
-test -s ~/projects/etc/bash/shell-options.sh && . ~/projects/etc/bash/shell-options.sh
-test -s ~/projects/etc/bash/completions.sh && . ~/projects/etc/bash/completions.sh
-
-platform=`uname`
-if [[ "$platform" == 'Darwin' ]]; then
-    export PYTHONSTARTUP="$HOME/projects/etc/python/startup.py"
-fi
-
+test -s "$ETC_HOME/shell-common/functions.sh" && . "$ETC_HOME/shell-common/functions.sh"
+test -s "$ETC_HOME/shell-common/exports.sh" && . "$ETC_HOME/shell-common/exports.sh"
+test -s "$ETC_HOME/shell-common/aliases.sh" && . "$ETC_HOME/shell-common/aliases.sh"
+test -s "$ETC_HOME/bash/pickjdk.sh" && . "$ETC_HOME/bash/pickjdk.sh"
+test -s "$ETC_HOME/bash/fancy-prompt.sh" && . "$ETC_HOME/bash/fancy-prompt.sh"
+test -s "$ETC_HOME/bash/shell-options.sh" && . "$ETC_HOME/bash/shell-options.sh"
+test -s "$ETC_HOME/bash/completions.sh" && . "$ETC_HOME/bash/completions.sh"

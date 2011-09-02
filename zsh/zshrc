@@ -1,20 +1,21 @@
-test -s ~/projects/etc/zsh/shell-options.zsh && . ~/projects/etc/zsh/shell-options.zsh
+ETC_HOME=${ETC_HOME:-~/projects/etc}
 
-test -s ~/projects/etc/shell-common/functions.sh && . ~/projects/etc/shell-common/functions.sh
-test -s ~/projects/etc/shell-common/exports.sh && . ~/projects/etc/shell-common/exports.sh
-test -s ~/projects/etc/shell-common/aliases.sh && . ~/projects/etc/shell-common/aliases.sh
+test -s "$ETC_HOME/zsh/shell-options.zsh" &&
+	. "$ETC_HOME/zsh/shell-options.zsh"
+
+test -s "$ETC_HOME/shell-common/functions.sh" &&
+	. $ETC_HOME/shell-common/functions.sh
+test -s "$ETC_HOME/shell-common/exports.sh" &&
+	. "$ETC_HOME/shell-common/exports.sh"
+test -s "$ETC_HOME/shell-common/aliases.sh" &&
+	. "$ETC_HOME/shell-common/aliases.sh"
 
 # add a function path
-fpath=(~/projects/etc/zsh/functions ~/projects/etc/zsh/completions $fpath)
+fpath=("$ETC_HOME/zsh/functions" "$ETC_HOME/zsh/completions" $fpath)
 
 # Load all of the config files in ~/oh-my-zsh that end in .zsh
 # TIP: Add files you don't want in git to .gitignore
-for config_file (~/projects/etc/zsh/lib/*.zsh) source $config_file
+for config_file ($ETC_HOME/zsh/lib/*.zsh) source $config_file
 
-platform=`uname`
-if [[ "$platform" == 'Darwin' ]]; then
-    export PYTHONSTARTUP="$HOME/projects/etc/python/startup.py"
-fi
-
-source "$HOME/projects/etc/zsh/themes/${ZSH_THEME:-jszakmeister}.zsh-theme"
+source "$ETC_HOME/zsh/themes/${ZSH_THEME:-jszakmeister}.zsh-theme"
 

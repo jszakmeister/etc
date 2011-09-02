@@ -34,8 +34,8 @@ if [[ "$platform" == 'Linux' ]]; then
         fi
 fi
 
-if [ -d "$HOME/projects/etc/git-addons" ]; then
-        PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$HOME/projects/etc/git-addons"`
+if [ -d "$ETC_HOME/git-addons" ]; then
+        PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$ETC_HOME/git-addons"`
 fi
 
 if [[ "$PATHS_TO_PREPEND" != '' ]]; then
@@ -100,8 +100,8 @@ if [ "$TERM" != "dumb" ]; then
 fi
 
 if [[ "$platform" == "Darwin" ]]; then
-        if [ -e $HOME/projects/etc/python/startup.py ]; then
-                export PYTHONSTARTUP="$HOME/projects/etc/python/startup.py"
+        if [ -e "$ETC_HOME/python/startup.py" ]; then
+                export PYTHONSTARTUP="$ETC_HOME/python/startup.py"
         fi
 fi
 

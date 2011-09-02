@@ -1,5 +1,5 @@
 # Add a line like the following to your .bashrc:
-#  export PYTHONSTARTUP="$HOME/projects/etc/python/startup.py"
+#  export PYTHONSTARTUP="$ETC_HOME/python/startup.py"
 
 import readline, atexit, os, rlcompleter
 
