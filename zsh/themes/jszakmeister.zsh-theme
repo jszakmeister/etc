@@ -109,14 +109,23 @@ function precmd {
 
 _jszakmeister_prompt() {
     local separator='%{$fg_bold[blue]%}:%{$reset_color%}'
-    local user_host='%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M%{$reset_color%}'
+    local user_host SRMT ERMT
 
-    local current_dir='%{$fg_bold[yellow]%}[%{$fg_no_bold[magenta]%}${PWD/#$HOME/~}%{$fg_bold[yellow]%}]%{$reset_color%}'
+    if [ -n "$SSH_TTY" ]; then
+	# We're remoted
+        SRMT="{"
+        ERMT="}"
+    else
+        SRMT=""
+        ERMT=""
+    fi
+    user_host="%{$fg_bold[white]%}$SRMT%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M%{$fg_bold[white]%}$ERMT%{$reset_color%}"
+
+    local current_dir="%{$fg_bold[yellow]%}[%{$fg_no_bold[magenta]%}"'${PWD/#$HOME/~}'"%{$fg_bold[yellow]%}]%{$reset_color%}"
     local topline="${user_host} ${current_dir} \$(_vcs_status)"
 
     echo "${topline}
 ${separator}${separator} "
-
 }
 
 PROMPT="$(_jszakmeister_prompt)"
