@@ -94,17 +94,17 @@ function getPWD
 {
     # How many characters of the $PWD should be kept
     # courtesy Giles Orr's bash prompt HOWTO (tweaked to be a function)
-
+    local newPWD="${PWD/#$HOME/~}"
     if [[ "$COLUMNS" != "" ]]; then
         local pwd_length=$(($COLUMNS-43))
-        if [ $(echo -n $PWD | wc -c | tr -d " ") -gt $pwd_length ]
+        if [ $(echo -n $newPWD | wc -c | tr -d " ") -gt $pwd_length ]
         then
-            newPWD=...$(echo -n $PWD | sed -e "s/.*\(.\{$pwd_length\}\)/\1/")
+            newPWD=...$(echo -n $newPWD | sed -e "s/.*\(.\{$pwd_length\}\)/\1/")
         else
-            newPWD=$(echo -n $PWD)
+            newPWD=$(echo -n $newPWD)
         fi
     else
-            newPWD=$(echo -n $PWD)
+            newPWD=$(echo -n $newPWD)
     fi
     echo $newPWD
 }
