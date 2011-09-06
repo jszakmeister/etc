@@ -119,7 +119,7 @@ _jszakmeister_prompt() {
         SRMT=""
         ERMT=""
     fi
-    user_host="%{$fg_bold[white]%}$SRMT%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M%{$fg_bold[white]%}$ERMT%{$reset_color%}"
+    user_host="%{$fg_no_bold[white]%}$SRMT%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M%{$fg_no_bold[white]%}$ERMT%{$reset_color%}"
 
     local current_dir="%{$fg_bold[yellow]%}[%{$fg_no_bold[magenta]%}"'${PWD/#$HOME/~}'"%{$fg_bold[yellow]%}]%{$reset_color%}"
     local topline="${user_host} ${current_dir} \$(_vcs_status)"
