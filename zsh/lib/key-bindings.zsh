@@ -37,3 +37,19 @@ bindkey -e
 [[ -n "${key[CRight]}"  ]]  && bindkey  "${key[CRight]}"  forward-word
 [[ -n "${key[Home]}"    ]]  && bindkey  "${key[Home]}"    beginning-of-line
 [[ -n "${key[End]}"     ]]  && bindkey  "${key[End]}"     end-of-line
+
+# Other potential entries for Home/End
+bindkey "\eOH" 	beginning-of-line
+bindkey "\e[H" 	beginning-of-line
+bindkey "\e[1~" beginning-of-line
+bindkey "\eOF" 	end-of-line
+bindkey "\e[F" 	end-of-line
+bindkey "\e[4~" end-of-line
+
+# Other potential entries for Ctrl-Left/Right
+bindkey "\e[1;5C" forward-word
+bindkey "\e[1;5D" backward-word
+bindkey "\e[5C"   forward-word
+bindkey "\e[5D"   backward-word
+bindkey "\e\e[C"  forward-word
+bindkey "\e\e[D"  backward-word
