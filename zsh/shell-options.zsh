@@ -18,9 +18,6 @@ test -s "$ETC_HOME/bash/git-autocomplete.sh" && . "$ETC_HOME/bash/git-autocomple
 autoload colors
 colors
 
-setopt no_auto_menu         # don't show menu for completion
-setopt auto_list            # show the completion list right away
-LISTMAX=1000                # don't prompt for less than 1000 completions
 setopt case_glob            # case sensitive globbing
 setopt clobber              # redirection can create files
 setopt glob		    # want globbing
