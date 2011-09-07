@@ -13,3 +13,15 @@ zstyle ':completion:*' squeeze-slashes true
 set show-all-if-ambiguous on
 set completion-query-items 1000
 set expand-tilde off
+
+# don't show menu for completion
+setopt no_auto_menu
+
+# Re-hash path before doing completion.
+set hash_list_all
+
+# show the completion list right away
+setopt auto_list
+
+# don't prompt for less than 1000 completions
+LISTMAX=1000
