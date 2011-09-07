@@ -27,6 +27,9 @@ unset k
 # default to emacs bindings, just like bash
 bindkey -e
 
+# Set up tab completion to use only the prefix.
+bindkey "^I" expand-or-complete-prefix
+
 # setup key accordingly
 [[ -n "${key[Delete]}"  ]]  && bindkey  "${key[Delete]}"  delete-char
 [[ -n "${key[Up]}"      ]]  && bindkey  "${key[Up]}"      history-beginning-search-backward
