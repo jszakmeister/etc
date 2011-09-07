@@ -10,10 +10,6 @@ zstyle ':completion::complete:*' cache-path ~/.zcache
 # Remove the trailing slash when a directory is used as an argument
 zstyle ':completion:*' squeeze-slashes true
 
-set show-all-if-ambiguous on
-set completion-query-items 1000
-set expand-tilde off
-
 # don't show menu for completion
 setopt no_auto_menu
 
