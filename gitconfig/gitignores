@@ -87,3 +87,7 @@ tramp
 *.lib
 *.so
 *.dll
+
+# Python
+*.pyc
+*.egg-info
