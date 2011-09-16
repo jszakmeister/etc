@@ -39,8 +39,8 @@ _vcs_status() {
         if [[ -n "$upstream" ]]; then
             count=$(git rev-list --count --left-right $upstream...HEAD)
             upstream="...%{$fg_no_bold[white]%}${upstream#refs/remotes/}%{$reset_color%}"
-        elif [[ -n $(git show-ref HEAD) ]]; then
-            count=$(git rev-list --count --left-right master...HEAD)
+        elif [[ -n "$(git show-ref HEAD)" ]]; then
+            count=$(git rev-list --count --left-right master...HEAD 2>/dev/null || echo "0 0")
         else
             count="0 0"
         fi
