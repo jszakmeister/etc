@@ -4,7 +4,7 @@ _vcs_status() {
     function git_status {
         local ref dirty count ahead behind divergent upstream g
 	g=$(git rev-parse --git-dir 2>/dev/null)
-        if [[ -z $g ]]; then
+        if [[ -z "$g" ]]; then
 		return 1
 	fi
 
@@ -30,13 +30,13 @@ _vcs_status() {
             upstream=${upstream#refs/remotes/}
         fi
 
-        if [[ -n $(git status -s 2> /dev/null) ]]; then
+        if [[ -n "$(git status -s 2> /dev/null)" ]]; then
             dirty="%{$fg_bold[red]%}*%{$reset_color%}"
         else
             dirty=""
         fi
 
-        if [[ -n $upstream ]]; then
+        if [[ -n "$upstream" ]]; then
             count=$(git rev-list --count --left-right $upstream...HEAD)
             upstream="...%{$fg_no_bold[white]%}${upstream#refs/remotes/}%{$reset_color%}"
         elif [[ -n $(git show-ref HEAD) ]]; then
