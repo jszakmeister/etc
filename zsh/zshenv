@@ -1,0 +1,17 @@
+ETC_HOME=${ETC_HOME:-~/projects/etc}
+
+export ETC_ZSHENV_SOURCED=1
+
+# Set up a few options.  Mainly to keep warnings from being
+# emitted... as that would break the output of non-interactive
+# scripting environments.
+setopt case_glob            # case sensitive globbing
+setopt clobber              # redirection can create files
+setopt glob		    # want globbing
+unsetopt nomatch	    # don't warn about non-matching globs
+setopt pushd_silent         # don't print stack after push/pop
+
+test -s "$ETC_HOME/shell-common/functions.sh" &&
+	. $ETC_HOME/shell-common/functions.sh
+test -s "$ETC_HOME/shell-common/exports.sh" &&
+	. "$ETC_HOME/shell-common/exports.sh"

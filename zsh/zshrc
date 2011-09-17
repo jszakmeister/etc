@@ -3,10 +3,17 @@ ETC_HOME=${ETC_HOME:-~/projects/etc}
 test -s "$ETC_HOME/zsh/shell-options.zsh" &&
 	. "$ETC_HOME/zsh/shell-options.zsh"
 
-test -s "$ETC_HOME/shell-common/functions.sh" &&
-	. $ETC_HOME/shell-common/functions.sh
-test -s "$ETC_HOME/shell-common/exports.sh" &&
-	. "$ETC_HOME/shell-common/exports.sh"
+# If the user setup ~/.zshenv, and sourced our zshenv,
+# then we want to avoid sourcing a couple of scripts
+# again.  That's especially true for exports.sh, since
+# it'll modify the path variables again.
+if [[ -z "$ETC_ZSHENV_SOURCED" ]]; then
+	test -s "$ETC_HOME/shell-common/functions.sh" &&
+		. $ETC_HOME/shell-common/functions.sh
+	test -s "$ETC_HOME/shell-common/exports.sh" &&
+		. "$ETC_HOME/shell-common/exports.sh"
+fi
+
 test -s "$ETC_HOME/shell-common/aliases.sh" &&
 	. "$ETC_HOME/shell-common/aliases.sh"
 
