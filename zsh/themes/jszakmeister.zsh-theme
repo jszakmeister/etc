@@ -92,6 +92,8 @@ _vcs_status() {
 # Later versions of zsh support PROMPT_EOL_MARK, but unfortunately
 # the zsh that comes with Snow Leopard does not.
 unsetopt promptsp
+
+# Attempt to set the terminal's title.
 function precmd {
     print -nP "${(l:$((COLUMNS-1)):::):-}\r"
 
@@ -108,24 +110,24 @@ function precmd {
 }
 
 _jszakmeister_prompt() {
-    local separator='%{$fg_bold[blue]%}:%{$reset_color%}'
+    local separator="%{$fg_bold[blue]%}::%{$reset_color%}"
     local user_host SRMT ERMT
 
     if [ -n "$SSH_TTY" ]; then
 	# We're remoted
-        SRMT="{"
-        ERMT="}"
+        SRMT="%{$fg_no_bold[white]%}{"
+        ERMT="%{$fg_no_bold[white]%}}"
     else
         SRMT=""
         ERMT=""
     fi
-    user_host="%{$fg_no_bold[white]%}$SRMT%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M%{$fg_no_bold[white]%}$ERMT%{$reset_color%}"
+    user_host="$SRMT%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M$ERMT%{$reset_color%}"
 
     local current_dir="%{$fg_bold[yellow]%}[%{$fg_no_bold[magenta]%}"'${PWD/#$HOME/~}'"%{$fg_bold[yellow]%}]%{$reset_color%}"
     local topline="${user_host} ${current_dir} \$(_vcs_status)"
 
-    echo "${topline}
-${separator}${separator} "
+    echo -n "${topline}
+${separator} "
 }
 
 PROMPT="$(_jszakmeister_prompt)"
