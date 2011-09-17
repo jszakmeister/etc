@@ -55,6 +55,12 @@ if [[ "$have_slickedit" != '' ]]; then
         fi
 fi
 
+# A few times I've run into the locale not being set correctly...
+# So fix that.  This also fixes an issue with ZSH and RPS1 containing
+# a UTF-8 character.  When ssh'ing into a box, if the locale wasn't
+# UTF-8 compatible, it would mess up the prompt.
+export LANG="en_US.UTF-8"
+
 # Quite often, I want to see the last output of less on the screen...
 # Stop the default behavior of wiping the screen
 # e - exit at the end of the file
