@@ -111,7 +111,7 @@ function precmd {
 
 _jszakmeister_prompt() {
     local separator="%{$fg_bold[blue]%}::%{$reset_color%}"
-    local user_host SRMT ERMT
+    local user_host vcs_status current_dir topline SRMT ERMT
 
     if [ -n "$SSH_TTY" ]; then
 	# We're remoted
@@ -122,15 +122,39 @@ _jszakmeister_prompt() {
         ERMT=""
     fi
     user_host="$SRMT%{$fg_bold[yellow]%}%n%{$fg_bold[cyan]%}@%{$fg_bold[blue]%}%M$ERMT%{$reset_color%}"
+    vcs_status=$(_vcs_status)
 
-    local current_dir="%{$fg_bold[yellow]%}[%{$fg_no_bold[magenta]%}"'${PWD/#$HOME/~}'"%{$fg_bold[yellow]%}]%{$reset_color%}"
-    local topline="${user_host} ${current_dir} \$(_vcs_status)"
+    # Take the current working directory, and replace the leading path
+    # with ~ if it's under the home directory.
+    current_dir="${PWD/#$HOME/~}"
+
+    if [[ "$ETC_ZSH_TRIM_PWD" != "" ]]; then
+        # This isn't exactly what the topline is going to be.  We're just using it
+        # to calculate a length for now
+        topline="${user_host} ${vcs_status} "
+
+        # Trim out the coloring
+        topline="${(S)topline//\%\{*\%\}/}"
+
+        # Expand % codes like a prompt so that we compute the correct length
+        topline="${(%)topline}"
+
+        let "length = $COLUMNS - ${#topline}"
+
+        if (( $length < ${#current_dir} )); then
+            let "length = $length - 5"
+            current_dir=...$(echo -n $current_dir | sed -e "s/.*\(.\{$length\}\)/\1/")
+        fi
+    fi
+
+    current_dir="%{$fg_bold[yellow]%}[%{$fg_no_bold[magenta]%}${current_dir}%{$fg_bold[yellow]%}]%{$reset_color%}"
+    topline="${user_host} ${current_dir} ${vcs_status}"
 
     echo -n "${topline}
 ${separator} "
 }
 
-PROMPT="$(_jszakmeister_prompt)"
+PROMPT="\$(_jszakmeister_prompt)"
 
 RPS1="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
