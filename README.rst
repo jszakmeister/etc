@@ -67,11 +67,9 @@ contain::
 You'll need to exit your shell, and create a new one.  That should let the new
 settings take affect.
 
-.. note::
-
-   The default configuration expects that you're using a terminal with a dark
-   background color.  If you're using a light background, you may find the
-   prompt to be unreadable as it uses some fairly light colors.
+.. note:: The default configuration expects that you're using a terminal with
+   a dark background color.  If you're using a light background, you may find
+   the prompt to be unreadable as it uses some fairly light colors.
 
 
 For the Mac
@@ -181,11 +179,9 @@ from there, and put it in the appropriate section of ``~/.gitconfig``.  At some
 point, I'm going to write a script to help automate this process more, but for
 now, cut-and-paste is it.
 
-.. note::
-
-   Pay close attention to ``excludesfile`` in the ``[core]`` section.  It
-   references ``$HOME/projects/etc/gitconfig/gitignores``.  Change this to the
-   correct path, if you have etc in a different location.
+.. note:: Pay close attention to ``excludesfile`` in the ``[core]`` section.
+   It references ``$HOME/projects/etc/gitconfig/gitignores``.  Change this to
+   the correct path, if you have etc in a different location.
 
 
 Python
