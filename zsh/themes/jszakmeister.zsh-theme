@@ -27,18 +27,18 @@ _vcs_status() {
 		ref="($ref)"
 	}
 
+        if [[ -n "$(git status -s 2> /dev/null)" ]]; then
+            dirty="%{$fg_bold[red]%}*%{$reset_color%}"
+        else
+            dirty=""
+        fi
+
         ref="%{$fg_no_bold[yellow]%}${ref#refs/heads/}%{$reset_color%}"
         upstream=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
         if [[ $upstream == "@{upstream}" ]]; then
             upstream=""
         else
             upstream=${upstream#refs/remotes/}
-        fi
-
-        if [[ -n "$(git status -s 2> /dev/null)" ]]; then
-            dirty="%{$fg_bold[red]%}*%{$reset_color%}"
-        else
-            dirty=""
         fi
 
         if [[ -n "$upstream" ]]; then
