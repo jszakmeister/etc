@@ -1,5 +1,10 @@
 # jszakmeister@localhost [~/path/to/somewhere] [version-control-status] -------------------------------------------- [something?]
 
+if [[ "$ETC_ZSH_TRIM_PWD" != "" ]]; then
+    # Make sure perl is available to help trim the path
+    hash perl > /dev/null 2>&1 || ETC_ZSH_TRIM_PWD=""
+fi
+
 _vcs_status() {
     function git_status {
         local ref dirty count ahead behind divergent upstream g
@@ -111,7 +116,7 @@ function precmd {
 
 _jszakmeister_prompt() {
     local separator="%{$fg_bold[blue]%}::%{$reset_color%}"
-    local user_host vcs_status current_dir topline SRMT ERMT
+    local user_host vcs_status current_dir topline SRMT ERMT regex
 
     if [ -n "$SSH_TTY" ]; then
 	# We're remoted
@@ -139,11 +144,21 @@ _jszakmeister_prompt() {
         # Expand % codes like a prompt so that we compute the correct length
         topline="${(%)topline}"
 
-        let "length = $COLUMNS - ${#topline}"
+        # length now represents how much room we have (square brackets already
+        # accounted for with the 2)
+        let "length = $COLUMNS - ${#topline} - 2"
 
         if (( $length < ${#current_dir} )); then
-            let "length = $length - 5"
-            current_dir=...$(echo -n $current_dir | sed -e "s/.*\(.\{$length\}\)/\1/")
+            if [[ $PWD == ~/* ]]; then
+                # 6 comes from the ~/.../ in the output
+                let "length = $length - 6"
+                regex="s|^~/.*?(/.{1,$length})$|~/...\1|"
+            else
+                # 5 comes from the /.../ in the output
+                let "length = $length - 5"
+                regex="s|^/.*?(/.{1,$length})$|/...\1|"
+            fi
+            current_dir=$(echo -n $current_dir | perl -pe "$regex")
         fi
     fi
 
