@@ -33,7 +33,7 @@ _vcs_status() {
             dirty=""
         fi
 
-        ref="%{$fg_no_bold[yellow]%}${ref#refs/heads/}%{$reset_color%}"
+        ref="${ref#refs/heads/}"
         upstream=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
         if [[ $upstream == "@{upstream}" ]]; then
             upstream=""
@@ -43,7 +43,7 @@ _vcs_status() {
 
         if [[ -n "$upstream" ]]; then
             count=$(git rev-list --count --left-right $upstream...HEAD)
-            upstream="...%{$fg_no_bold[white]%}${upstream#refs/remotes/}%{$reset_color%}"
+            upstream=" %{$fg_no_bold[white]%}[${upstream//%origin\/$ref/u}]%{$reset_color%}"
         elif [[ -n "$(git show-ref HEAD)" ]]; then
             count=$(git rev-list --count --left-right master...HEAD 2>/dev/null || echo "0 0")
         else
@@ -70,6 +70,7 @@ _vcs_status() {
             divergent=""
         fi
 
+        ref="%{$fg_no_bold[yellow]%}${ref#refs/heads/}%{$reset_color%}"
         echo "on ${ref}${dirty}${upstream}${divergent}"
         return 0
     }
