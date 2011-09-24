@@ -1,9 +1,8 @@
 # jszakmeister@localhost [~/path/to/somewhere] [version-control-status] -------------------------------------------- [something?]
 
-if [[ "$ETC_ZSH_TRIM_PWD" != "" ]]; then
-    # Make sure perl is available to help trim the path
-    hash perl > /dev/null 2>&1 || ETC_ZSH_TRIM_PWD=""
-fi
+# Make sure perl is available to help trim the path
+[ "$ETC_ZSH_TRIM_PWD" != "0" ] &&
+    hash perl > /dev/null 2>&1 && ETC_ZSH_TRIM_PWD="1"
 
 _vcs_status() {
     function git_status {
@@ -134,7 +133,7 @@ _jszakmeister_prompt() {
     # with ~ if it's under the home directory.
     current_dir="${PWD/#$HOME/~}"
 
-    if [[ "$ETC_ZSH_TRIM_PWD" != "" ]]; then
+    if [[ "$ETC_ZSH_TRIM_PWD" != "0" ]]; then
         # This isn't exactly what the topline is going to be.  We're just using it
         # to calculate a length for now
         topline="${user_host} ${vcs_status} "
