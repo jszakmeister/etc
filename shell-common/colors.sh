@@ -1,0 +1,26 @@
+# _start_ansi and _end_ansi must be defined for your shell.
+fg_black="${_start_ansi}$(echo -ne "\033[22;30m")${_end_ansi}"
+fg_red="${_start_ansi}$(echo -ne "\033[22;31m")${_end_ansi}"
+fg_green="${_start_ansi}$(echo -ne "\033[22;32m")${_end_ansi}"
+fg_yellow="${_start_ansi}$(echo -ne "\033[22;33m")${_end_ansi}"
+fg_blue="${_start_ansi}$(echo -ne "\033[22;34m")${_end_ansi}"
+fg_magenta="${_start_ansi}$(echo -ne "\033[22;35m")${_end_ansi}"
+fg_cyan="${_start_ansi}$(echo -ne "\033[22;36m")${_end_ansi}"
+fg_white="${_start_ansi}$(echo -ne "\033[22;37m")${_end_ansi}"
+fg_no_bold_black=$fg_black
+fg_no_bold_red=$fg_red
+fg_no_bold_green=$fg_green
+fg_no_bold_yellow=$fg_yellow
+fg_no_bold_blue=$fg_blue
+fg_no_bold_magenta=$fg_magenta
+fg_no_bold_cyan=$fg_cyan
+fg_no_bold_white=$fg_white
+fg_bold_black="${_start_ansi}$(echo -ne "\033[1;30m")${_end_ansi}"
+fg_bold_red="${_start_ansi}$(echo -ne "\033[1;31m")${_end_ansi}"
+fg_bold_green="${_start_ansi}$(echo -ne "\033[1;32m")${_end_ansi}"
+fg_bold_yellow="${_start_ansi}$(echo -ne "\033[1;33m")${_end_ansi}"
+fg_bold_blue="${_start_ansi}$(echo -ne "\033[1;34m")${_end_ansi}"
+fg_bold_magenta="${_start_ansi}$(echo -ne "\033[1;35m")${_end_ansi}"
+fg_bold_cyan="${_start_ansi}$(echo -ne "\033[1;36m")${_end_ansi}"
+fg_bold_white="${_start_ansi}$(echo -ne "\033[1;37m")${_end_ansi}"
+ansi_reset="${_start_ansi}$(echo -ne "\033[0m")${_end_ansi}"

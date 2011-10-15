@@ -4,6 +4,10 @@ fi
 
 ETC_HOME=${ETC_HOME:-~/projects/etc}
 
+# Needed for some color-related bits
+_start_ansi="\["
+_end_ansi="\]"
+
 test -s "$ETC_HOME/shell-common/functions.sh" && . "$ETC_HOME/shell-common/functions.sh"
 test -s "$ETC_HOME/shell-common/exports.sh" && . "$ETC_HOME/shell-common/exports.sh"
 test -s "$ETC_HOME/shell-common/aliases.sh" && . "$ETC_HOME/shell-common/aliases.sh"

@@ -1,5 +1,8 @@
 ETC_HOME=${ETC_HOME:-~/projects/etc}
 
+_start_ansi='%{'
+_end_ansi='%}'
+
 test -s "$ETC_HOME/zsh/shell-options.zsh" &&
 	. "$ETC_HOME/zsh/shell-options.zsh"
 
