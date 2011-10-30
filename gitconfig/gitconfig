@@ -76,6 +76,13 @@
 	# hash start with given string.
 	abbr = "!sh -c 'git rev-list --all | grep ^$1 | while read commit; do git --no-pager log -n1 --pretty=format:\"%H %ci %an %s%n\" $commit; done' -"
 
+	# Helpful aliases for fixing up and squashing commits from Jacob
+	# Helwig's blog post:
+	#   <http://technosorcery.net/2010/02/07/fun_with_the_upcoming_1.7_release_of_git_rebase_--interactive_--autosquash.html>
+	fixup = !sh -c 'git commit -m \"fixup! $(git log -1 --format='\\''%s'\\'' $@)\"' -
+	squash = !sh -c 'git commit -m \"squash! $(git log -1 --format='\\''%s'\\'' $@)\"' -
+	ri = rebase --interactive --autosquash
+
 [core]
 	# make central area for git ignores. copy gitignores and change this to
 	#   excludesfile = ~/.gitignores
