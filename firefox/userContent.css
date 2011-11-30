@@ -1,0 +1,13 @@
+@-moz-document domain(mail.google.com)
+{
+    /* GMail messages and textarea should use fixed-width font */
+    .gs .ii, textarea.dV {
+        font-family: MonoSpace !important;
+        font-size: 9pt !important;
+    }
+
+    textarea.Ak {
+        font-family: MonoSpace !important;
+        font-size: 9pt !important;
+    }
+}
