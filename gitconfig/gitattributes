@@ -4,6 +4,7 @@
 *.txt           text
 *.C		text
 *.rst		text
+*.clj		text
 
 *.c		text diff=cpp
 *.cpp		text diff=cpp
