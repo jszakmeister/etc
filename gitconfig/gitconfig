@@ -15,7 +15,7 @@
         lol = log --abbrev-commit --graph --decorate
 
         # Fast-forward pull
-        ff = pull --ff-only
+        ff = merge --ff-only @{u}
 
         # Fetch all branches
         fa = fetch --all
