@@ -37,15 +37,17 @@ _vcs_status() {
         fi
 
         if [[ -n "$upstream" ]]; then
-            count=$(git rev-list --count --left-right $upstream...HEAD)
+            ahead=$(git rev-list --count --cherry-pick --right-only --no-merges $upstream... 2>/dev/null || echo "0")
+            behind=$(git rev-list --count --cherry-pick --left-only --no-merges $upstream... 2>/dev/null || echo "0")
             upstream=" ${fg_no_bold_white}[${upstream/%origin\/$ref/u}]${ansi_reset}"
         elif [[ -n "$(git show-ref HEAD)" ]]; then
-            count=$(git rev-list --count --left-right master...HEAD 2>/dev/null || echo "0 0")
+            ahead=$(git rev-list --count --cherry-pick --right-only --no-merges master... 2>/dev/null || echo "0")
+            behind=$(git rev-list --count --cherry-pick --left-only --no-merges master... 2>/dev/null || echo "0")
         else
-            count="0 0"
+            ahead="0"
+            behind="0"
         fi
 
-        read -r behind ahead <<< "$count"
         if (( ${behind} > 0 )); then
             behind="${fg_no_bold_white}behind ${fg_bold_red}${behind}${ansi_reset}"
         else
