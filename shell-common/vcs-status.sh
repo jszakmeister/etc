@@ -22,10 +22,14 @@ _vcs_status() {
                 ref="($ref)"
         }
 
-        if [[ -n "$(git status -s 2> /dev/null)" ]]; then
-            dirty="${fg_bold_red}*${ansi_reset}"
+        if [ ! -f "$g/.nostatus" ]; then
+            if [[ -n "$(git status -s 2> /dev/null)" ]]; then
+                dirty="${fg_bold_red}*${ansi_reset}"
+            else
+                dirty=""
+            fi
         else
-            dirty=""
+            dirty="${fg_bold_red}?${ansi_reset}"
         fi
 
         ref="${ref#refs/heads/}"
