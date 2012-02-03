@@ -1,7 +1,18 @@
 function cdt
 {
-    local new_dir=`pwd | sed "s|\(.*/projects/[^/]*\).*|\1|"`
-    cd $new_dir
+    local last_found="$PWD"
+    local tmp_path=$(dirname "$PWD")
+    while [[ "$tmp_path" != "/" ]];
+    do
+        if [ -d "$tmp_path/.svn" ]; then
+            last_found="$tmp_path"
+        elif [ -e "$tmp_path/.git" -o -d "$tmp_path/.hg" -o -d "$tmp_path/.bzr" ]; then
+            last_found="$tmp_path"
+            break
+        fi
+        tmp_path=$(dirname "$tmp_path")
+    done
+    cd "$last_found"
 }
 
 function find_clj_contrib
