@@ -1,7 +1,7 @@
 function cdt
 {
-    local last_found="$PWD"
-    local tmp_path=$(dirname "$PWD")
+    local last_found=$(pwd)
+    local tmp_path=$(dirname "$last_found")
     while [[ "$tmp_path" != "/" ]];
     do
         if [ -d "$tmp_path/.svn" ]; then
