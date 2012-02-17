@@ -58,7 +58,7 @@ _jszakmeister_prompt() {
 
         if [ -n "$ZSH_VERSION" ]; then
             # Trim out the coloring
-            topline="${topline//\%\{*\%\}/}"
+            topline=$(echo "$topline" | perl -pe 's|\%\{.*?\%\}||g')
         else
             # Trim out the coloring
             topline=$(echo "$topline" | perl -pe 's|\\\[.*?\\\]||g')
