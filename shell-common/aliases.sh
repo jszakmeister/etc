@@ -73,8 +73,10 @@ fi
 
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
 alias svnup='svn up `pwd | sed "s|\(.*/projects/[^/]*\).*|\1|"`'
-alias grep="grep -n --color=auto"
-alias egrep="egrep -n --color=auto"
+alias grep="grep --color=auto"
+alias ngrep="grep -n --color=auto"
+alias egrep="egrep --color=auto"
+alias negrep="egrep -n --color=auto"
 
 hash colordiff > /dev/null 2>&1 &&
         alias diff="colordiff"
