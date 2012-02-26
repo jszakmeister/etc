@@ -1,0 +1,70 @@
+#!/bin/sh
+# Copyright (c) 2012, John Szakmeister <john@szakmeister.net>
+#
+# Output similar to 'bzr missing'.  It shows which revisions you have that the
+# other branch doesn't, as well as revision the other branch has that you don't.
+# Usage:
+#     git missing => compares to upstream
+#     git missing <target> => compares HEAD to <target>
+#     git missing <source> <target> => compares <source> to <target>
+
+die_with_status () {
+    status=$1
+    shift
+    echo >&2 "$*"
+    exit "$status"
+}
+
+die () {
+    die 1 "$@"
+}
+
+firstbranch=$1
+secondbranch=$2
+
+git rev-parse --git-dir >& /dev/null || die "ERROR: Not in a git repo"
+
+if test -z "$firstbranch"; then
+    # Compare against the tracking branch...
+    tracking_branch=$(git rev-parse --revs-only @{u} 2>/dev/null)
+    if test -z "$tracking_branch"; then
+        echo "Can't infer branch to compare to. At least one branch required" && exit 1
+    fi
+    firstbranch=$tracking_branch
+fi
+
+if test -z "$secondbranch"; then
+    secondbranch=$firstbranch
+    firstbranch=
+fi
+
+extra=$(git rev-list --count --cherry-pick --right-only --no-merges $secondbranch...$firstbranch)
+missing=$(git rev-list --count --cherry-pick --left-only --no-merges $secondbranch...$firstbranch)
+log_options="--pretty=oneline --abbrev-commit"
+output=0
+
+if [ "$extra" != "0" ]; then
+    output=1
+
+    line="You have $extra extra revisions"
+    echo $line
+    echo $line | sed -e 's/./-/g'
+    git log $log_options --cherry-pick --right-only --no-merges $secondbranch...$firstbranch
+fi
+
+if [ "$missing" != "0" ]; then
+    if [ "$extra" != "0" ]; then
+        echo "\n"
+    fi
+
+    output=1
+
+    line="You have $missing missing revisions"
+    echo $line
+    echo $line | sed -e 's/./-/g'
+    git log $log_options --cherry-pick --left-only --no-merges $secondbranch...$firstbranch
+fi
+
+if [ $output != "0" ]; then
+    echo
+fi
