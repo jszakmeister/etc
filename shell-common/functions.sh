@@ -12,7 +12,11 @@ function cdt
         fi
         tmp_path=$(dirname "$tmp_path")
     done
-    cd "$last_found"
+    if [ -n "$1" ]; then
+        cd "$last_found/$1"
+    else
+        cd "$last_found"
+    fi
 }
 
 function find_clj_contrib
