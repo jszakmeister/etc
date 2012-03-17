@@ -92,3 +92,6 @@
 [diff]
 	# Does rename detection during diff operation
 	renames = true
+
+[push]
+        default = upstream
