@@ -40,7 +40,10 @@ _vcs_status() {
             upstream=${upstream#refs/remotes/}
         fi
 
-        if [[ -n "$upstream" ]]; then
+        if [[ -f "$g/.nocount" ]]; then
+            ahead="0"
+            behind="0"
+        elif [[ -n "$upstream" ]]; then
             ahead=$(git rev-list --count --cherry-pick --right-only --no-merges $upstream... 2>/dev/null || echo "0")
             behind=$(git rev-list --count --cherry-pick --left-only --no-merges $upstream... 2>/dev/null || echo "0")
             upstream=" ${fg_no_bold_white}[${upstream/%origin\/$ref/u}]${ansi_reset}"
