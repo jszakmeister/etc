@@ -1,0 +1,31 @@
+#!/bin/bash
+
+test -z "$1" && echo 2>&1 "error: require a commit to squash to (inclusive)" && exit 1
+
+current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+test -z "$current_branch" && echo 2>&1 "error: cannot be on a detached head" && exit 1
+echo "current branch is $current_branch"
+
+squash_to_commit=$(git rev-parse "$1")
+first_commit=$(git log --reverse "--pretty=format:%H" | head -n 1)
+
+status_output=$(git status --porcelain)
+test -n "$status_output" && echo 2>&1 "error: requires a clean working tree" && exit 1
+
+# This will become the new initial commit
+git checkout -q $squash_to_commit
+
+# Reset the branch pointer, but leave the working tree and index intact
+git reset --soft $first_commit
+
+# Amend the tree with $squash_to_commit
+git commit --amend --reuse-message=$first_commit
+
+new_base=$(git log -1 "--pretty=format:%H")
+echo "new base is $new_base"
+
+# Go back to the original branch
+git checkout -q $current_branch
+
+# Rebase onto the new base
+git rebase --onto $new_base $squash_to_commit
