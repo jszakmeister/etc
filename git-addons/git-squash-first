@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Inspired by:
+#  http://stackoverflow.com/questions/598672/git-how-to-squash-the-first-two-commits
+
 test -z "$1" && echo 2>&1 "error: require a commit to squash to (inclusive)" && exit 1
 
 current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
