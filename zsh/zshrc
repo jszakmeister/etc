@@ -11,10 +11,7 @@ test -s "$ETC_HOME/zsh/shell-options.zsh" &&
 # again.  That's especially true for exports.sh, since
 # it'll modify the path variables again.
 if [[ -z "$ETC_ZSHENV_SOURCED" ]]; then
-	test -s "$ETC_HOME/shell-common/functions.sh" &&
-		. $ETC_HOME/shell-common/functions.sh
-	test -s "$ETC_HOME/shell-common/exports.sh" &&
-		. "$ETC_HOME/shell-common/exports.sh"
+	. "$ETC_HOME/zsh/zshenv"
 fi
 
 test -s "$ETC_HOME/shell-common/aliases.sh" &&
