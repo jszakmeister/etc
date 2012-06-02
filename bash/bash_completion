@@ -1098,7 +1098,11 @@ _realcommand()
         if type -p realpath > /dev/null; then
             realpath "$(type -P "$1")"
         elif type -p readlink > /dev/null; then
-            readlink -f "$(type -P "$1")"
+            if [[ "$(uname)" == "Darwin" ]]; then
+                readlink "$(type -P "$1")"
+            else
+                readlink -f "$(type -P "$1")"
+            fi
         else
             type -P "$1"
         fi
