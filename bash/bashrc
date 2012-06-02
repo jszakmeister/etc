@@ -8,6 +8,33 @@ ETC_HOME=${ETC_HOME:-~/projects/etc}
 _start_ansi="\["
 _end_ansi="\]"
 
+# A function to help with creating directory aliases and providing
+# completion for them.
+# Taken from here:
+#   http://blog.caioromao.com/2010/10/10/Custom-directory-completion.html
+_make_dir_complete() {
+    local aliasname=$1
+    local prgname="__s_${aliasname}__"
+
+    cd "$2" >/dev/null 2>&1
+    local dirname=$(pwd -P)
+    cd - >/dev/null 2>&1
+
+    FUNC="function $prgname() {
+        local cur len wrkdir;
+        local IFS=\$'\\n'
+        wrkdir=\"$dirname\"
+        cur=\${COMP_WORDS[COMP_CWORD]};
+        len=\$((\${#wrkdir} + 2));
+        COMPREPLY=( \$(compgen -S/ -d \$wrkdir/\$cur| cut -b \$len-) );
+    }"
+    ALIAS="$aliasname () { cd \"$dirname/\$*\"; }"
+
+    eval $FUNC
+    eval $ALIAS
+    complete -o nospace -F $prgname $aliasname
+}
+
 test -s "$ETC_HOME/shell-common/functions.sh" && . "$ETC_HOME/shell-common/functions.sh"
 test -s "$ETC_HOME/shell-common/exports.sh" && . "$ETC_HOME/shell-common/exports.sh"
 test -s "$ETC_HOME/shell-common/aliases.sh" && . "$ETC_HOME/shell-common/aliases.sh"
