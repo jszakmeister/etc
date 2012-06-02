@@ -3,6 +3,7 @@ if [ -f /etc/bashrc ]; then
 fi
 
 ETC_HOME=${ETC_HOME:-~/projects/etc}
+ETC_USER=${ETC_USER:-$(whoami)}
 
 # Needed for some color-related bits
 _start_ansi="\["
@@ -43,3 +44,6 @@ test -s "$ETC_HOME/bash/shell-options.sh" && . "$ETC_HOME/bash/shell-options.sh"
 test -s "$ETC_HOME/bash/completions.sh" && . "$ETC_HOME/bash/completions.sh"
 
 source "$ETC_HOME/bash/themes/${BASH_THEME:-jszakmeister}.bash-theme"
+
+test -f "$ETC_HOME/user/$ETC_USER/init.sh" &&
+    . "$ETC_HOME/user/$ETC_USER/init.sh"

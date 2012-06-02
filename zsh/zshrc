@@ -1,4 +1,5 @@
 ETC_HOME=${ETC_HOME:-~/projects/etc}
+ETC_USER=${ETC_USER:-$(whoami)}
 
 _start_ansi='%{'
 _end_ansi='%}'
@@ -26,3 +27,5 @@ for config_file ($ETC_HOME/zsh/lib/*.zsh) source $config_file
 
 source "$ETC_HOME/zsh/themes/${ZSH_THEME:-jszakmeister}.zsh-theme"
 
+test -f "$ETC_HOME/user/$ETC_USER/init.sh" &&
+	. "$ETC_HOME/user/$ETC_USER/init.sh"
