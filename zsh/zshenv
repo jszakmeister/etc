@@ -33,11 +33,12 @@ _make_dir_complete() {
 
     cd "$2" >/dev/null 2>&1
     local dirname=$(pwd -L)
+    local realpath=$(pwd -P)
     cd - >/dev/null 2>&1
 
-    FUNC="$aliasname () { cd $dirname/\$@ }"
+    FUNC="$aliasname () { cd \"$dirname/\$@\" }"
     eval $FUNC
-    compctl -/ -W $dirname $aliasname
+    compctl -/ -W "$realpath" $aliasname
 }
 
 test -s "$ETC_HOME/shell-common/functions.sh" &&

@@ -19,12 +19,13 @@ _make_dir_complete() {
 
     cd "$2" >/dev/null 2>&1
     local dirname=$(pwd -L)
+    local realpath=$(pwd -P)
     cd - >/dev/null 2>&1
 
     FUNC="function $prgname() {
         local cur len wrkdir;
         local IFS=\$'\\n'
-        wrkdir=\"$dirname\"
+        wrkdir=\"$realpath\"
         cur=\${COMP_WORDS[COMP_CWORD]};
         len=\$((\${#wrkdir} + 2));
         COMPREPLY=( \$(compgen -S/ -d \$wrkdir/\$cur| cut -b \$len-) );
