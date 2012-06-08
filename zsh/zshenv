@@ -32,7 +32,7 @@ _make_dir_complete() {
     fi
 
     cd "$2" >/dev/null 2>&1
-    local dirname=$(pwd -P)
+    local dirname=$(pwd -L)
     cd - >/dev/null 2>&1
 
     FUNC="$aliasname () { cd $dirname/\$@ }"

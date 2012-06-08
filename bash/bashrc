@@ -18,7 +18,7 @@ _make_dir_complete() {
     local prgname="__s_${aliasname}__"
 
     cd "$2" >/dev/null 2>&1
-    local dirname=$(pwd -P)
+    local dirname=$(pwd -L)
     cd - >/dev/null 2>&1
 
     FUNC="function $prgname() {
