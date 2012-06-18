@@ -16,8 +16,8 @@ setopt pushd_silent         # don't print stack after push/pop
 # Taken from here:
 #   https://github.com/caio/oh-my-zsh/blob/master/plugins/make-dir-complete/make-dir-complete.plugin.zsh
 _make_dir_complete() {
-    if [ ${#} -ne 2 ]; then
-        echo "usage: make_dir_complete <new-alias-name> <path>" 1>&2
+    if [ ${#} -ne 3 ]; then
+        echo "usage: make_dir_complete <new-alias-name> <command> <path>" 1>&2
         return 1
     fi
 
@@ -27,16 +27,17 @@ _make_dir_complete() {
         echo "Error: can't overwrite previously defined command \"$1\"" 1>&2
         return 1
     fi
-    if [ ! -d $2 ]; then
+    if [ ! -d $3 ]; then
         echo "Error: \"$2\" doesn't point to a directory" 1>&2
     fi
 
-    cd "$2" >/dev/null 2>&1
+    cd "$3" >/dev/null 2>&1
     local dirname=$(pwd -L)
     local realpath=$(pwd -P)
     cd - >/dev/null 2>&1
 
-    FUNC="$aliasname () { cd \"$dirname/\$@\" }"
+    FUNC="$aliasname () { $2 \"$dirname/\$@\" }"
+
     eval $FUNC
     compctl -/ -W "$realpath" $aliasname
 }

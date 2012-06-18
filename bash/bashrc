@@ -13,11 +13,12 @@ _end_ansi="\]"
 # completion for them.
 # Taken from here:
 #   http://blog.caioromao.com/2010/10/10/Custom-directory-completion.html
+# Tweaked to work with more than just 'cd'
 _make_dir_complete() {
     local aliasname=$1
     local prgname="__s_${aliasname}__"
 
-    cd "$2" >/dev/null 2>&1
+    cd "$3" >/dev/null 2>&1
     local dirname=$(pwd -L)
     local realpath=$(pwd -P)
     cd - >/dev/null 2>&1
@@ -30,7 +31,7 @@ _make_dir_complete() {
         len=\$((\${#wrkdir} + 2));
         COMPREPLY=( \$(compgen -S/ -d \$wrkdir/\$cur| cut -b \$len-) );
     }"
-    ALIAS="$aliasname () { cd \"$dirname/\$*\"; }"
+    ALIAS="$aliasname () { $2 \"$dirname/\$*\"; }"
 
     eval $FUNC
     eval $ALIAS
