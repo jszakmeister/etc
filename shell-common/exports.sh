@@ -74,7 +74,7 @@ export LESS=eFRX
 export GDKUSEXFT=1
 
 # Don't descend into Subversion's admin areas
-export GREP_OPTIONS='--exclude=\*.svn\*'
+export GREP_OPTIONS='-s --exclude=\*.svn\*'
 
 # For use by some of my aliases
 export JAVA_LOCALLIB=$HOME/.local/lib/java:$HOME/local/lib/java
