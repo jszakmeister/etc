@@ -46,13 +46,16 @@ _vcs_status() {
         elif [[ -n "$upstream" ]]; then
             ahead=$(git rev-list --count --cherry-pick --right-only --no-merges $upstream... 2>/dev/null || echo "0")
             behind=$(git rev-list --count --cherry-pick --left-only --no-merges $upstream... 2>/dev/null || echo "0")
-            upstream=" ${fg_no_bold_white}[${upstream/%origin\/$ref/u}]${ansi_reset}"
         elif [[ -n "$(git show-ref HEAD)" ]]; then
             ahead=$(git rev-list --count --cherry-pick --right-only --no-merges master... 2>/dev/null || echo "0")
             behind=$(git rev-list --count --cherry-pick --left-only --no-merges master... 2>/dev/null || echo "0")
         else
             ahead="0"
             behind="0"
+        fi
+
+        if [[ -n "$upstream" ]]; then
+            upstream=" ${fg_no_bold_white}[${upstream/%origin\/$ref/u}]${ansi_reset}"
         fi
 
         if (( ${behind} > 0 )); then
