@@ -55,3 +55,8 @@ function parse_git_branch {
 function pgl {
   pygmentize -f terminal $* | less
 }
+
+function md {
+    mkdir -p "$*"
+    cd "$*"
+}
