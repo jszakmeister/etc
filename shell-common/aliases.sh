@@ -38,6 +38,7 @@ if [[ "$platform" == 'Darwin' ]]; then
         alias arp-clear='dscacheutil -flushcache'
         alias eject='diskutil eject'
         alias flush-dns='dscacheutil -flushcache'
+        alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport'
 fi
 
 if [[ "$platform" == 'Linux' ]]; then
