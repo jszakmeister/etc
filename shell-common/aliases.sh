@@ -29,6 +29,7 @@ if [[ "$platform" == 'Darwin' ]]; then
         alias textedit='open -a /Applications/TextEdit.app'
         if [ -d $HOME/Applications/Emacs.app ]; then
                 alias emacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs"
+                alias emacsclient="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
                 alias em="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
                 alias ec="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n"
         fi
