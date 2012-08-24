@@ -30,6 +30,7 @@
 *.sw[a-p]
 tags
 TAGS
+tar-me.sh
 
 # KDE
 .directory
