@@ -29,6 +29,7 @@
 *~
 *.sw[a-p]
 tags
+TAGS
 
 # KDE
 .directory
