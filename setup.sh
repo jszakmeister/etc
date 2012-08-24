@@ -62,6 +62,11 @@ test ! -e $HOME/.gitconfig &&
     echo 'Run the following to set the git user email:
     git config --global user.email "user@example.com"'
 
+echo "Checking .quiltrc..."
+test ! -e $HOME/.quiltrc && \
+    ln -s $PATH_TO_ETC/quilt/quiltrc $HOME/.quiltrc &&
+    echo "Installed .quiltrc"
+
 if [ "$(uname)" == "Darwin" ]; then
     echo "Checking .editrc..."
     test ! -e $HOME/.editrc &&
