@@ -7,6 +7,17 @@
 source ${ETC_HOME}/shell-common/colors.sh
 source ${ETC_HOME}/shell-common/vcs-status.sh
 
+_jszakmeister_prompt_virtualenv() {
+    if [ -n "$VIRTUAL_ENV" ]; then
+        echo -ne "${fg_bold_blue}[${fg_red}$(basename $VIRTUAL_ENV)${fg_bold_blue}]${ansi_reset} "
+    fi
+}
+
+# Turn off virtualenvwrapper's prompt facilities... it's in my prompt already
+if [ -n "$(which virtualenvwrapper.sh)" ]; then
+    export VIRTUAL_ENV_DISABLE_PROMPT=1
+fi
+
 # Attempt to set the terminal's title.
 _jszakmeister_prompt_title() {
     # HOSTNAME in some shells, HOST in others
@@ -30,7 +41,7 @@ _jszakmeister_prompt_title() {
 
 _jszakmeister_prompt() {
     local separator="${fg_bold_blue}::${ansi_reset}"
-    local user_host vcs_status topline SRMT ERMT regex
+    local user_host vcs_status topline SRMT ERMT regex virtualenv_status
     
     # HOSTNAME in some shells, HOST in others
     local host="${HOSTNAME}"
@@ -46,6 +57,7 @@ _jszakmeister_prompt() {
     fi
     user_host="$SRMT${fg_bold_yellow}${USER}${fg_bold_cyan}@${fg_bold_blue}${host}$ERMT${ansi_reset}"
     vcs_status=$(_vcs_status)
+    virtualenv_status=$(_jszakmeister_prompt_virtualenv)
 
     # Take the current working directory, and replace the leading path
     # with ~ if it's under the home directory.
@@ -54,7 +66,7 @@ _jszakmeister_prompt() {
     if [[ "$ETC_TRIM_PWD" != "0" ]]; then
         # This isn't exactly what the topline is going to be.  We're just using it
         # to calculate a length for now
-        topline="${user_host} ${vcs_status} "
+        topline="${user_host} ${virtualenv_status}${vcs_status} "
 
         if [ -n "$ZSH_VERSION" ]; then
             # Trim out the coloring
@@ -83,7 +95,7 @@ _jszakmeister_prompt() {
     fi
 
     current_dir="${fg_bold_yellow}[${fg_no_bold_magenta}${current_dir}${fg_bold_yellow}]${ansi_reset}"
-    topline="${user_host} ${current_dir} ${vcs_status}"
+    topline="${user_host} ${current_dir} ${virtualenv_status}${vcs_status}"
 
     if [ -n "$BASH" ]; then
         # In bash, we use PROMPT_COMMAND to display the topline... because bash
