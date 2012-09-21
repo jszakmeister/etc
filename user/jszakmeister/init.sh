@@ -16,3 +16,5 @@ fi
 test -e ~/projects/clojure &&
     _make_dir_complete cdc cd ~/projects/clojure &&
     _make_dir_complete pdc pushd ~/projects/clojure
+
+alias tree='tree --charset=ASCII -F -v'
