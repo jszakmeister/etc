@@ -1,6 +1,8 @@
 PATHS_TO_PREPEND=$HOME/bin:$HOME/.local/bin:$HOME/local/bin:/usr/local/bin
 PATHS_TO_APPEND=
 
+[ -n $TMUX ] && export TERM="screen-256color"
+
 platform=`uname`
 if [[ "$platform" == 'Darwin' ]]; then
         python_version=`python -c "import sys; print '%d.%d' % sys.version_info[:2]"`
