@@ -46,3 +46,5 @@ test -s "$ETC_HOME/shell-common/functions.sh" &&
 	. $ETC_HOME/shell-common/functions.sh
 test -s "$ETC_HOME/shell-common/exports.sh" &&
 	. "$ETC_HOME/shell-common/exports.sh"
+test -s "$ETC_HOME/shell-common/common-init.sh" &&
+	. "$ETC_HOME/shell-common/common-init.sh"
