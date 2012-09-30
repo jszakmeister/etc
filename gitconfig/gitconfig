@@ -11,6 +11,10 @@
 	br = branch
 	di = diff
 
+	# A quick way to squash changes into the previous commit using
+	# the same log message
+	amend = commit --amend -C HEAD
+
         # A handy graph-based log view
         lol = log --abbrev-commit --graph --decorate
 
