@@ -93,6 +93,8 @@
 	# if you need to customize it
 	excludesfile = ~/projects/etc/gitconfig/gitignores
 
+	whitespace = cr-at-eol,space-before-tab,trailing-space,tabwidth=8
+
 [diff]
 	# Does rename detection during diff operation
 	renames = true
