@@ -14,7 +14,7 @@ _jszakmeister_prompt_virtualenv() {
 }
 
 # Turn off virtualenvwrapper's prompt facilities... it's in my prompt already
-if [ -n "$(which virtualenvwrapper.sh)" ]; then
+if [ -n "$(which virtualenvwrapper.sh 2>/dev/null)" ]; then
     export VIRTUAL_ENV_DISABLE_PROMPT=1
 fi
 

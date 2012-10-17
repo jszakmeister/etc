@@ -1,4 +1,4 @@
-virtualenvwrapper_path=$(which virtualenvwrapper.sh)
+virtualenvwrapper_path=$(which virtualenvwrapper.sh 2>/dev/null)
 if test $? -eq 0; then
     source "${virtualenvwrapper_path}"
 fi
