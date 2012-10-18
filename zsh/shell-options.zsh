@@ -24,3 +24,6 @@ setopt glob		    # want globbing
 unsetopt nomatch	    # don't warn about non-matching globs
 setopt pushd_silent         # don't print stack after push/pop
 
+# Allow lines that starts with # to be ignored.  It's nice for
+# small screencasts.
+setopt interactivecomments
