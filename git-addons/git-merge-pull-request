@@ -1,0 +1,45 @@
+#!/bin/sh
+# Copyright (c) 2012, John Szakmeister <john@szakmeister.net>
+#
+# Idea was taken from here, but extended:
+#    <https://community.jboss.org/blogs/stuartdouglas/2011/09/06/merging-github-pull-requests>
+
+die () {
+    echo >&2 "ERROR: $*"
+    exit 1
+}
+
+find_upstream() {
+    for up in "upstream" "origin"
+    do
+        git config --local remote.$up.url >& /dev/null
+        if test $? -eq 0; then
+            echo $up
+            return 0
+        fi
+    done
+
+    die "No upstream or origin remote.  " \
+        "Can't determine where to fetch pull requests"
+}
+
+pull () {
+    upstream=$(find_upstream)
+
+    cmd="git fetch $upstream "
+    for var in "$@"
+    do
+        cmd="$cmd pull/$var/head:pr-$var"
+    done
+
+    $cmd || die "Could not fetch all the pull requests."
+
+    for var in "$@"
+    do
+        git merge -m "Merge pull request #$var" pr-$var ||
+            die "Error trying to merge pr-$var."
+        git branch -D pr-$var
+    done
+}
+
+pull "$@"
