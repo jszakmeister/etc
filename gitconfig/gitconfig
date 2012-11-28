@@ -19,7 +19,7 @@
         lol = log --abbrev-commit --graph --decorate
 
         # Fast-forward pull
-        ff = merge --ff-only @{u}
+        ff = "!sh -c 'git merge --ff-only ${1:-\"@{u}\"}' -"
 
         # Fetch all branches
         fa = fetch --all
