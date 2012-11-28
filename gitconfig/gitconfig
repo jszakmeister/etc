@@ -5,11 +5,8 @@
 # add some short cuts... most of them familiar to those of us coming from
 # other VCSes.
 [alias]
-	ci = commit
 	co = checkout
 	st = status -sb
-	br = branch
-	di = diff
 
 	# A quick way to squash changes into the previous commit using
 	# the same log message
