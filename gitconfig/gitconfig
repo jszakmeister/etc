@@ -105,6 +105,9 @@
 [rerere]
         enabled = 1
 
+[merge]
+	ff = false
+
 # You might need the below, if you regularly work against HTTPS servers that
 # don't validate because of missing CA certs.  It's always better to fix that
 # problem, but let's face it, it doesn't always happen.
