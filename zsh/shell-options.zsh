@@ -13,7 +13,14 @@ autoload -Uz bashcompinit
 bashcompinit
 
 test -s "$ETC_HOME/bash/bash_completion.sh" && . "$ETC_HOME/bash/bash_completion.sh"
-test -s "$ETC_HOME/bash/git-autocomplete.sh" && . "$ETC_HOME/bash/git-autocomplete.sh"
+
+if [ -f $HOME/.local/etc/git-completion.zsh ]; then
+    zstyle ':completion:*:*:git:*' script $HOME/.local/etc/git-completion.zsh
+elif [ -f $HOME/.local/etc/completions/git-completion.zsh ]; then
+    zstyle ':completion:*:*:git:*' script $HOME/.local/etc/completions/git-completion.zsh
+else
+    test -s "$ETC_HOME/bash/git-autocomplete.sh" && . "$ETC_HOME/bash/git-autocomplete.sh"
+fi
 
 autoload colors
 colors
