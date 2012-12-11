@@ -5,7 +5,8 @@ test -n "$TMUX" && export TERM="screen-256color"
 
 platform=`uname`
 if [[ "$platform" == 'Darwin' ]]; then
-        python_version=`python -c "import sys; print '%d.%d' % sys.version_info[:2]"`
+        python_version=$(python -c "import sys; print '%d.%d' % sys.version_info[:2]" 2>/dev/null ||
+                         python -c "import sys; print('{}.{}'.format(*sys.version_info[:2]))" 2>/dev/null)
         PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$HOME/Library/Python/$python_version/bin"`
         PATHS_TO_APPEND=`append_path "$PATHS_TO_APPEND" "/Library/Python/$python_version/bin:/System/Library/Frameworks/Python.framework/Versions/$python_version/bin"`
 
