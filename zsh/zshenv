@@ -1,6 +1,6 @@
 ETC_HOME=${ETC_HOME:-~/projects/etc}
 
-export ETC_ZSHENV_SOURCED=1
+ETC_ZSHENV_SOURCED=1
 
 # Set up a few options.  Mainly to keep warnings from being
 # emitted... as that would break the output of non-interactive
