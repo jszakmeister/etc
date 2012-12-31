@@ -1,0 +1,32 @@
+#!/bin/bash
+OS=$(uname | tr '[A-Z]' '[a-z]')
+
+if [[ "$OS" != "linux" && "$OS" != "darwin" ]]; then
+    echo "Unrecognized OS" >& 2
+    exit 1
+fi
+
+extraopts=""
+if [[ "$OS" == "linux" ]]; then
+    extraopts=--name GVIM0
+fi
+
+if [[ "$OS" == "darwin" ]]; then
+    running=$(ps x | grep MacVim | grep GVIM0)
+fi
+
+if [[ -n "$@" ]]; then
+    gvim $extraopts --servername GVIM0 --remote-silent "$@"
+else
+    gvim $extraopts --servername GVIM0 -c 'vsplit | wincmd w | split | wincmd w | wincmd w'
+fi
+
+if [[ "$OS" == "darwin" ]]; then
+    if [[ -n "$running" ]]; then
+        echo 'tell application "System Events" to set frontmost of process "MacVim" to true' | osascript
+    fi
+elif [[ "$OS" == "linux" ]]; then
+    wmctrl -xa GVIM0.Gvim
+fi
+
+

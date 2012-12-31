@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+import sys
+import re
+
+
+for arg in sys.argv[1:]:
+    with open(arg, 'r+b') as f:
+        buf = f.read()
+        buf = re.sub(r'\r?\n', r'\n', buf)
+        f.seek(0)
+        f.write(buf)
+        f.truncate()
