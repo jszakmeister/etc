@@ -7,6 +7,9 @@ test -e ~/projects/jszakmeister &&
 test -e ~/projects &&
     _make_dir_complete cdp cd ~/projects &&
     _make_dir_complete pdp pushd ~/projects
+test -e ~/.vim &&
+    _make_dir_complete cdv cd ~/.vim &&
+    _make_dir_complete pdv pushd ~/.vim
 
 # In ZSH, we need to remove any completions associated with cdc, or this will
 # fail.
