@@ -42,7 +42,14 @@ if [ -d "$ETC_HOME/git-addons" ]; then
 fi
 
 if [ -d "$ETC_HOME/scripts" ]; then
-        PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts"`
+        PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts/all"`
+
+        # Add a platform-specific area too.
+        etc_scripts_platform="$ETC_HOME/scripts/$(uname -s | tr '[:upper:]' '[:lower:]')"
+        if [ -d "$etc_scripts_platform" ]; then
+            PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$etc_scripts_platform"`
+        fi
+        unset etc_scripts_platform
 fi
 
 if [[ "$PATHS_TO_PREPEND" != '' ]]; then
