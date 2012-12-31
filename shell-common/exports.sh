@@ -41,6 +41,10 @@ if [ -d "$ETC_HOME/git-addons" ]; then
         PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$ETC_HOME/git-addons"`
 fi
 
+if [ -d "$ETC_HOME/scripts" ]; then
+        PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts"`
+fi
+
 if [[ "$PATHS_TO_PREPEND" != '' ]]; then
         export PATH=$PATHS_TO_PREPEND:$PATH
 fi

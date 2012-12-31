@@ -1,0 +1,43 @@
+#!/bin/bash
+function find_tags
+{
+    local last_found=$(pwd)
+    local tmp_path=$(pwd)
+    while [[ "$tmp_path" != "/" ]];
+    do
+        if [ -e "$tmp_path/tags" ]; then
+            echo "$tmp_path"
+            break
+        fi
+        tmp_path=$(dirname "$tmp_path")
+    done
+}
+
+
+function die
+{
+    echo 1>&2 "ERROR: $1"
+    exit 1
+}
+
+
+if [ "$1" == "--init" ]; then
+    shift
+    tag_dir="$1"
+    shift
+else
+    tag_dir="$(find_tags)"
+fi
+
+if [ "$tag_dir" == "" ]; then
+    die "No tag directory found."
+fi
+
+ctags -R --exclude=build \
+         --exclude=dist \
+         --exclude=_build \
+         --exclude=__pycache__ \
+         --exclude='.[a-z]*' \
+         --exclude=classes \
+         -o "$tag_dir/tags" \
+         "$tag_dir" || die "Error executing ctags"
