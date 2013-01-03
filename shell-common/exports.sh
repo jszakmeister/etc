@@ -87,8 +87,14 @@ export LESS=eFRX
 
 export GDKUSEXFT=1
 
-# Don't descend into Subversion's admin areas
-export GREP_OPTIONS='-s --exclude=\*.svn\*'
+# Don't descend into Subversion's admin area, or others like it.
+# Mac's bsd grep sucks... so there's no easy way to do this.
+# Also, suppress error messages.
+if [[ "$platform" == 'Linux' ]]; then
+    export GREP_OPTIONS='-s --exclude-dir=.svn --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.bzr'
+else
+    export GREP_OPTIONS='-s'
+fi
 
 # For use by some of my aliases
 export JAVA_LOCALLIB=$HOME/.local/lib/java:$HOME/local/lib/java
