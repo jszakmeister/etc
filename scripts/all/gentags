@@ -39,5 +39,9 @@ ctags -R --exclude=build \
          --exclude=__pycache__ \
          --exclude='.[a-z]*' \
          --exclude=classes \
+         --c-kinds=+px \
+         --c++-kinds=+px \
+         --fields=+iaS \
+         --extra=+qf \
          -o "$tag_dir/tags" \
          "$tag_dir" || die "Error executing ctags"
