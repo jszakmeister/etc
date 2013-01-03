@@ -1,4 +1,4 @@
-function cdt
+function find-project-root
 {
     local last_found=$(pwd)
     local tmp_path=$(dirname "$last_found")
@@ -12,10 +12,16 @@ function cdt
         fi
         tmp_path=$(dirname "$tmp_path")
     done
+    echo "$last_found"
+}
+
+function cdt
+{
+    local project_root=$(find-project-root)
     if [ -n "$1" ]; then
-        cd "$last_found/$1"
+        cd "$project_root/$1"
     else
-        cd "$last_found"
+        cd "$project_root"
     fi
 }
 
