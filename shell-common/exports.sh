@@ -138,3 +138,6 @@ export HISTIGNORE="&:exit"
 if [ -e "$ETC_HOME/vimpager/vimpager.sh" ]; then
     export MANPAGER="$ETC_HOME/vimpager/vimpager.sh"
 fi
+
+# Turn on colors for minicom.
+export MINICOM='-c on'
