@@ -74,7 +74,7 @@ if [ -d $HOME/projects/subversion ]; then
 fi
 
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
-alias svnup='svn up `pwd | sed "s|\(.*/projects/[^/]*\).*|\1|"`'
+alias svnup='svn up $(find-project-root)'
 alias grep="grep --color=auto"
 alias ngrep="grep -n --color=auto"
 alias egrep="egrep --color=auto"
