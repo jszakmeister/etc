@@ -72,6 +72,15 @@ if [ "$(uname)" == "Darwin" ]; then
     test ! -e $HOME/.editrc &&
         ln -s $PATH_TO_ETC/editrc/editrc $HOME/.editrc &&
         echo "Installed .editrc"
+    mkdir -p $HOME/Library/Fonts &&
+        cp fonts/*.ttf $HOME/Library/Fonts &&
+        echo "Installed custom fonts"
+fi
+
+if [ "$(uname)" == "Linux" ]; then
+    mkdir -p $HOME/.fonts &&
+        cp fonts/*.ttf $HOME/.fonts &&
+        echo "Installed custom fonts"
 fi
 
 _maybeInstall "source $SOURCE_PREFIX/bash/bashrc" "$HOME/.bashrc"
