@@ -18,7 +18,7 @@ fi
 if [[ -n "$@" ]]; then
     gvim $extraopts --servername GVIM0 --remote-silent "$@"
 else
-    gvim $extraopts --servername GVIM0 -c 'vsplit | wincmd w | split | wincmd w | wincmd w'
+    gvim $extraopts --servername GVIM0
 fi
 
 if [[ "$OS" == "darwin" ]]; then
@@ -28,5 +28,3 @@ if [[ "$OS" == "darwin" ]]; then
 elif [[ "$OS" == "linux" ]]; then
     wmctrl -xa GVIM0.Gvim
 fi
-
-
