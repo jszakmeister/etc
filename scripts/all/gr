@@ -8,7 +8,7 @@ fi
 
 extraopts=""
 if [[ "$OS" == "linux" ]]; then
-    extraopts=--name GVIM0
+    extraopts="--name GVIM0"
 fi
 
 if [[ "$OS" == "darwin" ]]; then
