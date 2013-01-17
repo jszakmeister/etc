@@ -18,19 +18,14 @@ fi
 
 if [[ "$OS" == "darwin" ]]; then
     running=$(ps x | grep MacVim | grep GVIM0)
-    ETC_GR_SLEEP_TIME=${ETC_GR_SLEEP_TIME:-3}
 else
     running=$(ps -f | grep gvim | grep GVIM0)
-    ETC_GR_SLEEP_TIME=${ETC_GR_SLEEP_TIME:-1}
-fi
-
-if [[ -z "$running" ]]; then
-    gvim $extraopts --servername GVIM0 || exit 1
-    sleep $ETC_GR_SLEEP_TIME
 fi
 
 if [[ -n "$@" ]]; then
     gvim $extraopts --servername GVIM0 --remote-silent "$@"
+elif [[ -z "$running" ]]; then
+    gvim $extraopts --servername GVIM0
 fi
 
 if [[ "$OS" == "darwin" ]]; then
