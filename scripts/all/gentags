@@ -51,4 +51,4 @@ ctags -R --exclude=build \
          --fields=+iaS \
          --extra=+qf \
          -o "$tag_dir/tags" \
-         "$tag_dir" || die "Error executing ctags"
+         "$tag_dir/" || die "Error executing ctags"
