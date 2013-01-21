@@ -1,0 +1,34 @@
+# Tidbits taken from:
+#     <http://blog.trevorbramble.com/past/2011/6/5/transitioning_to_mutt_and_vim/>
+#     <http://mark.stosberg.com/Tech/mutt.html>
+#     <http://shreevatsa.wordpress.com/2007/07/31/using-gmail-with-mutt-the-minimal-way/>
+
+set imap_user = "LOGIN@gmail.com"
+set imap_pass = "PASSWORD"
+
+set smtp_url = "smtp://LOGIN@smtp.gmail.com:587/"
+set smtp_pass = "PASSWORD"
+set from = "FROM_ADDRESS"
+set realname = "REAL NAME"
+
+set folder = "imaps://imap.gmail.com:993"
+set spoolfile = "+INBOX"
+set postponed="+[Gmail]/Drafts"
+
+set header_cache=~/.cache/mutt/headers
+set message_cachedir=~/.cache/mutt/bodies
+set certificate_file=~/.cache/mutt/certificates
+
+set sort = 'reverse-threads'
+set sort_aux = 'last-date-received'
+set imap_check_subscribed
+
+set move = no
+
+ignore "Authentication-Results:"
+ignore "DomainKey-Signature:"
+ignore "DKIM-Signature:"
+hdr_order Date From To Cc
+
+set edit_headers
+set editor="gvim -f +/^$ ++1 +:nohl"
