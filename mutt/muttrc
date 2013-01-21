@@ -2,6 +2,7 @@
 #     <http://blog.trevorbramble.com/past/2011/6/5/transitioning_to_mutt_and_vim/>
 #     <http://mark.stosberg.com/Tech/mutt.html>
 #     <http://shreevatsa.wordpress.com/2007/07/31/using-gmail-with-mutt-the-minimal-way/>
+#     <http://stevelosh.com/blog/2012/10/the-homely-mutt/>
 
 set imap_user = "LOGIN@gmail.com"
 set imap_pass = "PASSWORD"
@@ -23,7 +24,7 @@ set sort = 'reverse-threads'
 set sort_aux = 'last-date-received'
 set imap_check_subscribed
 
-set move = no
+unset move
 
 ignore "Authentication-Results:"
 ignore "DomainKey-Signature:"
