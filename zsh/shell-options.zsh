@@ -14,12 +14,25 @@ bashcompinit
 
 test -s "$ETC_HOME/bash/bash_completion.sh" && . "$ETC_HOME/bash/bash_completion.sh"
 
-if [ -f $HOME/.local/etc/git-completion.zsh ]; then
-    zstyle ':completion:*:*:git:*' script $HOME/.local/etc/git-completion.zsh
-elif [ -f $HOME/.local/etc/completions/git-completion.zsh ]; then
-    zstyle ':completion:*:*:git:*' script $HOME/.local/etc/completions/git-completion.zsh
-else
-    test -s "$ETC_HOME/bash/git-autocomplete.sh" && . "$ETC_HOME/bash/git-autocomplete.sh"
+# Attempt to set up Git completion for zsh as documented inside git-completion.zsh
+if [ -r "$HOME/.local/etc/git-completion.bash" ] &&
+        [ -r "$HOME/.local/etc/git-completion.zsh" ]; then
+  zstyle ':completion:*:*:git:*' script $HOME/.local/etc/git-completion.bash
+
+  [ ! -L ~/.zsh/completion/_git ] &&
+          mkdir -p ~/.zsh/completion &&
+          ln -s $HOME/.local/etc/git-completion.zsh ~/.zsh/completion/_git
+
+  fpath=(~/.zsh/completion $fpath)
+elif [ -r "$HOME/.local/etc/completion/git-completion.bash" ] &&
+        [ -r "$HOME/.local/etc/completion/git-completion.zsh" ]; then
+  zstyle ':completion:*:*:git:*' script $HOME/.local/etc/completion/git-completion.bash
+
+  [ ! -L ~/.zsh/completion/_git ] &&
+          mkdir -p ~/.zsh/completion &&
+          ln -s $HOME/.local/etc/completion/git-completion.zsh ~/.zsh/completion/_git
+
+  fpath=(~/.zsh/completion $fpath)
 fi
 
 autoload colors
