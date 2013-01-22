@@ -16,11 +16,7 @@ if [[ "$OS" == "linux" ]]; then
     }
 fi
 
-if [[ "$OS" == "darwin" ]]; then
-    running=$(command ps -U $(whoami) -x | grep MacVim | grep GVIM0)
-else
-    running=$(command ps -fu $(whoami) | grep gvim | grep GVIM0)
-fi
+running=$(gvim --serverlist | grep GVIM0)
 
 if [[ -n "$@" ]]; then
     gvim $extraopts --servername GVIM0 --remote-silent "$@"
