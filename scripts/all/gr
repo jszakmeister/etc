@@ -6,9 +6,15 @@ if [[ "$OS" != "linux" && "$OS" != "darwin" ]]; then
     exit 1
 fi
 
+if [[ -n "$SSH_TTY" ]]; then
+    SERVER_NAME="GVIM1"
+else
+    SERVER_NAME="GVIM0"
+fi
+
 extraopts=""
 if [[ "$OS" == "linux" ]]; then
-    extraopts="--name GVIM0"
+    extraopts="--name $SERVER_NAME"
 
     type -a wmctrl 2>&1 > /dev/null || {
         echo 2>&1 "ERROR: please install wmctrl" ;
@@ -16,12 +22,12 @@ if [[ "$OS" == "linux" ]]; then
     }
 fi
 
-running=$(gvim --serverlist | grep GVIM0)
+running=$(gvim --serverlist | grep $SERVER_NAME)
 
 if [[ -n "$@" ]]; then
-    gvim $extraopts --servername GVIM0 --remote-silent "$@"
+    gvim $extraopts --servername $SERVER_NAME --remote-silent "$@"
 elif [[ -z "$running" ]]; then
-    gvim $extraopts --servername GVIM0
+    gvim $extraopts --servername $SERVER_NAME
 fi
 
 if [[ "$OS" == "darwin" ]]; then
@@ -29,5 +35,5 @@ if [[ "$OS" == "darwin" ]]; then
         echo 'tell application "System Events" to set frontmost of process "MacVim" to true' | osascript
     fi
 elif [[ "$OS" == "linux" ]]; then
-    wmctrl -xa GVIM0.Gvim
+    wmctrl -xa $SERVER_NAME.Gvim
 fi
