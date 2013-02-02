@@ -44,8 +44,8 @@ fi
 
 if [[ "$platform" == 'Linux' ]]; then
         alias du='du -bh --max-depth=1'
-        alias scons='scons -u -j`cat /proc/cpuinfo | grep processor | wc -l`'
-        alias make='nice -n 3 make -j`cat /proc/cpuinfo | grep processor | wc -l`'
+        alias scons='scons -u -j$(grep -c ^processor /proc/cpuinfo)'
+        alias make='nice -n 3 make -j$(grep -c ^processor /proc/cpuinfo)'
         alias ps='ps -ef'
         alias ls='ls -hFGA --color=auto'
         alias ll='ls -hFlG --color=auto'
