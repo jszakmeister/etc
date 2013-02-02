@@ -4,65 +4,65 @@ alias ec='emacsclient -n'
 
 have_slickedit=$(which vs 2>/dev/null)
 if [[ '$have_slickedit' != '' ]]; then
-        alias vs='vs -new'
+    alias vs='vs -new'
 fi
 
 platform=$(uname)
 if [[ "$platform" == 'Darwin' ]]; then
-        alias twistd="/System/Library/Frameworks/Python.framework/Versions/Current/Extras/bin/twistd"
+    alias twistd="/System/Library/Frameworks/Python.framework/Versions/Current/Extras/bin/twistd"
 
-        alias du='du -h -d1'
-        alias scons='scons -u -j$(sysctl -n hw.ncpu)'
-        alias make='nice -n 3 make -j$(sysctl -n hw.ncpu)'
-        alias ps='ps aux'
-        slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
-        if [[ $slickedit_path != '' ]]; then
-                alias vs='open -a $slickedit_path'
-        fi
-        if [ -d $HOME/Applications/0xED.app ]; then
-                alias he='open -a ~/Applications/0xED.app'
-        fi
-        if [ -d /Developer/Applications/Qt/Designer.app ]; then
-                alias qtd='open -a /Developer/Applications/Qt/Designer.app'
-        fi
-        alias keychain='open -a /Applications/Utilities/Keychain\ Access.app'
-        alias textedit='open -a /Applications/TextEdit.app'
-        if [ -d $HOME/Applications/Emacs.app ]; then
-                alias emacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs"
-                alias emacsclient="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
-                alias em="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
-                alias ec="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n"
-        fi
-        alias ls='ls -hFGA'
-        alias ll='ls -hFlG'
-        alias top='top -o cpu -i 1'
-        alias arp-clear='dscacheutil -flushcache'
-        alias eject='diskutil eject'
-        alias flush-dns='dscacheutil -flushcache'
-        alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport'
+    alias du='du -h -d1'
+    alias scons='scons -u -j$(sysctl -n hw.ncpu)'
+    alias make='nice -n 3 make -j$(sysctl -n hw.ncpu)'
+    alias ps='ps aux'
+    slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
+    if [[ $slickedit_path != '' ]]; then
+        alias vs='open -a $slickedit_path'
+    fi
+    if [ -d $HOME/Applications/0xED.app ]; then
+        alias he='open -a ~/Applications/0xED.app'
+    fi
+    if [ -d /Developer/Applications/Qt/Designer.app ]; then
+        alias qtd='open -a /Developer/Applications/Qt/Designer.app'
+    fi
+    alias keychain='open -a /Applications/Utilities/Keychain\ Access.app'
+    alias textedit='open -a /Applications/TextEdit.app'
+    if [ -d $HOME/Applications/Emacs.app ]; then
+        alias emacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs"
+        alias emacsclient="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
+        alias em="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
+        alias ec="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n"
+    fi
+    alias ls='ls -hFGA'
+    alias ll='ls -hFlG'
+    alias top='top -o cpu -i 1'
+    alias arp-clear='dscacheutil -flushcache'
+    alias eject='diskutil eject'
+    alias flush-dns='dscacheutil -flushcache'
+    alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport'
 fi
 
 if [[ "$platform" == 'Linux' ]]; then
-        alias du='du -bh --max-depth=1'
-        alias scons='scons -u -j$(grep -c ^processor /proc/cpuinfo)'
-        alias make='nice -n 3 make -j$(grep -c ^processor /proc/cpuinfo)'
-        alias ps='ps -ef'
-        alias ls='ls -hFGA --color=auto'
-        alias ll='ls -hFlG --color=auto'
-        alias top='top -d 1'
-        alias pbcopy='xsel --clipboard --input'
-        alias pbpaste='xsel --clipboard --output'
-        if ( which xdg-open >& /dev/null ); then
-            alias open="xdg-open"
-        elif [[ "$DESKTOP_SESSION" == "gnome" ]]; then
-            alias open="gnome-open"
-        elif [[ "$DESKTOP_SESSION" == "kde" ]]; then
-            alias open="kde-open"
-        else
-            # Default to xdg open... it'll at least remind me to install
-            # xdg-utils (or the equivalent).
-            alias open="xdg-open"
-        fi
+    alias du='du -bh --max-depth=1'
+    alias scons='scons -u -j$(grep -c ^processor /proc/cpuinfo)'
+    alias make='nice -n 3 make -j$(grep -c ^processor /proc/cpuinfo)'
+    alias ps='ps -ef'
+    alias ls='ls -hFGA --color=auto'
+    alias ll='ls -hFlG --color=auto'
+    alias top='top -d 1'
+    alias pbcopy='xsel --clipboard --input'
+    alias pbpaste='xsel --clipboard --output'
+    if ( which xdg-open >& /dev/null ); then
+        alias open="xdg-open"
+    elif [[ "$DESKTOP_SESSION" == "gnome" ]]; then
+        alias open="gnome-open"
+    elif [[ "$DESKTOP_SESSION" == "kde" ]]; then
+        alias open="kde-open"
+    else
+        # Default to xdg open... it'll at least remind me to install
+        # xdg-utils (or the equivalent).
+        alias open="xdg-open"
+    fi
 fi
 
 # cd-related
@@ -70,7 +70,7 @@ alias mkisofs='mkisofs -iso-level 3 -J -L -r'
 alias cdrecord='cdrecord dev=0,0,0 -v driveropts=burnfree'
 
 if [ -d $HOME/projects/subversion ]; then
-        alias fsfsverify='$HOME/projects/subversion/contrib/server-side/fsfsverify.py'
+    alias fsfsverify='$HOME/projects/subversion/contrib/server-side/fsfsverify.py'
 fi
 
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
@@ -81,15 +81,15 @@ alias egrep="egrep --color=auto"
 alias negrep="egrep -n --color=auto"
 
 hash colordiff > /dev/null 2>&1 &&
-        alias diff="colordiff"
+    alias diff="colordiff"
 
 if [ -d $HOME/local/erlang ]; then
-        alias erl="$HOME/local/erlang/bin/erl"
-        alias erlc="$HOME/local/erlang/bin/erlc"
+    alias erl="$HOME/local/erlang/bin/erl"
+    alias erlc="$HOME/local/erlang/bin/erlc"
 fi
 if [ -d $HOME/.local/erlang ]; then
-        alias erl="$HOME/.local/erlang/bin/erl"
-        alias erlc="$HOME/.local/erlang/bin/erlc"
+    alias erl="$HOME/.local/erlang/bin/erl"
+    alias erlc="$HOME/.local/erlang/bin/erlc"
 fi
 
 # Hunt down the installed clojure files
@@ -116,24 +116,24 @@ do
 done
 
 if [[ "$clojure_jar" != '' ]]; then
-        classpath=$(append_path "$clojure_contrib_jar" "$clojure_jar")
-        jline_runner=
-        if [[ "$jline_jar" != '' ]]; then
-                classpath=$(append_path "$classpath" "$jline_jar")
-                jline_runner="jline.ConsoleRunner"
-        fi
+    classpath=$(append_path "$clojure_contrib_jar" "$clojure_jar")
+    jline_runner=
+    if [[ "$jline_jar" != '' ]]; then
+        classpath=$(append_path "$classpath" "$jline_jar")
+        jline_runner="jline.ConsoleRunner"
+    fi
 
-        alias clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $classpath $jline_runner clojure.main"
+    alias clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $classpath $jline_runner clojure.main"
 fi
 
 if [ -d $HOME/projects/clojure ]; then
-        classpath=$(append_path "$jline_jar" $HOME/projects/clojure/clojure.jar:$(find_clj_contrib))
-        jline_runner=
-        if [[ "$jline_jar" != '' ]]; then
-                jline_runner="jline.ConsoleRunner"
-        fi
+    classpath=$(append_path "$jline_jar" $HOME/projects/clojure/clojure.jar:$(find_clj_contrib))
+    jline_runner=
+    if [[ "$jline_jar" != '' ]]; then
+        jline_runner="jline.ConsoleRunner"
+    fi
 
-        alias dev-clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $classpath $jline_runner clojure.main"
+    alias dev-clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $classpath $jline_runner clojure.main"
 fi
 
 unset search_path
