@@ -2,20 +2,20 @@
 alias em='emacs -nw'
 alias ec='emacsclient -n'
 
-have_slickedit=`which vs 2>/dev/null`
+have_slickedit=$(which vs 2>/dev/null)
 if [[ '$have_slickedit' != '' ]]; then
         alias vs='vs -new'
 fi
 
-platform=`uname`
+platform=$(uname)
 if [[ "$platform" == 'Darwin' ]]; then
         alias twistd="/System/Library/Frameworks/Python.framework/Versions/Current/Extras/bin/twistd"
 
         alias du='du -h -d1'
-        alias scons='scons -u -j`sysctl -n hw.ncpu`'
-        alias make='nice -n 3 make -j`sysctl -n hw.ncpu`'
+        alias scons='scons -u -j$(sysctl -n hw.ncpu)'
+        alias make='nice -n 3 make -j$(sysctl -n hw.ncpu)'
         alias ps='ps aux'
-        slickedit_path=`\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1`
+        slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
         if [[ $slickedit_path != '' ]]; then
                 alias vs='open -a $slickedit_path'
         fi
@@ -116,10 +116,10 @@ do
 done
 
 if [[ "$clojure_jar" != '' ]]; then
-        classpath=`append_path "$clojure_contrib_jar" "$clojure_jar"`
+        classpath=$(append_path "$clojure_contrib_jar" "$clojure_jar")
         jline_runner=
         if [[ "$jline_jar" != '' ]]; then
-                classpath=`append_path "$classpath" "$jline_jar"`
+                classpath=$(append_path "$classpath" "$jline_jar")
                 jline_runner="jline.ConsoleRunner"
         fi
 
@@ -127,7 +127,7 @@ if [[ "$clojure_jar" != '' ]]; then
 fi
 
 if [ -d $HOME/projects/clojure ]; then
-        classpath=`append_path "$jline_jar" $HOME/projects/clojure/clojure.jar:\`find_clj_contrib\``
+        classpath=$(append_path "$jline_jar" $HOME/projects/clojure/clojure.jar:$(find_clj_contrib))
         jline_runner=
         if [[ "$jline_jar" != '' ]]; then
                 jline_runner="jline.ConsoleRunner"
