@@ -67,6 +67,11 @@ test ! -e $HOME/.quiltrc && \
     ln -s $PATH_TO_ETC/quilt/quiltrc $HOME/.quiltrc &&
     echo "Installed .quiltrc"
 
+echo "Checking .colordiffrc..."
+test ! -e $HOME/.colordiffrc && \
+    ln -s $PATH_TO_ETC/colordiffrc/colordiffrc $HOME/.colordiffrc &&
+    echo "Installed .colordiffrc"
+
 if [ "$(uname)" == "Darwin" ]; then
     echo "Checking .editrc..."
     test ! -e $HOME/.editrc &&
