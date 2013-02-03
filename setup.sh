@@ -11,7 +11,11 @@ if [ "$PATH_TO_ETC" != "projects/etc" ]; then
     SOURCE_PREFIX="\$ETC_HOME"
 else
     SET_ETC_HOME=""
-    SOURCE_PREFIX="$PATH_TO_ETC"
+
+    # Use ETC_HOME as the source prefix because the shell may be coming up in
+    # a directory other than home.  This is common in Fedora, where a new
+    # terminal will start you in the current working directory.
+    SOURCE_PREFIX="$ETC_HOME"
 fi
 
 # Record the date and time for backups
