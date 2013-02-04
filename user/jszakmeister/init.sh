@@ -21,3 +21,7 @@ test -e ~/projects/clojure &&
     _make_dir_complete pdc pushd ~/projects/clojure
 
 alias tree='tree --charset=ASCII -F -v'
+
+# Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
+# in vim when running at the terminal.
+test -t 0 && stty -ixon -ixoff
