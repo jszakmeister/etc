@@ -4,10 +4,11 @@ cd $(dirname $0)
 
 # If the path is under HOME, then make it relative
 PATH_TO_ETC=${PWD/$HOME\//}
-ETC_HOME=${PWD/$HOME\//~\/}
+ETC_HOME=${PWD/$HOME\//\$HOME\/}
+TILDE_ETC_HOME=${PWD/$HOME\//~\/}
 
 if [ "$PATH_TO_ETC" != "projects/etc" ]; then
-    SET_ETC_HOME="ETC_HOME=\"$ETC_HOME\"\n"
+    SET_ETC_HOME="ETC_HOME=\"$ETC_HOME\""
     SOURCE_PREFIX="\$ETC_HOME"
 else
     SET_ETC_HOME=""
@@ -28,6 +29,7 @@ _backupFile() {
     test -e "$origFile" &&
         mv "$origFile" "$newFile" &&
         echo "Saved old '$origFile' as '$newFile'"
+
     return 0
 }
 
@@ -39,7 +41,9 @@ _maybeInstall() {
 
     (test -e "$file" && fgrep -x -q "${s}" "$file") ||
         (_backupFile "$file" &&
-         echo "$SET_ETC_HOME$s" > "$file" &&
+         ((test -n "$SET_ETC_HOME" && echo "$SET_ETC_HOME" > "$file") ||
+          : > "$file") &&
+         echo "$s" >> "$file" &&
          echo "Installed $(basename $file)")
     return 0
 }
@@ -59,7 +63,7 @@ test ! -e $HOME/.tmux.conf &&
 echo "Checking .gitconfig..."
 test ! -e $HOME/.gitconfig &&
     cat gitconfig/gitconfig |
-        sed -e "s|~/projects/etc|$ETC_HOME|" > $HOME/.gitconfig &&
+        sed -e "s|~/projects/etc|$TILDE_ETC_HOME|" > $HOME/.gitconfig &&
     echo "Installed .gitconfig" &&
     echo 'Run the following to set the git user name:
     git config --global user.name "User Name"' &&
