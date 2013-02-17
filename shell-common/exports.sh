@@ -126,9 +126,9 @@ if [ "$TERM" != "dumb" ]; then
 fi
 
 if [[ "$platform" == "Darwin" ]]; then
-        if [ -e "$ETC_HOME/python/startup.py" ]; then
-                export PYTHONSTARTUP="$ETC_HOME/python/startup.py"
-        fi
+    if [ -e "$ETC_HOME/python/startup.py" ]; then
+        export PYTHONSTARTUP="$ETC_HOME/python/startup.py"
+    fi
 fi
 
 # Ignore duplicate entries, and the exit command.
