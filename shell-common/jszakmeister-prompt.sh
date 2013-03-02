@@ -4,8 +4,8 @@
 [ "$ETC_TRIM_PWD" != "0" ] &&
     hash perl > /dev/null 2>&1 && ETC_TRIM_PWD="1"
 
-source ${ETC_HOME}/shell-common/colors.sh
-source ${ETC_HOME}/shell-common/vcs-status.sh
+source "${ETC_HOME}/shell-common/colors.sh"
+source "${ETC_HOME}/shell-common/vcs-status.sh"
 
 _jszakmeister_prompt_virtualenv() {
     if [ -n "$VIRTUAL_ENV" ]; then

@@ -1,4 +1,4 @@
-source ${ETC_HOME}/shell-common/colors.sh
+source "${ETC_HOME}/shell-common/colors.sh"
 
 _vcs_status() {
     function git_status {

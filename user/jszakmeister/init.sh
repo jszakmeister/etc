@@ -24,7 +24,7 @@ alias tree='tree --charset=ASCII -F -v'
 
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
 # in vim when running at the terminal.
-test -t 0 && stty -ixon -ixoff
+test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
 
 # Use vim for the MANPAGER, if vimpager is setup
 if [ -e "$ETC_HOME/vimpager/vimpager.sh" ]; then

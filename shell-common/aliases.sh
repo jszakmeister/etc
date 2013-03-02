@@ -19,7 +19,7 @@ if [[ "$platform" == 'Darwin' ]]; then
     if [[ $slickedit_path != '' ]]; then
         alias vs='open -a $slickedit_path'
     fi
-    if [ -d $HOME/Applications/0xED.app ]; then
+    if [ -d "$HOME/Applications/0xED.app" ]; then
         alias he='open -a ~/Applications/0xED.app'
     fi
     if [ -d /Developer/Applications/Qt/Designer.app ]; then
@@ -27,7 +27,7 @@ if [[ "$platform" == 'Darwin' ]]; then
     fi
     alias keychain='open -a /Applications/Utilities/Keychain\ Access.app'
     alias textedit='open -a /Applications/TextEdit.app'
-    if [ -d $HOME/Applications/Emacs.app ]; then
+    if [ -d "$HOME/Applications/Emacs.app" ]; then
         alias emacs="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs"
         alias emacsclient="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
         alias em="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
@@ -69,8 +69,8 @@ fi
 alias mkisofs='mkisofs -iso-level 3 -J -L -r'
 alias cdrecord='cdrecord dev=0,0,0 -v driveropts=burnfree'
 
-if [ -d $HOME/projects/subversion ]; then
-    alias fsfsverify='$HOME/projects/subversion/contrib/server-side/fsfsverify.py'
+if [ -d "$HOME/projects/subversion" ]; then
+    alias fsfsverify="'$HOME/projects/subversion/contrib/server-side/fsfsverify.py'"
 fi
 
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
@@ -83,13 +83,13 @@ alias negrep="egrep -n --color=auto"
 hash colordiff > /dev/null 2>&1 &&
     alias diff="colordiff"
 
-if [ -d $HOME/local/erlang ]; then
-    alias erl="$HOME/local/erlang/bin/erl"
-    alias erlc="$HOME/local/erlang/bin/erlc"
+if [ -d "$HOME/local/erlang" ]; then
+    alias erl="'$HOME/local/erlang/bin/erl'"
+    alias erlc="'$HOME/local/erlang/bin/erlc'"
 fi
-if [ -d $HOME/.local/erlang ]; then
-    alias erl="$HOME/.local/erlang/bin/erl"
-    alias erlc="$HOME/.local/erlang/bin/erlc"
+if [ -d "$HOME/.local/erlang" ]; then
+    alias erl="'$HOME/.local/erlang/bin/erl'"
+    alias erlc="'$HOME/.local/erlang/bin/erlc'"
 fi
 
 # Hunt down the installed clojure files
@@ -100,7 +100,7 @@ jline_jar=
 
 for search_path in $search_paths
 do
-    if [ -f $search_path/clojure.jar ]; then
+    if [ -f "$search_path/clojure.jar" ]; then
         clojure_jar="$search_path/clojure.jar"
         clojure_contrib_jar="$search_path/clojure-contrib.jar"
         break
@@ -109,7 +109,7 @@ done
 
 for search_path in $search_paths
 do
-    if [ -f $search_path/jline.jar ]; then
+    if [ -f "$search_path/jline.jar" ]; then
         jline_jar="$search_path/jline.jar"
         break
     fi
@@ -126,8 +126,8 @@ if [[ "$clojure_jar" != '' ]]; then
     alias clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $classpath $jline_runner clojure.main"
 fi
 
-if [ -d $HOME/projects/clojure ]; then
-    classpath=$(append_path "$jline_jar" $HOME/projects/clojure/clojure.jar:$(find_clj_contrib))
+if [ -d "$HOME/projects/clojure" ]; then
+    classpath=$(append_path "$jline_jar" "$HOME/projects/clojure/clojure.jar:$(find_clj_contrib)")
     jline_runner=
     if [[ "$jline_jar" != '' ]]; then
         jline_runner="jline.ConsoleRunner"

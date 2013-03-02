@@ -2,8 +2,8 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-ETC_HOME=${ETC_HOME:-~/projects/etc}
-ETC_USER=${ETC_USER:-$(whoami)}
+ETC_HOME="${ETC_HOME:-~/projects/etc}"
+ETC_USER="${ETC_USER:-$(whoami)}"
 
 # Needed for some color-related bits
 _start_ansi="\["

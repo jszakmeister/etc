@@ -36,34 +36,35 @@ _backupFile() {
 _maybeInstall() {
     local s="$1"
     local file="$2"
+    local base=$(basename "${file}")
 
-    echo "Checking $(basename $file)..."
+    echo "Checking ${base}..."
 
-    (test -e "$file" && fgrep -x -q "${s}" "$file") ||
+    (test -e "$file" && grep -F -x -q "${s}" "$file") ||
         (_backupFile "$file" &&
          ((test -n "$SET_ETC_HOME" && echo "$SET_ETC_HOME" > "$file") ||
           : > "$file") &&
          echo "$s" >> "$file" &&
-         echo "Installed $(basename $file)")
+         echo "Installed $base")
     return 0
 }
 
 # Set up links to configuration bits
 
 echo "Checking .inputrc..."
-test ! -e $HOME/.inputrc && \
-    ln -s $PATH_TO_ETC/inputrc/inputrc $HOME/.inputrc &&
+test ! -e "$HOME/.inputrc" && \
+    ln -s "$PATH_TO_ETC/inputrc/inputrc" "$HOME/.inputrc" &&
     echo "Installed .inputrc"
 
 echo "Checking .tmux.conf..."
-test ! -e $HOME/.tmux.conf &&
-    ln -s $PATH_TO_ETC/tmux/tmux.conf $HOME/.tmux.conf &&
+test ! -e "$HOME/.tmux.conf" &&
+    ln -s "$PATH_TO_ETC/tmux/tmux.conf" "$HOME/.tmux.conf" &&
     echo "Installed .tmux.conf"
 
 echo "Checking .gitconfig..."
-test ! -e $HOME/.gitconfig &&
+test ! -e "$HOME/.gitconfig" &&
     cat gitconfig/gitconfig |
-        sed -e "s|~/projects/etc|$TILDE_ETC_HOME|" > $HOME/.gitconfig &&
+        sed -e "s|~/projects/etc|$TILDE_ETC_HOME|" > "$HOME/.gitconfig" &&
     echo "Installed .gitconfig" &&
     echo 'Run the following to set the git user name:
     git config --global user.name "User Name"' &&
@@ -71,19 +72,19 @@ test ! -e $HOME/.gitconfig &&
     git config --global user.email "user@example.com"'
 
 echo "Checking .quiltrc..."
-test ! -e $HOME/.quiltrc && \
-    ln -s $PATH_TO_ETC/quilt/quiltrc $HOME/.quiltrc &&
+test ! -e "$HOME/.quiltrc" && \
+    ln -s "$PATH_TO_ETC/quilt/quiltrc" "$HOME/.quiltrc" &&
     echo "Installed .quiltrc"
 
 echo "Checking .colordiffrc..."
-test ! -e $HOME/.colordiffrc && \
-    ln -s $PATH_TO_ETC/colordiffrc/colordiffrc $HOME/.colordiffrc &&
+test ! -e "$HOME/.colordiffrc" && \
+    ln -s "$PATH_TO_ETC/colordiffrc/colordiffrc" "$HOME/.colordiffrc" &&
     echo "Installed .colordiffrc"
 
 if [ "$(uname)" == "Darwin" ]; then
     echo "Checking .editrc..."
-    test ! -e $HOME/.editrc &&
-        ln -s $PATH_TO_ETC/editrc/editrc $HOME/.editrc &&
+    test ! -e "$HOME/.editrc" &&
+        ln -s "$PATH_TO_ETC/editrc/editrc" "$HOME/.editrc" &&
         echo "Installed .editrc"
     mkdir -p $HOME/Library/Fonts &&
         cp fonts/*.ttf $HOME/Library/Fonts &&
