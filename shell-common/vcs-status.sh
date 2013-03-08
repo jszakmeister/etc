@@ -46,7 +46,7 @@ _vcs_status() {
         elif [[ -n "$upstream" ]]; then
             ahead=$(git rev-list --count --cherry-pick --right-only --no-merges $upstream... 2>/dev/null || echo "0")
             behind=$(git rev-list --count --cherry-pick --left-only --no-merges $upstream... 2>/dev/null || echo "0")
-        elif [[ -n "$(git show-ref HEAD)" ]]; then
+        elif [[ -n "$(git symbolic-ref HEAD 2>/dev/null)" ]]; then
             ahead=$(git rev-list --count --cherry-pick --right-only --no-merges master... 2>/dev/null || echo "0")
             behind=$(git rev-list --count --cherry-pick --left-only --no-merges master... 2>/dev/null || echo "0")
         else
