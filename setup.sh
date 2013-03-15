@@ -97,6 +97,6 @@ if [ "$(uname)" == "Linux" ]; then
         echo "Installed custom fonts"
 fi
 
-_maybeInstall "source $SOURCE_PREFIX/bash/bashrc" "$HOME/.bashrc"
-_maybeInstall "source $SOURCE_PREFIX/zsh/zshenv" "$HOME/.zshenv"
-_maybeInstall "source $SOURCE_PREFIX/zsh/zshrc" "$HOME/.zshrc"
+_maybeInstall "source \"$SOURCE_PREFIX/bash/bashrc\"" "$HOME/.bashrc"
+_maybeInstall "source \"$SOURCE_PREFIX/zsh/zshenv\"" "$HOME/.zshenv"
+_maybeInstall "source \"$SOURCE_PREFIX/zsh/zshrc\"" "$HOME/.zshrc"
