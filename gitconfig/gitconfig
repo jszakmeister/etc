@@ -43,7 +43,7 @@
 	ignored = ls-files --others -i --exclude-standard
 
 	# Have info show the remote urls
-	info = !git config --get-regex 'remote\\.[^.]+\\.url' | sort | xargs -n2 printf '%25s   %s\n'
+	info = !git config --get-regex 'remote\\.[^.]+\\.(push)?url' | sort | xargs -n2 printf '%25s   %s\n'
 
 	# diffstat output, without the pager
 	diffstat = !git --no-pager diff --stat -r
