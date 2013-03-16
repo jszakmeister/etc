@@ -50,9 +50,14 @@ if [[ "$platform" == 'Linux' ]]; then
     alias ls='ls -hFGA --color=auto'
     alias ll='ls -hFlG --color=auto'
     alias top='top -d 1'
-    alias pbcopy='xsel --clipboard --input'
-    alias pbpaste='xsel --clipboard --output'
-    if ( which xdg-open >& /dev/null ); then
+    if ( type -f xsel >& /dev/null ); then
+        alias pbcopy='xsel --clipboard --input'
+        alias pbpaste='xsel --clipboard --output'
+    elif ( type -f xclip >& /dev/null ); then
+        alias pbcopy='xclip -selection clipboard'
+        alias pbpaste='xclip -selection clipboard -o'
+    fi
+    if ( type -f xdg-open >& /dev/null ); then
         alias open="xdg-open"
     elif [[ "$DESKTOP_SESSION" == "gnome" ]]; then
         alias open="gnome-open"
