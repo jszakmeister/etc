@@ -22,7 +22,7 @@ if [[ "$OS" == "linux" ]]; then
     extraopts="--name $SERVER_NAME"
 
     type -a wmctrl > /dev/null 2>&1 || {
-        echo 2>&1 "ERROR: please install wmctrl" ;
+        echo >&2 "ERROR: please install wmctrl" ;
         exit 1 ;
     }
 fi
