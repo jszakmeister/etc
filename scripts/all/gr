@@ -6,6 +6,11 @@ if [[ "$OS" != "linux" && "$OS" != "darwin" ]]; then
     exit 1
 fi
 
+if [[ "$OS" == "darwin" && -z "$SECURITYSESSIONID" ]]; then
+    echo >&2 "No GUI available"
+    exit 1
+fi
+
 if [[ -n "$SSH_TTY" ]]; then
     SERVER_NAME="GVIM1"
 else
