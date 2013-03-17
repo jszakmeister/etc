@@ -121,7 +121,7 @@ def main():
         if not args.dry_run:
             print "Fetching %s..." % r
             try:
-                run_git('fetch', '--all', '-q', path=r)
+                run_git('ffwd', path=r, show_cmd=True)
             except ScriptError:
                 print >>sys.stderr, \
                     "WARNING: Couldn't fetch %r.  " \
