@@ -1,0 +1,23 @@
+/* This should get copied to the following location under a Mac:
+ *   ~/Library/Application Support/Google/Chrome/Default/User StyleSheets
+ */
+/* @document domain("mail.google.com") */
+/*{*/
+    /* GMail messages and textarea should use fixed-width font */
+    .gs .ii, textarea.dV {
+        font-family: "DejaVu Sans Mono" !important;
+        font-size: 10pt !important;
+    }
+
+    textarea.Ak {
+        font-family: "DejaVu Sans Mono" !important;
+        font-size: 10pt !important;
+    }
+/*}*/
+/* @document domain("github.com") */
+/*{*/
+    textarea[name="comment[body]"] {
+        font-family: "DejaVu Sans Mono" !important;
+        font-size: 10pt !important;
+    }
+/*}*/
