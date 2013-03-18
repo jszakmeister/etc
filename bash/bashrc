@@ -50,3 +50,5 @@ source "$ETC_HOME/bash/themes/${BASH_THEME:-jszakmeister}.bash-theme"
 
 test -f "$ETC_HOME/user/$ETC_USER/init.sh" &&
     . "$ETC_HOME/user/$ETC_USER/init.sh"
+
+test -f "$HOME/.etcrc" && . "$HOME/.etcrc"
