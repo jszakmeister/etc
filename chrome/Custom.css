@@ -20,4 +20,8 @@
         font-family: "DejaVu Sans Mono" !important;
         font-size: 10pt !important;
     }
+    textarea[name="issue[body]"] {
+        font-family: "DejaVu Sans Mono" !important;
+        font-size: 10pt !important;
+    }
 /*}*/
