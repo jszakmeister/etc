@@ -6,9 +6,13 @@ if [[ "$OS" != "linux" && "$OS" != "darwin" ]]; then
     exit 1
 fi
 
-if [[ "$OS" == "darwin" && -z "$SECURITYSESSIONID" ]]; then
-    echo >&2 "No GUI available"
-    exit 1
+if [[ "$OS" == "darwin" ]]; then
+    if test -z "$SECURITYSESSIONID" \
+        -a "$TERM_PROGRAM" != "Apple_Terminal" \
+        -a "$TERM_PROGRAM" != "iTerm.app" ; then
+        echo >&2 "No GUI available"
+        exit 1
+    fi
 fi
 
 if [[ -n "$SSH_TTY" ]]; then
