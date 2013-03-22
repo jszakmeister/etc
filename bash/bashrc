@@ -3,7 +3,19 @@ if [ -f /etc/bashrc ]; then
 fi
 
 ETC_HOME="${ETC_HOME:-$HOME/projects/etc}"
-ETC_USER="${ETC_USER:-$(whoami)}"
+
+_uname="$(uname)"
+
+if [ -z "$ETC_HOME" ]; then
+    case "MING" in
+        "$_uname")
+            ETC_USER="$USERNAME"
+            break;;
+        *)
+            ETC_USER="$(whoami)"
+            break;;
+    esac
+fi
 
 # Needed for some color-related bits
 _start_ansi="\["
