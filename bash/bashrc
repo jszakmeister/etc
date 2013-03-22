@@ -10,10 +10,10 @@ if [ -z "$ETC_HOME" ]; then
     case "MING" in
         "$_uname")
             ETC_USER="$USERNAME"
-            break;;
+            ;;
         *)
             ETC_USER="$(whoami)"
-            break;;
+            ;;
     esac
 fi
 

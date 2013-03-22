@@ -8,6 +8,16 @@ if [[ '$have_slickedit' != '' ]]; then
 fi
 
 platform=$(uname)
+
+case "MING" in
+    "$platform")
+        platform="mingw"
+        ;;
+    *)
+        ;;
+esac
+
+
 if [[ "$platform" == 'Darwin' ]]; then
     alias twistd="/System/Library/Frameworks/Python.framework/Versions/Current/Extras/bin/twistd"
 
@@ -80,10 +90,19 @@ fi
 
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
 alias svnup='svn up $(find-project-root)'
-alias grep="grep --color=auto"
-alias ngrep="grep -n --color=auto"
-alias egrep="egrep --color=auto"
-alias negrep="egrep -n --color=auto"
+
+if [[ "$platform" == "mingw" ]]; then
+    _grep_extra=""
+else
+    _grep_extra="--color=auto"
+fi
+
+alias grep="grep $_grep_extra"
+alias ngrep="grep -n $_grep_extra"
+alias egrep="egrep $_grep_extra"
+alias negrep="egrep -n $_grep_extra"
+
+unset _grep_extra
 
 hash colordiff > /dev/null 2>&1 &&
     alias diff="colordiff"
