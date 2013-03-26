@@ -11,12 +11,12 @@ _vcs_status() {
         git rev-parse --git-dir >& /dev/null || return 1
 
         ref="$(git symbolic-ref HEAD 2>/dev/null)" || {
-                ref=$(
+                ref=$( (
                         git describe --tags --exact-match HEAD ||
                         git describe --contains --all HEAD ||
                         git describe --contains HEAD ||
-                        git describe HEAD
-                ) 2>/dev/null ||
+                        git describe HEAD ) 2>/dev/null
+                ) ||
                 ref="$(cut -c1-7 "$g/HEAD" 2>/dev/null)..." ||
                 ref="unknown"
                 ref="($ref)"
