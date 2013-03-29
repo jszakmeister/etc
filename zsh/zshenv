@@ -29,6 +29,7 @@ _make_dir_complete() {
     fi
     if [ ! -d $3 ]; then
         echo "Error: \"$2\" doesn't point to a directory" 1>&2
+        return 1
     fi
 
     cd "$3" >/dev/null 2>&1
