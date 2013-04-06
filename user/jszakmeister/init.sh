@@ -28,3 +28,6 @@ test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
 
 # Use Vim as a front-end to man.
 function man() { vim -c "RMan $*" ; }
+
+# Put my scripts on the path.
+export PATH="$ETC_HOME/user/jszakmeister/scripts/all:$PATH"

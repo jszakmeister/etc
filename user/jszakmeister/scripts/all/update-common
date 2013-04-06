@@ -1,0 +1,11 @@
+#!/bin/bash
+function update_repo ()
+{
+	local curDir=$(pwd)
+	cd "$1" && git ffwd
+	cd "$curDir"
+}
+
+update_repo ~/.vim
+update_repo ~/projects/etc
+update_repo ~/projects/jszakmeister/local-homepage
