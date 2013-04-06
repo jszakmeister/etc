@@ -1,11 +1,18 @@
 #!/bin/bash
 function update_repo ()
 {
+	if test ! -d "$1" ; then
+		return 0
+	fi
+
+	echo "Updating $1..."
 	local curDir=$(pwd)
 	cd "$1" && git ffwd
 	cd "$curDir"
 }
 
 update_repo ~/.vim
+update_repo ~/.etc
 update_repo ~/projects/etc
 update_repo ~/projects/jszakmeister/local-homepage
+update_repo ~/projects/local-homepage
