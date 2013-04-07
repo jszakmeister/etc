@@ -95,6 +95,7 @@
 [diff]
 	# Does rename detection during diff operation
 	renames = true
+	renamelimit = 3000
 
 [push]
         default = upstream
