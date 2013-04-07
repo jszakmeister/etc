@@ -24,6 +24,8 @@ set sort = 'reverse-threads'
 set sort_aux = 'last-date-received'
 set imap_check_subscribed
 
+set send_charset="us-ascii:utf-8"
+
 unset move
 
 ignore "Authentication-Results:"
