@@ -4,23 +4,14 @@
 /* @document domain("mail.google.com") */
 /*{*/
     /* GMail messages and textarea should use fixed-width font */
-    .gs .ii, textarea.dV {
-        font-family: "DejaVu Sans Mono" !important;
-        font-size: 10pt !important;
-    }
-
-    textarea.Ak {
+    .gs .ii, textarea.dV, textarea.Ak, div.editable[role="textbox"] {
         font-family: "DejaVu Sans Mono" !important;
         font-size: 10pt !important;
     }
 /*}*/
 /* @document domain("github.com") */
 /*{*/
-    textarea[name="comment[body]"] {
-        font-family: "DejaVu Sans Mono" !important;
-        font-size: 10pt !important;
-    }
-    textarea[name="issue[body]"] {
+    textarea[name="comment[body]"], textarea[name="issue[body]"] {
         font-family: "DejaVu Sans Mono" !important;
         font-size: 10pt !important;
     }
