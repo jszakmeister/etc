@@ -92,6 +92,10 @@
 
 	whitespace = cr-at-eol,space-before-tab,trailing-space,tabwidth=8
 
+	# This enables parallel index operations and can help when running
+	# git on network drives or Windows.
+	preloadindex = true
+
 [diff]
 	# Does rename detection during diff operation
 	renames = true
