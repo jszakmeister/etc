@@ -6,6 +6,7 @@ cd $(dirname $0)
 PATH_TO_ETC=${PWD/$HOME\//}
 ETC_HOME=${PWD/$HOME\//\$HOME\/}
 TILDE_ETC_HOME=${PWD/$HOME\//~\/}
+CONFIG_HOME=${XDG_CONFIG_HOME-$HOME/.config}
 
 if [ "$PATH_TO_ETC" != "projects/etc" ]; then
     SET_ETC_HOME="ETC_HOME=\"$ETC_HOME\""
@@ -81,6 +82,12 @@ test ! -e "$HOME/.colordiffrc" && \
     ln -s "$PATH_TO_ETC/colordiffrc/colordiffrc" "$HOME/.colordiffrc" &&
     echo "Installed .colordiffrc"
 
+echo "Checking svnwrap config..."
+test ! -e "$CONFIG_HOME/svnwrap/config.ini" &&
+    mkdir -p "$CONFIG_HOME/svnwrap" &&
+    cp "$PATH_TO_ETC/svnwrap/config.ini" "$CONFIG_HOME/svnwrap/config.ini" &&
+    echo "Installed svnwrap config"
+
 if [ "$(uname)" == "Darwin" ]; then
     echo "Checking .editrc..."
     test ! -e "$HOME/.editrc" &&
@@ -96,7 +103,6 @@ if [ "$(uname)" == "Linux" ]; then
         cp fonts/*.ttf $HOME/.fonts &&
         echo "Installed custom fonts"
 fi
-
 _maybeInstall "source \"$SOURCE_PREFIX/bash/bashrc\"" "$HOME/.bashrc"
 _maybeInstall "source \"$SOURCE_PREFIX/zsh/zshenv\"" "$HOME/.zshenv"
 _maybeInstall "source \"$SOURCE_PREFIX/zsh/zshrc\"" "$HOME/.zshrc"
