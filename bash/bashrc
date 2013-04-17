@@ -6,7 +6,7 @@ ETC_HOME="${ETC_HOME:-$HOME/projects/etc}"
 
 _uname="$(uname)"
 
-if [ -z "$ETC_HOME" ]; then
+if [ -z "$ETC_USER" ]; then
     case "MING" in
         "$_uname")
             ETC_USER="$USERNAME"
