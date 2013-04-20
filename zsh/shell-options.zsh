@@ -56,3 +56,6 @@ setopt pushd_silent
 # Allow lines that starts with # to be ignored.  It's nice for
 # small screencasts.
 setopt interactivecomments
+
+# Split words using IFS just like sh
+setopt shwordsplit
