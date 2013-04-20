@@ -38,11 +38,20 @@ fi
 autoload colors
 colors
 
-setopt case_glob            # case sensitive globbing
-setopt clobber              # redirection can create files
-setopt glob		    # want globbing
-unsetopt nomatch	    # don't warn about non-matching globs
-setopt pushd_silent         # don't print stack after push/pop
+# Case sensitive globbing
+setopt case_glob
+
+# Redirection can create files
+setopt clobber
+
+# Want globbing
+setopt glob
+
+# Don't warn about non-matching globs
+unsetopt nomatch
+
+# Don't print stack after push/pop
+setopt pushd_silent
 
 # Allow lines that starts with # to be ignored.  It's nice for
 # small screencasts.
