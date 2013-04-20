@@ -50,6 +50,10 @@ _make_dir_complete() {
     complete -o nospace -F $prgname $aliasname
 }
 
+_find_executable() {
+    type -P "$@"
+}
+
 test -s "$ETC_HOME/shell-common/functions.sh" && . "$ETC_HOME/shell-common/functions.sh"
 test -s "$ETC_HOME/shell-common/exports.sh" && . "$ETC_HOME/shell-common/exports.sh"
 test -s "$ETC_HOME/shell-common/aliases.sh" && . "$ETC_HOME/shell-common/aliases.sh"

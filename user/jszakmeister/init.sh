@@ -27,15 +27,9 @@ alias tree='tree --charset=ASCII -F -v'
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
 
 # Use Vim as a front-end to man.
-if type -f whence > /dev/null 2>&1; then
-    function man() {
-        $(whence -p man) -P cat "$@" > /dev/null && vim -c "RMan $*"
-    }
-else
-    function man() {
-        $(type -P man) -P cat "$@" > /dev/null && vim -c "RMan $*"
-    }
-fi
+function man() {
+    $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
+}
 
 # Put my scripts on the path.
 export PATH="$ETC_HOME/user/jszakmeister/scripts/all:$PATH"

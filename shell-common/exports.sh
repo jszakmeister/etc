@@ -19,7 +19,7 @@ if [[ "$platform" == 'Darwin' ]]; then
                 PATHS_TO_APPEND=`append_path "$PATHS_TO_APPEND" "$slickedit_path/Contents/MacOS"`
             fi
         fi
-        
+
         if [ -d /opt/local/bin ]; then
                 PATHS_TO_APPEND=`append_path "$PATHS_TO_APPEND" /opt/local/bin`
         fi
@@ -60,10 +60,9 @@ if [[ "$PATHS_TO_APPEND" != '' ]]; then
         export PATH=$PATH:$PATHS_TO_APPEND
 fi
 
-have_slickedit=`which vs 2>/dev/null`
-if [[ "$have_slickedit" != '' ]]; then
+if _find_executable vs >& /dev/null; then
         export VSLICKXNOPLUSNEWMSG=1
-        
+
         if [ -f /usr/local/share/firefox/firefox ]; then
                 export VSLICKHELP_WEB_BROWSER=/usr/local/share/firefox/firefox
         fi
@@ -106,7 +105,7 @@ export CLASSPATH=$JAVA_LOCALLIB:/usr/lib/java/lib
 # but it doesn't hurt for Linux either, IIRC
 export TTFPATH=/usr/X11/lib/X11/fonts/truetype
 
-export EDITOR=`which vim`
+export EDITOR=$(_find_executable vim)
 
 # Some stuff to help setup ruby to do local gem install, instead of
 # installing for everyone.

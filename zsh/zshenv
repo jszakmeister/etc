@@ -43,6 +43,10 @@ _make_dir_complete() {
     compctl -/ -W "$realpath" $aliasname
 }
 
+_find_executable() {
+    whence -p "$@"
+}
+
 test -s "$ETC_HOME/shell-common/functions.sh" &&
 	. $ETC_HOME/shell-common/functions.sh
 test -s "$ETC_HOME/shell-common/exports.sh" &&

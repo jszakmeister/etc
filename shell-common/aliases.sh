@@ -2,8 +2,7 @@
 alias em='emacs -nw'
 alias ec='emacsclient -n'
 
-have_slickedit=$(which vs 2>/dev/null)
-if [[ '$have_slickedit' != '' ]]; then
+if _find_executable vs >& /dev/null; then
     alias vs='vs -new'
 fi
 
@@ -60,14 +59,14 @@ if [[ "$platform" == 'Linux' ]]; then
     alias ls='ls -hFGA --color=auto'
     alias ll='ls -hFlG --color=auto'
     alias top='top -d 1'
-    if ( type -f xsel >& /dev/null ); then
+    if _find_executable xsel >& /dev/null; then
         alias pbcopy='xsel --clipboard --input'
         alias pbpaste='xsel --clipboard --output'
-    elif ( type -f xclip >& /dev/null ); then
+    elif _find_executable xclip >& /dev/null; then
         alias pbcopy='xclip -selection clipboard'
         alias pbpaste='xclip -selection clipboard -o'
     fi
-    if ( type -f xdg-open >& /dev/null ); then
+    if _find_executable xdg-open >& /dev/null; then
         alias open="xdg-open"
     elif [[ "$DESKTOP_SESSION" == "gnome" ]]; then
         alias open="gnome-open"
