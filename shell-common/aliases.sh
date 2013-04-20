@@ -176,6 +176,10 @@ alias traceroute='traceroute -n -w 2'
 alias netcat=nc
 alias tree='tree -F -v'
 
+if _find_executable svnwrap >& /dev/null; then
+    alias svn=svnwrap
+fi
+
 # rvm-related
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
     # yes, this essentially replaces the system gem... but I like to install
