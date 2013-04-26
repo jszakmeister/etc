@@ -13,23 +13,23 @@
 	# the same log message
 	amend = commit --amend -C HEAD
 
-        # A handy graph-based log view
-        lol = log --abbrev-commit --graph --decorate
+	# A handy graph-based log view
+	lol = log --abbrev-commit --graph --decorate
 
-        # Fast-forward pull
-        ff = "!sh -c 'git merge --ff --ff-only ${1:-\"@{u}\"}' -"
+	# Fast-forward pull
+	ff = "!sh -c 'git merge --ff --ff-only ${1:-\"@{u}\"}' -"
 
-        # Fetch all branches
-        fa = fetch --all
+	# Fetch all branches
+	fa = fetch --all
 
-        # Fetch all tags
-        ft = fetch --tags
+	# Fetch all tags
+	ft = fetch --tags
 
-        # Show the type of the object
-        type = cat-file -t
+	# Show the type of the object
+	type = cat-file -t
 
-        # Pretty print the object
-        dump = cat-file -p
+	# Pretty print the object
+	dump = cat-file -p
 
 	# show difference between the HEAD and the index
 	staged = diff --cached
@@ -52,21 +52,21 @@
 	# Prune all stale remote branches from the local repository
 	prune-all = !git remote | xargs -n 1 git remote prune
 
-        # Taken from man git-config... shows all new commits introduced
-        # since the last pull
-        new = !gitk --all --not ORIG_HEAD
+	# Taken from man git-config... shows all new commits introduced
+	# since the last pull
+	new = !gitk --all --not ORIG_HEAD
 
-        # Handy alias to show all relevant tips.  Using this like:
-        #     git tips origin/pu ^origin/next | git oneline
-        #
-        # would show all branches in pu that are not in next.
-        # Thanks to Jon Seymour for posting this on the git list.
-        tips = "!_() { t=$(git rev-list --no-merges --max-count=1 \"$@\"); if test -n \"$t\"; then echo $t; _ \"$@\" ^$t; fi; }; _"
-        oneline = !xargs -L1 git log --decorate --max-count=1 --oneline
+	# Handy alias to show all relevant tips.  Using this like:
+	#     git tips origin/pu ^origin/next | git oneline
+	#
+	# would show all branches in pu that are not in next.
+	# Thanks to Jon Seymour for posting this on the git list.
+	tips = "!_() { t=$(git rev-list --no-merges --max-count=1 \"$@\"); if test -n \"$t\"; then echo $t; _ \"$@\" ^$t; fi; }; _"
+	oneline = !xargs -L1 git log --decorate --max-count=1 --oneline
 
-        # Lists all the defined aliases
+	# Lists all the defined aliases
 	# Taken from https://git.wiki.kernel.org/index.php/Aliases#alias
-        aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
+	aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
 
 	# Taken from https://git.wiki.kernel.org/index.php/Aliases#Finding_the_right_commit
 
@@ -106,10 +106,10 @@
 	renamelimit = 3000
 
 [push]
-        default = upstream
+	default = upstream
 
 [rerere]
-        enabled = 1
+	enabled = 1
 
 [merge]
 	ff = false
