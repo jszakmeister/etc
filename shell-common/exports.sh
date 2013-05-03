@@ -107,13 +107,6 @@ export TTFPATH=/usr/X11/lib/X11/fonts/truetype
 
 export EDITOR=$(_find_executable vim)
 
-# Some stuff to help setup ruby to do local gem install, instead of
-# installing for everyone.
-export GEM_HOME=$HOME/.local/lib/ruby/gems/1.8
-export RUBYLIB=$HOME/.local/lib/ruby:$HOME/.local/lib/site_ruby/1.8
-
-export PATH=$GEM_HOME/bin:$PATH
-
 # Add a default LS_COLORS
 if [ "$TERM" != "dumb" ]; then
   if [ -x /usr/bin/dircolors ]; then
