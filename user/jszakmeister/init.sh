@@ -1,3 +1,6 @@
+export WORKON_HOME=$HOME/.virtualenvs
+export PAGER=less
+
 test -e ~/projects/intelesys &&
     _make_dir_complete cdi cd ~/projects/intelesys &&
     _make_dir_complete pdi pushd ~/projects/intelesys
