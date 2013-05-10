@@ -13,8 +13,8 @@ _jszakmeister_prompt_virtualenv() {
     fi
 }
 
-# Turn off virtualenvwrapper's prompt facilities... it's in my prompt already
-if _find_executable virtualenvwrapper.sh >& /dev/null; then
+# Turn off virtualenv's prompt facilities... it's in my prompt already
+if _find_executable virtualenv >& /dev/null; then
     export VIRTUAL_ENV_DISABLE_PROMPT=1
 fi
 
