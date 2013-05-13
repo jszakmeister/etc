@@ -14,9 +14,7 @@ _jszakmeister_prompt_virtualenv() {
 }
 
 # Turn off virtualenv's prompt facilities... it's in my prompt already
-if _find_executable virtualenv >& /dev/null; then
-    export VIRTUAL_ENV_DISABLE_PROMPT=1
-fi
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # Attempt to set the terminal's title.
 _jszakmeister_prompt_title() {
