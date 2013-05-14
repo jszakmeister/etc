@@ -5,6 +5,10 @@ function update_repo ()
 		return 0
 	fi
 
+	if test ! -d "$1/.git" ; then
+		return 0
+	fi
+
 	echo "Updating $1..."
 	local curDir=$(pwd)
 	cd "$1" && git ffwd
@@ -13,6 +17,7 @@ function update_repo ()
 
 update_repo ~/.vim
 update_repo ~/.etc
+update_repo ~/.ssh
 update_repo ~/projects/etc
 update_repo ~/projects/jszakmeister/local-homepage
 update_repo ~/projects/local-homepage
