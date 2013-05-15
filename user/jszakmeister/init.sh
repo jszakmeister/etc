@@ -7,27 +7,29 @@ elif [ "$platform" = "Linux" ]; then
     alias ostat="stat -c '%a %n'"
 fi
 
-test -e ~/projects/intelesys &&
-    _make_dir_complete cdi cd ~/projects/intelesys &&
-    _make_dir_complete pdi pushd ~/projects/intelesys
-test -e ~/projects/jszakmeister &&
-    _make_dir_complete cdj cd ~/projects/jszakmeister &&
-    _make_dir_complete pdj pushd ~/projects/jszakmeister
-test -e ~/projects &&
-    _make_dir_complete cdp cd ~/projects &&
-    _make_dir_complete pdp pushd ~/projects
-test -e ~/.vim &&
-    _make_dir_complete cdv cd ~/.vim &&
-    _make_dir_complete pdv pushd ~/.vim
+_add_dir_shortcut() {
+    local shortcut="$1"
+    local shortcut_path="$2"
+    test -e "$shortcut_path" &&
+        _make_dir_complete "cd$shortcut" cd "$shortcut_path" &&
+        _make_dir_complete "pd$shortcut" pushd "$shortcut_path"
+}
+
+_add_dir_shortcut e ~/.etc
+_add_dir_shortcut e ~/projects/etc
+_add_dir_shortcut i ~/projects/intelesys
+_add_dir_shortcut j ~/projects/jszakmeister
+_add_dir_shortcut l ~/projects/local-homepage
+_add_dir_shortcut l ~/projects/jszakmeister/local-homepage
+_add_dir_shortcut p ~/projects
+_add_dir_shortcut v ~/.vim
 
 # In ZSH, we need to remove any completions associated with cdc, or this will
 # fail.
 if [ -n "$ZSH_VERSION" ]; then
     compdef -d cdc
 fi
-test -e ~/projects/clojure &&
-    _make_dir_complete cdc cd ~/projects/clojure &&
-    _make_dir_complete pdc pushd ~/projects/clojure
+_add_dir_shortcut c ~/projects/clojure
 
 alias tree='tree --charset=ASCII -F -v'
 
