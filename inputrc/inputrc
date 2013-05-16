@@ -14,3 +14,7 @@ $include /etc/inputrc
 set show-all-if-ambiguous on
 set completion-query-items 1000
 set expand-tilde off
+
+$if Bash
+	"\C-o\C-o": "\C-e | less\n"
+$endif

@@ -56,3 +56,5 @@ bindkey "\e[5C"   forward-word
 bindkey "\e[5D"   backward-word
 bindkey "\e\e[C"  forward-word
 bindkey "\e\e[D"  backward-word
+
+bindkey -s "\C-o\C-o" "^E | less^M"
