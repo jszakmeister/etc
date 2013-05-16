@@ -37,6 +37,11 @@ alias tree='tree --charset=ASCII -F -v'
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
 
+if [ "$platform" = "Darwin" ]; then
+    # Allow CTRL-o to work on the Mac.
+    test -t 0 && type -f stty >& /dev/null && stty discard '^-'
+fi
+
 # Use Vim as a front-end to man.
 function man() {
     $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
