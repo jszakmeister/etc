@@ -54,6 +54,7 @@ _find_executable() {
     type -P "$@"
 }
 
+. "$ETC_HOME/shell-common/platform.sh"
 test -s "$ETC_HOME/shell-common/functions.sh" && . "$ETC_HOME/shell-common/functions.sh"
 test -s "$ETC_HOME/shell-common/exports.sh" && . "$ETC_HOME/shell-common/exports.sh"
 test -s "$ETC_HOME/shell-common/aliases.sh" && . "$ETC_HOME/shell-common/aliases.sh"

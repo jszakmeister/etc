@@ -6,18 +6,7 @@ if _find_executable vs >& /dev/null; then
     alias vs='vs -new'
 fi
 
-platform=$(uname)
-
-case "MING" in
-    "$platform")
-        platform="mingw"
-        ;;
-    *)
-        ;;
-esac
-
-
-if [[ "$platform" == 'Darwin' ]]; then
+if [[ "$platform" == 'darwin' ]]; then
     alias twistd="/System/Library/Frameworks/Python.framework/Versions/Current/Extras/bin/twistd"
 
     alias du='du -h -d1'
@@ -51,7 +40,7 @@ if [[ "$platform" == 'Darwin' ]]; then
     alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport'
 fi
 
-if [[ "$platform" == 'Linux' ]]; then
+if [[ "$platform" == 'linux' ]]; then
     alias du='du -bh --max-depth=1'
     alias scons='scons -u -j$(grep -c ^processor /proc/cpuinfo)'
     alias make='nice -n 3 make -j$(grep -c ^processor /proc/cpuinfo)'

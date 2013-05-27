@@ -3,8 +3,7 @@ PATHS_TO_APPEND=
 
 test -n "$TMUX" && export TERM="screen-256color"
 
-platform=`uname`
-if [[ "$platform" == 'Darwin' ]]; then
+if [[ "$platform" == 'darwin' ]]; then
         python_version=$(python -c "import sys; print '%d.%d' % sys.version_info[:2]" 2>/dev/null ||
                          python -c "import sys; print('{}.{}'.format(*sys.version_info[:2]))" 2>/dev/null)
         PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$HOME/Library/Python/$python_version/bin"`
@@ -28,7 +27,7 @@ if [[ "$platform" == 'Darwin' ]]; then
                 PATHS_TO_APPEND=`append_path "$PATHS_TO_APPEND" "/usr/local/texlive/2009/bin/universal-darwin"`
         fi
 fi
-if [[ "$platform" == 'Linux' ]]; then
+if [[ "$platform" == 'linux' ]]; then
         if [ -d /opt/slickedit ]; then
                 PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" /opt/slickedit/bin`
         fi
@@ -45,7 +44,7 @@ if [ -d "$ETC_HOME/scripts" ]; then
         PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts/all"`
 
         # Add a platform-specific area too.
-        etc_scripts_platform="$ETC_HOME/scripts/$(uname -s | tr '[:upper:]' '[:lower:]')"
+        etc_scripts_platform="$ETC_HOME/scripts/$platform"
         if [ -d "$etc_scripts_platform" ]; then
             PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$etc_scripts_platform"`
         fi
@@ -89,7 +88,7 @@ export GDKUSEXFT=1
 # Don't descend into Subversion's admin area, or others like it.
 # Mac's bsd grep sucks... so there's no easy way to do this.
 # Also, suppress error messages.
-if [[ "$platform" == 'Linux' ]]; then
+if [[ "$platform" == 'linux' ]]; then
     export GREP_OPTIONS='-s --exclude-dir=.svn --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.bzr'
 else
     export GREP_OPTIONS='-s'
@@ -117,7 +116,7 @@ if [ "$TERM" != "dumb" ]; then
   fi
 fi
 
-if [[ "$platform" == "Darwin" ]]; then
+if [[ "$platform" == "darwin" ]]; then
     if [ -e "$ETC_HOME/python/startup.py" ]; then
         export PYTHONSTARTUP="$ETC_HOME/python/startup.py"
     fi
