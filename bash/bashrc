@@ -65,6 +65,16 @@ _find_executable() {
 
 source "$ETC_HOME/bash/themes/${BASH_THEME:-jszakmeister}.bash-theme"
 
+# Put user script directories on the path.
+test -d "$ETC_HOME/user/$ETC_USER/scripts/all" &&
+    export PATH="$ETC_HOME/user/$ETC_USER/scripts/all:$PATH"
+
+test -d "$ETC_HOME/user/$ETC_USER/scripts/$platform" &&
+    export PATH="$ETC_HOME/user/$ETC_USER/scripts/$platform:$PATH"
+
+test -s "$ETC_HOME/user/$ETC_USER/env.sh" &&
+    . "$ETC_HOME/user/$ETC_USER/env.sh"
+
 test -f "$ETC_HOME/user/$ETC_USER/init.sh" &&
     . "$ETC_HOME/user/$ETC_USER/init.sh"
 

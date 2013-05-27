@@ -46,6 +46,3 @@ fi
 function man() {
     $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
 }
-
-# Put my scripts on the path.
-export PATH="$ETC_HOME/user/jszakmeister/scripts/all:$PATH"
