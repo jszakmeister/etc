@@ -12,7 +12,7 @@ compinit -i
 autoload -Uz bashcompinit
 bashcompinit
 
-test -s "$ETC_HOME/bash/bash_completion.sh" && . "$ETC_HOME/bash/bash_completion.sh"
+. "$ETC_HOME/bash/bash_completion.sh"
 
 # Attempt to set up Git completion for zsh as documented inside git-completion.zsh
 if [ -r "$HOME/.local/etc/git-completion.bash" ] &&

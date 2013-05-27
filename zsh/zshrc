@@ -4,8 +4,7 @@ ETC_USER="${ETC_USER:-$(whoami)}"
 _start_ansi='%{'
 _end_ansi='%}'
 
-test -s "$ETC_HOME/zsh/shell-options.zsh" &&
-	. "$ETC_HOME/zsh/shell-options.zsh"
+. "$ETC_HOME/zsh/shell-options.zsh"
 
 # If the user setup ~/.zshenv, and sourced our zshenv,
 # then we want to avoid sourcing a couple of scripts
@@ -15,8 +14,7 @@ if [[ -z "$ETC_ZSHENV_SOURCED" ]]; then
 	. "$ETC_HOME/zsh/zshenv"
 fi
 
-test -s "$ETC_HOME/shell-common/aliases.sh" &&
-	. "$ETC_HOME/shell-common/aliases.sh"
+. "$ETC_HOME/shell-common/aliases.sh"
 
 # add a function path
 fpath=("$ETC_HOME/zsh/functions" "$ETC_HOME/zsh/completions" $fpath)
