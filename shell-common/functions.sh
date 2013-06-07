@@ -1,3 +1,8 @@
+function _has_executable
+{
+    _find_executable "$@" > /dev/null 2>&1
+}
+
 function find-project-root
 {
     local last_found=$(pwd)

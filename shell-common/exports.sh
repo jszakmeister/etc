@@ -59,7 +59,7 @@ if [[ "$PATHS_TO_APPEND" != '' ]]; then
         export PATH=$PATH:$PATHS_TO_APPEND
 fi
 
-if _find_executable vs >& /dev/null; then
+if _has_executable vs; then
         export VSLICKXNOPLUSNEWMSG=1
 
         if [ -f /usr/local/share/firefox/firefox ]; then

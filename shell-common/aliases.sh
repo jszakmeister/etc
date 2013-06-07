@@ -2,7 +2,7 @@
 alias em='emacs -nw'
 alias ec='emacsclient -n'
 
-if _find_executable vs >& /dev/null; then
+if _has_executable vs; then
     alias vs='vs -new'
 fi
 
@@ -48,14 +48,14 @@ if [[ "$platform" == 'linux' ]]; then
     alias ls='ls -hFGA --color=auto'
     alias ll='ls -hFlG --color=auto'
     alias top='top -d 1'
-    if _find_executable xsel >& /dev/null; then
+    if _has_executable xsel; then
         alias pbcopy='xsel --clipboard --input'
         alias pbpaste='xsel --clipboard --output'
-    elif _find_executable xclip >& /dev/null; then
+    elif _has_executable xclip; then
         alias pbcopy='xclip -selection clipboard'
         alias pbpaste='xclip -selection clipboard -o'
     fi
-    if _find_executable xdg-open >& /dev/null; then
+    if _has_executable xdg-open; then
         alias open="xdg-open"
     elif [[ "$DESKTOP_SESSION" == "gnome" ]]; then
         alias open="gnome-open"
@@ -165,7 +165,7 @@ alias traceroute='traceroute -n -w 2'
 alias netcat=nc
 alias tree='tree -F -v'
 
-if _find_executable svnwrap >& /dev/null; then
+if _has_executable svnwrap; then
     alias svn=svnwrap
 fi
 
