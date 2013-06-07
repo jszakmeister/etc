@@ -71,3 +71,13 @@ function md {
     mkdir -p "$*"
     cd "$*"
 }
+
+function gdb
+{
+    local gdb_path=$(_find_executable gdb)
+    if "$gdb_path" 2>&1 --version | head -n 1 | grep "Apple version" > /dev/null; then
+        "$gdb_path" -x "$ETC_HOME/gdb/darwin.gdb" "$@"
+    else
+        "$gdb_path" "$@"
+    fi
+}
