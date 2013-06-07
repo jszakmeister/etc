@@ -58,18 +58,23 @@ function append_path
     fi
 }
 
-function parse_git_branch {
+function parse_git_branch
+{
   declare -F __git_ps1 &>/dev/null && __git_ps1 "[%s]"
-  declare -F __git_ps1 &>/dev/null || git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
+  declare -F __git_ps1 &>/dev/null ||
+      git branch --no-color 2> /dev/null | \
+      sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
 }
 
-function pgl {
-  pygmentize -f terminal $* | less
+function pgl
+{
+  pygmentize -f terminal "$@" | less
 }
 
-function md {
-    mkdir -p "$*"
-    cd "$*"
+function md
+{
+    mkdir -p "$1"
+    cd "$1"
 }
 
 function gdb
