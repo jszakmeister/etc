@@ -22,7 +22,7 @@ die () {
 firstbranch=$1
 secondbranch=$2
 
-git rev-parse --git-dir >& /dev/null || die "ERROR: Not in a git repo"
+git rev-parse --git-dir > /dev/null 2>&1 || die "ERROR: Not in a git repo"
 
 if test -z "$firstbranch"; then
     # Compare against the tracking branch...
