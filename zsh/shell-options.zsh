@@ -38,26 +38,26 @@ fi
 autoload colors
 colors
 
-# Case sensitive globbing
+# Case sensitive globbing.
 setopt case_glob
 
-# Redirection can create files
+# Redirection can create files.
 setopt clobber
 
-# Want globbing
+# Want globbing.
 setopt glob
 
-# Don't warn about non-matching globs
+# Don't warn about non-matching globs.
 unsetopt nomatch
 
-# Don't print stack after push/pop
+# Don't print stack after push/pop.
 setopt pushd_silent
 
 # Allow lines that starts with # to be ignored.  It's nice for
 # small screencasts.
 setopt interactivecomments
 
-# Split words using IFS just like sh
+# Split words using IFS just like sh.
 setopt shwordsplit
 
 # Remove superfluous blanks from each command line being added
