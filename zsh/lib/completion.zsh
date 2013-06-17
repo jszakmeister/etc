@@ -10,6 +10,9 @@ zstyle ':completion::complete:*' cache-path ~/.zcache
 # Remove the trailing slash when a directory is used as an argument
 zstyle ':completion:*' squeeze-slashes true
 
+# Colorize listings for completion
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
 # don't show menu for completion
 setopt no_auto_menu
 
