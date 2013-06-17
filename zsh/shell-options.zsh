@@ -59,3 +59,7 @@ setopt interactivecomments
 
 # Split words using IFS just like sh
 setopt shwordsplit
+
+# Remove superfluous blanks from each command line being added
+# to the history list.
+setopt hist_reduce_blanks
