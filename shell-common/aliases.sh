@@ -167,6 +167,16 @@ alias tree='tree -F -v'
 
 if _has_executable svnwrap; then
     alias svn=svnwrap
+
+    function svndiff
+    {
+        svnwrap diff --color on "$@" | less
+    }
+else
+    function svndiff
+    {
+        svn diff "$@" | colordiff | less
+    }
 fi
 
 # rvm-related
