@@ -51,6 +51,13 @@ if [ -d "$ETC_HOME/scripts" ]; then
         unset etc_scripts_platform
 fi
 
+# Put user script directories on the path.
+test -d "$ETC_HOME/user/$ETC_USER/scripts/all" &&
+    PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/all")
+
+test -d "$ETC_HOME/user/$ETC_USER/scripts/$platform" &&
+    PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/$platform")
+
 if [[ "$PATHS_TO_PREPEND" != '' ]]; then
         export PATH=$PATHS_TO_PREPEND:$PATH
 fi

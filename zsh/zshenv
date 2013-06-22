@@ -49,16 +49,10 @@ _find_executable() {
 }
 
 . "$ETC_HOME/shell-common/platform.sh"
-. "$ETC_HOME/shell-common/functions.sh"
+. "$ETC_HOME/shell-common/core-functions.sh"
 . "$ETC_HOME/shell-common/exports.sh"
+. "$ETC_HOME/shell-common/functions.sh"
 . "$ETC_HOME/shell-common/common-init.sh"
-
-# Put user script directories on the path.
-test -d "$ETC_HOME/user/$ETC_USER/scripts/all" &&
-    export PATH="$ETC_HOME/user/$ETC_USER/scripts/all:$PATH"
-
-test -d "$ETC_HOME/user/$ETC_USER/scripts/$platform" &&
-    export PATH="$ETC_HOME/user/$ETC_USER/scripts/$platform:$PATH"
 
 test -s "$ETC_HOME/user/$ETC_USER/env.sh" &&
     . "$ETC_HOME/user/$ETC_USER/env.sh"
