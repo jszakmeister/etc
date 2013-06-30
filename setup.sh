@@ -85,7 +85,7 @@ test ! -e "$HOME/.colordiffrc" && \
 echo "Checking svnwrap config..."
 test ! -e "$CONFIG_HOME/svnwrap/config.ini" &&
     mkdir -p "$CONFIG_HOME/svnwrap" &&
-    cp "$PATH_TO_ETC/svnwrap/config.ini" "$CONFIG_HOME/svnwrap/config.ini" &&
+    cp "svnwrap/config.ini" "$CONFIG_HOME/svnwrap/config.ini" &&
     echo "Installed svnwrap config"
 
 if [ "$(uname)" == "Darwin" ]; then
