@@ -51,6 +51,12 @@ if [ -d "$ETC_HOME/scripts" ]; then
         unset etc_scripts_platform
 fi
 
+# Put ccache links on the path, if they're available.
+test -d /usr/local/lib/ccache &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/lib/ccache)
+test -d /usr/lib/ccache &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/lib/ccache)
+
 # Put user script directories on the path.
 test -d "$ETC_HOME/user/$ETC_USER/scripts/all" &&
     PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/all")
