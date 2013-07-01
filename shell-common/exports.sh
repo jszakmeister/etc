@@ -1,7 +1,16 @@
-PATHS_TO_PREPEND=$HOME/bin:$HOME/.local/bin:$HOME/local/bin:/usr/local/bin
+PATHS_TO_PREPEND=
 PATHS_TO_APPEND=
 
 test -n "$TMUX" && export TERM="screen-256color"
+
+test -d "$HOME/bin" &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/bin")
+
+test -d "$HOME/.local/bin" &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/.local/bin")
+
+test -d "$HOME/local/bin" &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/local/bin")
 
 if [[ "$platform" == 'darwin' ]]; then
         python_version=$(python -c "import sys; print '%d.%d' % sys.version_info[:2]" 2>/dev/null ||
@@ -41,21 +50,15 @@ if [ -d "$ETC_HOME/git-addons" ]; then
 fi
 
 if [ -d "$ETC_HOME/scripts" ]; then
-        PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts/all"`
+        PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts/all")
 
         # Add a platform-specific area too.
         etc_scripts_platform="$ETC_HOME/scripts/$platform"
         if [ -d "$etc_scripts_platform" ]; then
-            PATHS_TO_PREPEND=`append_path "$PATHS_TO_PREPEND" "$etc_scripts_platform"`
+            PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$etc_scripts_platform")
         fi
         unset etc_scripts_platform
 fi
-
-# Put ccache links on the path, if they're available.
-test -d /usr/local/lib/ccache &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/lib/ccache)
-test -d /usr/lib/ccache &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/lib/ccache)
 
 # Put user script directories on the path.
 test -d "$ETC_HOME/user/$ETC_USER/scripts/all" &&
@@ -63,6 +66,15 @@ test -d "$ETC_HOME/user/$ETC_USER/scripts/all" &&
 
 test -d "$ETC_HOME/user/$ETC_USER/scripts/$platform" &&
     PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/$platform")
+
+# Put ccache links on the path, if they're available.
+test -d /usr/local/lib/ccache &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/lib/ccache)
+test -d /usr/lib/ccache &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/lib/ccache)
+
+test -d /usr/local/bin &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/bin)
 
 if [[ "$PATHS_TO_PREPEND" != '' ]]; then
         export PATH=$PATHS_TO_PREPEND:$PATH
