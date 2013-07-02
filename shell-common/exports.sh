@@ -141,7 +141,7 @@ if [ "$TERM" != "dumb" ]; then
   fi
 fi
 
-if [[ "$platform" == "darwin" ]]; then
+if [ "$platform" == "darwin" -o "$platform" == "linux" ]; then
     if [ -e "$ETC_HOME/python/startup.py" ]; then
         export PYTHONSTARTUP="$ETC_HOME/python/startup.py"
     fi
