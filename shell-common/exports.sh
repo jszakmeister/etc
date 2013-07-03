@@ -75,6 +75,12 @@ test -d /usr/lib/ccache &&
 
 test -d /usr/local/bin &&
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/bin)
+test -d /usr/local/sbin &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/sbin)
+test -d /usr/sbin &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/sbin)
+test -d /sbin &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /sbin)
 
 if [[ "$PATHS_TO_PREPEND" != '' ]]; then
         export PATH=$PATHS_TO_PREPEND:$PATH
