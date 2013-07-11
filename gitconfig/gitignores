@@ -93,3 +93,7 @@ tramp
 # Python
 *.pyc
 *.egg-info
+
+# Chef
+.chef/
+!.chef/knife.rb
