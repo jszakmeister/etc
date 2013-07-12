@@ -46,3 +46,10 @@ fi
 function man() {
     $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
 }
+
+# Disable slow keys...
+# Not sure if this persists or not.
+#
+# if _has_executable xkbset; then
+#     xkbset -sl
+# fi
