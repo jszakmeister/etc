@@ -1,30 +1,31 @@
 .gitattributes	export-ignore
 .gitignore	export-ignore
 
-*.clj		text trailing-space space-before-tab -indent-with-non-tab
-*.C		text trailing-space space-before-tab -indent-with-non-tab
-*.md		text trailing-space space-before-tab -indent-with-non-tab
-*.mk		text trailing-space
-*.txt		text
-*.rst		text trailing-space space-before-tab -indent-with-non-tab
-*.rest		text trailing-space space-before-tab -indent-with-non-tab
+*.clj		text whitespace=trailing-space,space-before-tab,tab-in-indent
+*.C		text whitespace=trailing-space,space-before-tab,tab-in-indent
+*.erb		text whitespace=trailing-space,tab-in-indent
+*.md		text whitespace=trailing-space,space-before-tab,tab-in-indent
+*.mk		text whitespace=trailing-space
+*.txt		text whitespace=trailing-space,space-before-tab
+*.rst		text whitespace=trailing-space,space-before-tab,tab-in-indent
+*.rest		text whitespace=trailing-space,space-before-tab,tab-in-indent
 
-*.c		text diff=cpp trailing-space space-before-tab -indent-with-non-tab
-*.cpp		text diff=cpp trailing-space space-before-tab -indent-with-non-tab
-*.h		text diff=cpp trailing-space space-before-tab -indent-with-non-tab
-*.hpp		text diff=cpp trailing-space space-before-tab -indent-with-non-tab
-*.py		text diff=python trailing-space space-before-tab -indent-with-non-tab
-*.tex		text diff=tex
-*.java		text diff=java trailing-space space-before-tab -indent-with-non-tab
-*.pl		text diff=perl trailing-space space-before-tab -indent-with-non-tab
-*.php		text diff=php
-*.rb		text diff=ruby trailing-space space-before-tab -indent-with-non-tab
+*.c		text diff=cpp whitespace=trailing-space,space-before-tab,tab-in-indent
+*.cpp		text diff=cpp whitespace=trailing-space,space-before-tab,tab-in-indent
+*.h		text diff=cpp whitespace=trailing-space,space-before-tab,tab-in-indent
+*.hpp		text diff=cpp whitespace=trailing-space,space-before-tab,tab-in-indent
+*.py		text diff=python whitespace=trailing-space,space-before-tab,tab-in-indent
+*.tex		text diff=tex whitespace=trailing-space,space-before-tab,tab-in-indent
+*.java		text diff=java whitespace=trailing-space,space-before-tab,tab-in-indent
+*.pl		text diff=perl whitespace=trailing-space,space-before-tab,tab-in-indent
+*.php		text diff=php whitespace=trailing-space,space-before-tab,tab-in-indent
+*.rb		text diff=ruby whitespace=trailing-space,space-before-tab,tab-in-indent
 
 *.dsp		eol=crlf
 *.dsw		eol=crlf
 *.vcproj	eol=crlf
 
-*.sh		eol=lf
+*.sh		eol=lf whitespace=trailing-space,space-before-tab,tab-in-indent
 
 *.gif		binary
 *.jpg		binary
