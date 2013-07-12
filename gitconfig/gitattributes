@@ -1,10 +1,13 @@
 .gitattributes	export-ignore
 .gitignore	export-ignore
 
-*.txt           text
-*.C		text trailing-space space-before-tab -indent-with-non-tab
-*.rst		text trailing-space space-before-tab -indent-with-non-tab
 *.clj		text trailing-space space-before-tab -indent-with-non-tab
+*.C		text trailing-space space-before-tab -indent-with-non-tab
+*.md		text trailing-space space-before-tab -indent-with-non-tab
+*.mk		text trailing-space
+*.txt		text
+*.rst		text trailing-space space-before-tab -indent-with-non-tab
+*.rest		text trailing-space space-before-tab -indent-with-non-tab
 
 *.c		text diff=cpp trailing-space space-before-tab -indent-with-non-tab
 *.cpp		text diff=cpp trailing-space space-before-tab -indent-with-non-tab
@@ -17,14 +20,13 @@
 *.php		text diff=php
 *.rb		text diff=ruby trailing-space space-before-tab -indent-with-non-tab
 
-*.vcproj        eol=crlf
 *.dsp		eol=crlf
 *.dsw		eol=crlf
+*.vcproj	eol=crlf
 
-*.sh            eol=lf
+*.sh		eol=lf
 
-*.jpg           binary
-*.png		binary
 *.gif		binary
+*.jpg		binary
+*.png		binary
 *.tiff		binary
-
