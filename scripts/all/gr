@@ -31,10 +31,19 @@ if [[ "$OS" == "linux" ]]; then
     }
 fi
 
+# Check to see if an alternate --remote option was passed.  If so, use it
+# instead of --remote-silent.
+remote_opt=--remote-silent
+
+if [[ $1 == --remote* ]]; then
+    remote_opt="$1"
+    shift
+fi
+
 running=$(gvim --serverlist | grep $SERVER_NAME)
 
 if [[ -n "$@" ]]; then
-    gvim $extraopts --servername $SERVER_NAME --remote-silent "$@"
+    gvim $extraopts --servername $SERVER_NAME $remote_opt "$@"
 elif [[ -z "$running" ]]; then
     gvim $extraopts --servername $SERVER_NAME
 fi
