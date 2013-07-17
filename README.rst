@@ -41,10 +41,10 @@ will be explained below.
 Setting up Bash
 ===============
 
-My Bash environemnt sets up quite a few things.  The most noticable bit is the
+My Bash environment sets up quite a few things.  The most noticeable bit is the
 prompt, but it also adjusts some shell options for history, smart
-auto-completion, aliases, a few enviroment settings, and the PATH.  At the
-moment, there is no way to disect it and just get the bits you want.  Perhaps
+auto-completion, aliases, a few environment settings, and the PATH.  At the
+moment, there is no way to dissect it and just get the bits you want.  Perhaps
 down the road, I'll make it more severable.
 
 To get started, all you really need to do is add a line to your ``~/.bashrc``
