@@ -38,6 +38,7 @@ tar-me.sh
 # Mac OS X related
 .DS_Store?
 Icon?
+*.dSYM
 
 # Thumbnails
 ._*
