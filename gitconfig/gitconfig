@@ -86,7 +86,7 @@
 	ri = rebase --interactive --autosquash
 
 	# Helper to set upstream
-	set-upstream = "!sh -c 'git remote add upstream $1 && git fetch upstream && git branch --set-upstream-to=${2:-upstream/master}' -"
+	set-upstream = "!sh -c 'git remote add upstream $1 && git fetch upstream && git branch --set-upstream-to=${2:-upstream/master} && git config --add remote.upstream.pushurl $(git config remote.origin.url)' -"
 
 [core]
 	# make central area for git ignores. copy gitignores and change this to
