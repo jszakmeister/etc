@@ -48,10 +48,14 @@ elif [[ -z "$running" ]]; then
     gvim $extraopts --servername $SERVER_NAME
 fi
 
-if [[ "$OS" == "darwin" ]]; then
-    if [[ -n "$running" ]]; then
-        echo 'tell application "System Events" to set frontmost of process "MacVim" to true' | osascript
+if [ $? -eq 0 ]; then
+    if [[ "$OS" == "darwin" ]]; then
+        if [[ -n "$running" ]]; then
+            echo 'tell application "System Events" to set frontmost of process "MacVim" to true' | osascript
+        fi
+    elif [[ "$OS" == "linux" ]]; then
+        wmctrl -xa $SERVER_NAME.Gvim
     fi
-elif [[ "$OS" == "linux" ]]; then
-    wmctrl -xa $SERVER_NAME.Gvim
+else
+    exit $?
 fi
