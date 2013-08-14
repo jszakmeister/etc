@@ -88,6 +88,14 @@
 	# Helper to set upstream
 	set-upstream = "!sh -c 'git remote add upstream $1 && git fetch upstream && git branch --set-upstream-to=${2:-upstream/master} && git config --add remote.upstream.pushurl $(git config remote.origin.url)' -"
 
+	# This is useful after a set-upstream, if you have push priviliges on
+	# the upstream repo.
+	set-upstream-push = "!sh -c 'git config --add remote.upstream.pushurl $(git config remote.upstream.url)' -"
+
+	# Helper to set origin (for instance, when I clone a repo, and then
+	# decide to fork it).
+	set-origin = "!sh -c 'git remote rename origin upstream && git remote add origin $1 && git fetch origin && git config remote.upstream.pushurl $1' -"
+
 [core]
 	# make central area for git ignores. copy gitignores and change this to
 	#   excludesfile = ~/.gitignores
