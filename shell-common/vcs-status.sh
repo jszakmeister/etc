@@ -1,8 +1,21 @@
 source "${ETC_HOME}/shell-common/colors.sh"
 
+_git_has_diverged() {
+    local a="$1"
+    local b="$2"
+    local m=$(git merge-base "$a" "$b")
+
+    if test "$m" = "$(git rev-parse "$a")" -o "$m" = "$(git rev-parse "$b")"; then
+        # We've not diverged.
+        return 0
+    fi
+
+    return 1
+}
+
 _vcs_status() {
     function git_status {
-        local ref dirty count ahead behind divergent upstream g
+        local ref dirty count ahead behind divergent upstream g differ
         g=$(git rev-parse --git-dir 2>/dev/null)
         if [[ -z "$g" ]]; then
                 return 1
@@ -46,12 +59,17 @@ _vcs_status() {
         elif [[ -n "$upstream" ]]; then
             ahead=$(git rev-list --count --cherry-pick --right-only --no-merges $upstream... 2>/dev/null || echo "0")
             behind=$(git rev-list --count --cherry-pick --left-only --no-merges $upstream... 2>/dev/null || echo "0")
+            _git_has_diverged HEAD "$upstream"
+            differ=$?
         elif [[ -n "$(git symbolic-ref HEAD 2>/dev/null)" ]]; then
             ahead=$(git rev-list --count --cherry-pick --right-only --no-merges master... 2>/dev/null || echo "0")
             behind=$(git rev-list --count --cherry-pick --left-only --no-merges master... 2>/dev/null || echo "0")
+            _git_has_diverged HEAD master
+            differ=$?
         else
             ahead="0"
             behind="0"
+            differ=0
         fi
 
         if [[ -n "$upstream" ]]; then
@@ -70,13 +88,20 @@ _vcs_status() {
             ahead=""
         fi
 
-        if [[ -n $ahead && -n $behind ]]; then
-            divergent=" [${behind}, ${ahead}]"
-        elif [[ -n $ahead || -n $behind ]]; then
-            divergent=" [${behind}${ahead}]"
+        if [ "$differ" -ne 0 ]; then
+            differ="${fg_bold_red}∆${ansi_reset}"
         else
-            divergent=""
+            differ=""
         fi
+
+        if [[ -n $ahead && -n $behind ]]; then
+            divergent=" [${behind}, ${ahead}]${differ}"
+        elif [[ -n $ahead || -n $behind ]]; then
+            divergent=" [${behind}${ahead}]${differ}"
+        else
+            divergent="${differ:+ $differ}"
+        fi
+
 
         ref="${fg_no_bold_yellow}${ref#refs/heads/}${ansi_reset}"
         echo "on ${ref}${dirty}${upstream}${divergent}"
