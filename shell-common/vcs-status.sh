@@ -3,7 +3,14 @@ source "${ETC_HOME}/shell-common/colors.sh"
 _git_has_diverged() {
     local a="$1"
     local b="$2"
-    local m=$(git merge-base "$a" "$b")
+    local m
+
+    m=$(git merge-base "$a" "$b" 2>/dev/null)
+
+    # This probably means there is no HEAD.  For example, on a new repository.
+    if [ $? -ne 0 ]; then
+        return 0
+    fi
 
     if test "$m" = "$(git rev-parse "$a")" -o "$m" = "$(git rev-parse "$b")"; then
         # We've not diverged.
