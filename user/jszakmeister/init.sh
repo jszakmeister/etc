@@ -12,17 +12,19 @@ _add_dir_shortcut() {
     local shortcut_path="$2"
     test -e "$shortcut_path" &&
         _make_dir_complete "cd$shortcut" cd "$shortcut_path" &&
-        _make_dir_complete "pd$shortcut" pushd "$shortcut_path"
+        _make_dir_complete "pd$shortcut" pushd "$shortcut_path" &&
+        [ -n "$3" ] && [ -n "$ZSH_VERSION" ] &&
+        hash -d $shortcut="$shortcut_path"
 }
 
-_add_dir_shortcut e ~/.etc
-_add_dir_shortcut e ~/projects/etc
-_add_dir_shortcut i ~/projects/intelesys
-_add_dir_shortcut j ~/projects/jszakmeister
+_add_dir_shortcut e ~/.etc true
+_add_dir_shortcut e ~/projects/etc true
+_add_dir_shortcut i ~/projects/intelesys true
+_add_dir_shortcut j ~/projects/jszakmeister true
 _add_dir_shortcut l ~/projects/local-homepage
 _add_dir_shortcut l ~/projects/jszakmeister/local-homepage
-_add_dir_shortcut p ~/projects
-_add_dir_shortcut v ~/.vim
+_add_dir_shortcut p ~/projects true
+_add_dir_shortcut v ~/.vim true
 
 # In ZSH, we need to remove any completions associated with cdc, or this will
 # fail.
