@@ -40,7 +40,10 @@ _jszakmeister_prompt_title() {
 _jszakmeister_prompt() {
     local separator="${fg_bold_blue}::${ansi_reset}"
     local user_host vcs_status topline SRMT ERMT regex virtualenv_status
-    
+    local ret_code="$1"
+
+    [ -z "$ret_code" ] && ret_code=0
+
     # HOSTNAME in some shells, HOST in others
     local host="${HOSTNAME}"
     host="${host:=${HOST}}"
@@ -61,10 +64,16 @@ _jszakmeister_prompt() {
     # with ~ if it's under the home directory.
     current_dir="${PWD/#$HOME/~}"
 
+    if [ -n "$BASH" -a "$ret_code" -ne 0 ]; then
+        last_status=" ${fg_red}$ret_code ↵${ansi_reset}"
+    else
+        last_status=
+    fi
+
     if [[ "$ETC_TRIM_PWD" != "0" ]]; then
         # This isn't exactly what the topline is going to be.  We're just using it
         # to calculate a length for now
-        topline="${user_host} ${virtualenv_status}${vcs_status} "
+        topline="${user_host} ${virtualenv_status}${vcs_status}${last_status}  "
 
         if [ -n "$ZSH_VERSION" ]; then
             # Trim out the coloring
@@ -90,10 +99,15 @@ _jszakmeister_prompt() {
             fi
             current_dir=$(echo -n $current_dir | perl -pe "$regex")
         fi
+
+        if [ "$ret_code" -ne 0 ]; then
+            let "length = $COLUMNS - ${#topline} - ${#current_dir} - 3"
+            last_status="$(printf " %${length}s" "")${last_status}"
+        fi
     fi
 
     current_dir="${fg_bold_yellow}[${fg_no_bold_magenta}${current_dir}${fg_bold_yellow}]${ansi_reset}"
-    topline="${user_host} ${current_dir} ${virtualenv_status}${vcs_status}"
+    topline="${user_host} ${current_dir} ${virtualenv_status}${vcs_status}${last_status}"
 
     if [ -n "$BASH" ]; then
         # In bash, we use PROMPT_COMMAND to display the topline... because bash
