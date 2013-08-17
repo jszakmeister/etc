@@ -9,7 +9,7 @@ source "${ETC_HOME}/shell-common/vcs-status.sh"
 
 _jszakmeister_prompt_virtualenv() {
     if [ -n "$VIRTUAL_ENV" ]; then
-        echo -ne "${fg_bold_blue}[${fg_red}$(basename $VIRTUAL_ENV)${fg_bold_blue}]${ansi_reset} "
+        echo -ne " ${fg_bold_blue}[${fg_red}$(basename $VIRTUAL_ENV)${fg_bold_blue}]${ansi_reset}"
     fi
 }
 
@@ -36,6 +36,15 @@ _jszakmeister_prompt_title() {
     esac
 }
 
+_jszakmeister_filter_ansi() {
+    if [ -n "$ZSH_VERSION" ]; then
+        # Trim out the coloring
+        echo "$1" | perl -pe 's|\%\{.*?\%\}||g'
+    else
+        # Trim out the coloring
+        echo "$1" | perl -pe 's|\\\[.*?\\\]||g'
+    fi
+}
 
 _jszakmeister_prompt() {
     local separator="${fg_bold_blue}::${ansi_reset}"
@@ -57,7 +66,10 @@ _jszakmeister_prompt() {
         ERMT=""
     fi
     user_host="$SRMT${fg_bold_yellow}${USER}${fg_bold_cyan}@${fg_bold_blue}${host}$ERMT${ansi_reset}"
+
     vcs_status=$(_vcs_status)
+    [ -n "${vcs_status}" ] && vcs_status=" ${vcs_status}"
+
     virtualenv_status=$(_jszakmeister_prompt_virtualenv)
 
     # Take the current working directory, and replace the leading path
@@ -65,28 +77,21 @@ _jszakmeister_prompt() {
     current_dir="${PWD/#$HOME/~}"
 
     if [ -n "$BASH" -a "$ret_code" -ne 0 ]; then
-        last_status=" ${fg_red}$ret_code ↵${ansi_reset}"
+        last_status="  ${fg_red}$ret_code ↵${ansi_reset} "
     else
         last_status=
     fi
 
+    # This isn't exactly what the topline is going to be.  We're just using it
+    # to calculate a length for now
+    topline="${user_host} []${virtualenv_status}${vcs_status}${last_status}"
+
+    topline=$(_jszakmeister_filter_ansi "$topline")
+
+    # length now represents how much room we have
+    let "length = $COLUMNS - ${#topline}"
+
     if [[ "$ETC_TRIM_PWD" != "0" ]]; then
-        # This isn't exactly what the topline is going to be.  We're just using it
-        # to calculate a length for now
-        topline="${user_host} ${virtualenv_status}${vcs_status}${last_status}  "
-
-        if [ -n "$ZSH_VERSION" ]; then
-            # Trim out the coloring
-            topline=$(echo "$topline" | perl -pe 's|\%\{.*?\%\}||g')
-        else
-            # Trim out the coloring
-            topline=$(echo "$topline" | perl -pe 's|\\\[.*?\\\]||g')
-        fi
-
-        # length now represents how much room we have (square brackets already
-        # accounted for with the 2)
-        let "length = $COLUMNS - ${#topline} - 2"
-
         if (( $length < ${#current_dir} )); then
             if [[ $PWD == ~/* ]]; then
                 # 6 comes from the ~/.../ in the output
@@ -99,15 +104,18 @@ _jszakmeister_prompt() {
             fi
             current_dir=$(echo -n $current_dir | perl -pe "$regex")
         fi
+    fi
 
-        if [ "$ret_code" -ne 0 ]; then
-            let "length = $COLUMNS - ${#topline} - ${#current_dir} - 3"
-            last_status="$(printf " %${length}s" "")${last_status}"
+    if [ "$ret_code" -ne 0 ]; then
+        let "length = $COLUMNS - ${#topline} - ${#current_dir}"
+        if (( $length < 0 )); then
+            let "length = 0"
         fi
+        last_status="$(printf "%${length}s" "")${last_status}"
     fi
 
     current_dir="${fg_bold_yellow}[${fg_no_bold_magenta}${current_dir}${fg_bold_yellow}]${ansi_reset}"
-    topline="${user_host} ${current_dir} ${virtualenv_status}${vcs_status}${last_status}"
+    topline="${user_host} ${current_dir}${virtualenv_status}${vcs_status}${last_status}"
 
     if [ -n "$BASH" ]; then
         # In bash, we use PROMPT_COMMAND to display the topline... because bash
