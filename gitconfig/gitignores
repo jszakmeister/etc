@@ -73,6 +73,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+*.class
 
 # CDT-specific
 .cproject
