@@ -1,6 +1,11 @@
 #!/bin/bash
 OS=$(uname | tr '[A-Z]' '[a-z]')
 
+GVIM=$(type -P mvim)
+if test -z "$GVIM"; then
+    GVIM=gvim
+fi
+
 if [[ "$OS" != "linux" && "$OS" != "darwin" ]]; then
     echo "Unrecognized OS" >& 2
     exit 1
@@ -40,12 +45,12 @@ if [[ $1 == --remote* ]]; then
     shift
 fi
 
-running=$(gvim --serverlist | grep $SERVER_NAME)
+running=$("$GVIM" --serverlist | grep $SERVER_NAME)
 
 if [[ -n "$@" ]]; then
-    gvim $extraopts --servername $SERVER_NAME $remote_opt "$@"
+    "$GVIM" $extraopts --servername $SERVER_NAME $remote_opt "$@"
 elif [[ -z "$running" ]]; then
-    gvim $extraopts --servername $SERVER_NAME
+    "$GVIM" $extraopts --servername $SERVER_NAME
 fi
 
 if [ $? -eq 0 ]; then
