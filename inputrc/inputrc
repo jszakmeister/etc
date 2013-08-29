@@ -11,6 +11,14 @@ $include /etc/inputrc
 "\e[5~": beginning-of-history
 "\e[6~": end-of-history
 
+# Other potential entries for Ctrl-Left/Right
+"\e[1;5C": forward-word
+"\e[1;5D": backward-word
+"\e[5C":   forward-word
+"\e[5D":   backward-word
+"\e\e[C":  forward-word
+"\e\e[D":  backward-word
+
 set show-all-if-ambiguous on
 set completion-query-items 1000
 set expand-tilde off
