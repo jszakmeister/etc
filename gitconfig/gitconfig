@@ -80,9 +80,10 @@
 
 	# Helpful aliases for fixing up and squashing commits from Jacob
 	# Helwig's blog post:
-	#   <http://technosorcery.net/2010/02/07/fun_with_the_upcoming_1.7_release_of_git_rebase_--interactive_--autosquash.html>
-	fixup = !sh -c 'git commit -m \"fixup! $(git log -1 --format='\\''%s'\\'' $@)\"' -
-	squash = !sh -c 'git commit -m \"squash! $(git log -1 --format='\\''%s'\\'' $@)\"' -
+	#   <http://technosorcery.net/blog/2012/08/05/updated-git-rebase-interactive-autosquash-commit-preparation/>
+	# Needs Git 1.7.4 or greater.
+	fixup = !sh -c 'git commit --fixup=$1' -
+	squash = !sh -c 'git commit --squash=$1' -
 	ri = rebase --interactive --autosquash
 
 	# Helper to set upstream
