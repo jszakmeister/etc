@@ -2,6 +2,12 @@
 [color]
 	ui = auto
 
+# Add some color for grep output.
+[color "grep"]
+	filename = magenta
+	linenumber = green
+	match = bold red
+
 # add some short cuts... most of them familiar to those of us coming from
 # other VCSes.
 [alias]
