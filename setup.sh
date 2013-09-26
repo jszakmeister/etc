@@ -88,6 +88,11 @@ test ! -e "$CONFIG_HOME/svnwrap/config.ini" &&
     cp "svnwrap/config.ini" "$CONFIG_HOME/svnwrap/config.ini" &&
     echo "Installed svnwrap config"
 
+echo "Checking .ctags..."
+test ! -e "$HOME/.ctags" && \
+    ln -s "$PATH_TO_ETC/ctags/ctags" "$HOME/.ctags" &&
+    echo "Installed .ctags"
+
 if [ "$(uname)" == "Darwin" ]; then
     echo "Checking .editrc..."
     test ! -e "$HOME/.editrc" &&
