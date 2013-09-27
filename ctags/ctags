@@ -20,7 +20,7 @@
 --exclude='lusty-juggler.vim'
 
 --langdef=clojure
---langmap=clojure:.clj
+--langmap=clojure:.clj.cljs
 --regex-clojure=/\([ \t]*create-ns[ \t]+([-[:alnum:]*+!_:\/.?]+)/\1/n,namespace/
 --regex-clojure=/\([ \t]*def[ \t]+([-[:alnum:]*+!_:\/.?]+)/\1/d,definition/
 --regex-clojure=/\([ \t]*defn[ \t]+([-[:alnum:]*+!_:\/.?]+)/\1/f,function/
