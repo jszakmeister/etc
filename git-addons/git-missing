@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012, John Szakmeister <john@szakmeister.net>
+# Copyright (c) 2012-2013, John Szakmeister <john@szakmeister.net>
 #
 # Output similar to 'bzr missing'.  It shows which revisions you have that the
 # other branch doesn't, as well as revision the other branch has that you don't.
@@ -54,7 +54,7 @@ fi
 
 if [ "$missing" != "0" ]; then
     if [ "$extra" != "0" ]; then
-        echo "\n"
+        echo; echo
     fi
 
     output=1
