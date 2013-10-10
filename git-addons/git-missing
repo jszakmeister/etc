@@ -27,9 +27,8 @@ git rev-parse --git-dir > /dev/null 2>&1 || die "Not in a git repo"
 if test -z "$firstbranch"; then
     # Compare against the tracking branch...
     tracking_branch=$(git rev-parse --revs-only @{u} 2>/dev/null)
-    if test -z "$tracking_branch"; then
-        echo "Can't infer branch to compare to. At least one branch required" && exit 1
-    fi
+    test -z "$tracking_branch" &&
+        die "Can't infer branch to compare to. At least one branch required"
     firstbranch=$tracking_branch
 fi
 
