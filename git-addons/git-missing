@@ -32,9 +32,15 @@ if test -z "$firstbranch"; then
     firstbranch=$tracking_branch
 fi
 
+git rev-parse $firstbranch -- > /dev/null 2>&1 ||
+    die "Invalid branch or rev: $firstbranch"
+
 if test -z "$secondbranch"; then
     secondbranch=$firstbranch
     firstbranch=
+else
+    git rev-parse $secondbranch -- > /dev/null 2>&1 ||
+        die "Invalid branch or rev: $secondbranch"
 fi
 
 extra=$(git rev-list --count --cherry-pick --right-only --no-merges $secondbranch...$firstbranch)
