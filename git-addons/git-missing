@@ -16,7 +16,7 @@ die_with_status () {
 }
 
 die () {
-    die 1 "$@"
+    die_with_status 1 "$@"
 }
 
 firstbranch=$1
