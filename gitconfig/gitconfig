@@ -13,7 +13,7 @@
 [alias]
 	co = checkout
 	st = status -sb
-	up = "!git remote update -p && git merge --ff --ff-only @{u}"
+	up = !git remote update -p && git merge --ff --ff-only @{u}
 
 	# A quick way to squash changes into the previous commit using
 	# the same log message
