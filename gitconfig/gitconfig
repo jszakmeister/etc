@@ -110,6 +110,12 @@
 	# decide to fork it).
 	set-origin = "!sh -c 'git remote rename origin upstream && git remote add origin $1 && git fetch origin && git config remote.upstream.pushurl $1' -"
 
+	# Compute interdiff between two commits...
+	interdiff = !sh -c 'git -c color.ui=off show "$1" > .git/commit1 && git -c color.ui=off show "$2" > .git/commit2 && interdiff .git/commit[12]' -
+
+	# Push and bring my remotes up-to-date.
+	p = !sh -c 'git push "$@" && git ffwd' -
+
 [core]
 	# make central area for git ignores. copy gitignores and change this to
 	#   excludesfile = ~/.gitignores
@@ -154,6 +160,7 @@
 	diff = diff-highlight | less
 	show = diff-highlight | less
 	log = diff-highlight | less
+	interdiff = (type cdiff >& /dev/null && cdiff || cat -) | diff-highlight | less
 
 # You might need the below, if you regularly work against HTTPS servers that
 # don't validate because of missing CA certs.  It's always better to fix that
