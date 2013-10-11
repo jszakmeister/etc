@@ -8,6 +8,10 @@
 	linenumber = green
 	match = bold red
 
+# Bold the upstream branch name in `git branch -vv`
+[color "branch"]
+	upstream = bold blue
+
 # add some short cuts... most of them familiar to those of us coming from
 # other VCSes.
 [alias]
@@ -57,6 +61,9 @@
 
 	# Prune all stale remote branches from the local repository
 	prune-all = !git remote | xargs -n 1 git remote prune
+
+	# Provide ack-like output for git grep
+	ack = grep --break --heading -n
 
 	# Taken from man git-config... shows all new commits introduced
 	# since the last pull
