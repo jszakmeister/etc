@@ -26,10 +26,10 @@ main() {
         if [ "$NAHEAD" -gt 0 ]; then
           echo " branch $LB is $NBEHIND commit(s) behind and $NAHEAD commit(s) ahead of $REMOTE/$RB. could not be fast-forwarded";
         elif [ "$LB" = "$CLB" ]; then
-          echo " branch $LB was $NBEHIND commit(s) behind of $REMOTE/$RB. fast-forward merge";
+          echo " branch $LB was $NBEHIND commit(s) behind $REMOTE/$RB. fast-forward merge";
           git merge --ff --ff-only -q $ARB;
         else
-          echo " branch $LB was $NBEHIND commit(s) behind of $REMOTE/$RB. reseting local branch to remote";
+          echo " branch $LB was $NBEHIND commit(s) behind $REMOTE/$RB. resetting local branch to remote";
           git branch -l -f $LB -t $ARB >/dev/null;
         fi
       fi
