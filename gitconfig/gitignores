@@ -74,6 +74,7 @@ local.properties
 .settings/
 .loadpath
 *.class
+junitvmwatcher*.properties
 
 # CDT-specific
 .cproject
