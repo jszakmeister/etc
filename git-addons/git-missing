@@ -11,28 +11,6 @@
 SUBDIRECTORY_OK=1 . "$(git --exec-path)/git-sh-setup" ||
     die "Not a git repository."
 
-firstbranch=$1
-secondbranch=$2
-
-if test -z "$firstbranch"; then
-    # Compare against the tracking branch...
-    tracking_branch=$(git rev-parse --revs-only @{u} 2>/dev/null)
-    test -z "$tracking_branch" &&
-        die "Can't infer branch to compare to. At least one branch required"
-    firstbranch=$tracking_branch
-fi
-
-git rev-parse $firstbranch -- > /dev/null 2>&1 ||
-    die "Invalid branch or rev: $firstbranch"
-
-if test -z "$secondbranch"; then
-    secondbranch=$firstbranch
-    firstbranch=
-else
-    git rev-parse $secondbranch -- > /dev/null 2>&1 ||
-        die "Invalid branch or rev: $secondbranch"
-fi
-
 log_options="--pretty=oneline --abbrev-commit"
 
 git config --get-colorbool color.missing &&
@@ -40,6 +18,28 @@ git config --get-colorbool color.missing &&
 
 cmd_missing()
 {
+    local firstbranch=$1
+    local secondbranch=$2
+
+    if test -z "$firstbranch"; then
+        # Compare against the tracking branch...
+        tracking_branch=$(git rev-parse --revs-only @{u} 2>/dev/null)
+        test -z "$tracking_branch" &&
+            die "Can't infer branch to compare to. At least one branch required"
+        firstbranch=$tracking_branch
+    fi
+
+    git rev-parse $firstbranch -- > /dev/null 2>&1 ||
+        die "Invalid branch or rev: $firstbranch"
+
+    if test -z "$secondbranch"; then
+        secondbranch=$firstbranch
+        firstbranch=
+    else
+        git rev-parse $secondbranch -- > /dev/null 2>&1 ||
+            die "Invalid branch or rev: $secondbranch"
+    fi
+
     local extra=$(git rev-list --count --cherry-pick --right-only --no-merges $secondbranch...$firstbranch)
     local missing=$(git rev-list --count --cherry-pick --left-only --no-merges $secondbranch...$firstbranch)
     local output=0
@@ -71,4 +71,4 @@ cmd_missing()
     fi
 }
 
-cmd_missing | git_pager
+cmd_missing "$@" | git_pager
