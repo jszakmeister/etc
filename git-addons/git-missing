@@ -8,21 +8,11 @@
 #     git missing <target> => compares HEAD to <target>
 #     git missing <source> <target> => compares <source> to <target>
 
-die_with_status () {
-    status=$1
-    shift
-    echo >&2 "ERROR: $*"
-    exit "$status"
-}
-
-die () {
-    die_with_status 1 "$@"
-}
+SUBDIRECTORY_OK=1 . "$(git --exec-path)/git-sh-setup" ||
+    die "Not a git repository."
 
 firstbranch=$1
 secondbranch=$2
-
-git rev-parse --git-dir > /dev/null 2>&1 || die "Not in a git repo"
 
 if test -z "$firstbranch"; then
     # Compare against the tracking branch...
@@ -43,33 +33,42 @@ else
         die "Invalid branch or rev: $secondbranch"
 fi
 
-extra=$(git rev-list --count --cherry-pick --right-only --no-merges $secondbranch...$firstbranch)
-missing=$(git rev-list --count --cherry-pick --left-only --no-merges $secondbranch...$firstbranch)
 log_options="--pretty=oneline --abbrev-commit"
-output=0
 
-if [ "$extra" != "0" ]; then
-    output=1
+git config --get-colorbool color.missing &&
+    log_options="$log_options --color=always"
 
-    line="You have $extra extra revisions"
-    echo $line
-    echo $line | sed -e 's/./-/g'
-    git log $log_options --cherry-pick --right-only --no-merges $secondbranch...$firstbranch
-fi
+cmd_missing()
+{
+    local extra=$(git rev-list --count --cherry-pick --right-only --no-merges $secondbranch...$firstbranch)
+    local missing=$(git rev-list --count --cherry-pick --left-only --no-merges $secondbranch...$firstbranch)
+    local output=0
 
-if [ "$missing" != "0" ]; then
     if [ "$extra" != "0" ]; then
-        echo; echo
+        output=1
+
+        line="You have $extra extra revisions"
+        echo $line
+        echo $line | sed -e 's/./-/g'
+        git log $log_options --cherry-pick --right-only --no-merges $secondbranch...$firstbranch
     fi
 
-    output=1
+    if [ "$missing" != "0" ]; then
+        if [ "$extra" != "0" ]; then
+            echo; echo
+        fi
 
-    line="You have $missing missing revisions"
-    echo $line
-    echo $line | sed -e 's/./-/g'
-    git log $log_options --cherry-pick --left-only --no-merges $secondbranch...$firstbranch
-fi
+        output=1
 
-if [ $output != "0" ]; then
-    echo
-fi
+        line="You have $missing missing revisions"
+        echo $line
+        echo $line | sed -e 's/./-/g'
+        git log $log_options --cherry-pick --left-only --no-merges $secondbranch...$firstbranch
+    fi
+
+    if [ $output != "0" ]; then
+        echo
+    fi
+}
+
+cmd_missing | git_pager
