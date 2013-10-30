@@ -158,3 +158,11 @@ export HISTIGNORE="&:exit"
 
 # Turn on colors for minicom.
 export MINICOM='-c on'
+
+# Setup up TMPDIR correctly when SSH'd into your machine.
+if [ "$platform" = "darwin" ]; then
+    # SSH sessions don't have this properly set.  As a result, you can't connect
+    # to tmux instances started in a local shell.  This resolves that issue.
+    test -z "$TMPDIR" &&
+        export TMPDIR=$(getconf DARWIN_USER_TEMP_DIR)
+fi
