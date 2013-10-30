@@ -1,9 +1,9 @@
 export WORKON_HOME=$HOME/.virtualenvs
 export PAGER=less
 
-if [ "$platform" = "Darwin" ]; then
+if [ "$platform" = "darwin" ]; then
     alias ostat="stat -f '%Mp%Lp %N'"
-elif [ "$platform" = "Linux" ]; then
+elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
 fi
 
@@ -39,7 +39,7 @@ alias tree='tree --charset=ASCII -F -v'
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
 
-if [ "$platform" = "Darwin" ]; then
+if [ "$platform" = "darwin" ]; then
     # Allow CTRL-o to work on the Mac.
     test -t 0 && type -f stty >& /dev/null && stty discard '^-'
 fi
