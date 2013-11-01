@@ -133,6 +133,15 @@
 	renames = true
 	renamelimit = 3000
 
+[diff "cpp"]
+	# Use a funcname that copes better with return type being on a
+	# separate line than the function name.  This will match anything
+	# that looks like a function in column 1.  It seems like a good
+	# trade-off though.
+	xfuncname = "!^[ \t]*[A-Za-z_][A-Za-z_0-9]*:.*$\n"\
+"^(([A-Za-z_][A-Za-z_0-9]*([ \t*]+)?[A-Za-z_][A-Za-z_0-9]*([ \t]*::[ \t]*[^[:space:]]+)?){1,}[ \t]*\\([^;]*)$\n"\
+"^((typedef|struct|class|enum)[^;]*)$"
+
 [push]
 	default = upstream
 
