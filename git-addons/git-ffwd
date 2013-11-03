@@ -3,7 +3,8 @@ SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
     die "Not a git repository."
 
 # Taken from http://stackoverflow.com/questions/620650/can-i-easily-update-all-local-git-branches-from-remote-branches-simultaneously/answer-9076361
-# with a small tweak by me to make the fast-forward merge use --ff-only.
+# with a small tweak by me to make the fast-forward merge use --ff-only, and to
+# help prune remote branches.
 main() {
   REMOTES="$@";
   if [ -z "$REMOTES" ]; then
