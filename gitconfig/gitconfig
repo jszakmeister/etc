@@ -21,7 +21,7 @@
 
 	# A quick way to squash changes into the previous commit using
 	# the same log message
-	amend = commit --amend -C HEAD
+	amend = commit --amend --no-edit
 
 	# A handy graph-based log view
 	lol = log --abbrev-commit --graph --decorate
