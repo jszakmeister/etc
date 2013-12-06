@@ -30,10 +30,16 @@ bindkey -e
 # Set up tab completion to use only the prefix.
 bindkey "^I" expand-or-complete-prefix
 
+# Keybinding overrides
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
 # setup key accordingly
 [[ -n "${key[Delete]}"  ]]  && bindkey  "${key[Delete]}"  delete-char
-[[ -n "${key[Up]}"      ]]  && bindkey  "${key[Up]}"      history-beginning-search-backward
-[[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    history-beginning-search-forward
+[[ -n "${key[Up]}"      ]]  && bindkey  "${key[Up]}"      up-line-or-beginning-search
+[[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    down-line-or-beginning-search
 [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
 [[ -n "${key[CLeft]}"   ]]  && bindkey  "${key[CLeft]}"   backward-word
 [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
