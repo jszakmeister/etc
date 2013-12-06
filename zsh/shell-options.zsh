@@ -63,3 +63,7 @@ setopt shwordsplit
 # Remove superfluous blanks from each command line being added
 # to the history list.
 setopt hist_reduce_blanks
+
+# Use bash word style selection.
+autoload -U select-word-style
+select-word-style bash
