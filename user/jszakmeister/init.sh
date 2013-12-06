@@ -49,6 +49,12 @@ function man() {
     $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
 }
 
+# I prefer having the cursor stay where it's at when searching through history.
+[[ -n "${key[Up]}" ]] &&
+    bindkey "${key[Up]}" history-beginning-search-backward
+[[ -n "${key[Down]}" ]] &&
+    bindkey "${key[Down]}" history-beginning-search-forward
+
 # Disable slow keys...
 # Not sure if this persists or not.
 #
