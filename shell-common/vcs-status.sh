@@ -66,16 +66,24 @@ _vcs_status() {
         elif [[ -n "$upstream" ]]; then
             ahead=$(git rev-list --count --cherry-pick --right-only --no-merges $upstream... 2>/dev/null || echo "0")
             behind=$(git rev-list --count --cherry-pick --left-only --no-merges $upstream... 2>/dev/null || echo "0")
-            _git_has_diverged HEAD "$upstream"
-            differ=$?
         elif [[ -n "$(git symbolic-ref HEAD 2>/dev/null)" ]]; then
             ahead=$(git rev-list --count --cherry-pick --right-only --no-merges master... 2>/dev/null || echo "0")
             behind=$(git rev-list --count --cherry-pick --left-only --no-merges master... 2>/dev/null || echo "0")
-            _git_has_diverged HEAD master
-            differ=$?
         else
             ahead="0"
             behind="0"
+        fi
+
+        # Compute divergence separate from counts.  Since counts can take a long
+        # time, and someone can turn them off, we repeat a similar block here to
+        # help compute whether we diverge or not.
+        if [[ -n "$upstream" ]]; then
+            _git_has_diverged HEAD "$upstream"
+            differ=$?
+        elif [[ -n "$(git symbolic-ref HEAD 2>/dev/null)" ]]; then
+            _git_has_diverged HEAD master
+            differ=$?
+        else
             differ=0
         fi
 
