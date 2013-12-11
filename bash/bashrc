@@ -4,11 +4,9 @@ fi
 
 ETC_HOME="${ETC_HOME:-$HOME/projects/etc}"
 
-_uname="$(uname)"
-
 if [ -z "$ETC_USER" ]; then
-    case "MING" in
-        "$_uname")
+    case "$(uname)" in
+        MING*)
             ETC_USER="$USERNAME"
             ;;
         *)
