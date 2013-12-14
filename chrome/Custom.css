@@ -8,6 +8,11 @@
         font-family: "DejaVu Sans Mono" !important;
         font-size: 10pt !important;
     }
+    .bodycontainer .maincontent .message,
+    .bodycontainer .maincontent table.message td {
+        font-family: "DejaVu Sans Mono" !important;
+        font-size: 10pt !important;
+    }
 /*}*/
 /* @document domain("github.com") */
 /*{*/

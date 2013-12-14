@@ -10,4 +10,10 @@
         font-family: MonoSpace !important;
         font-size: 9pt !important;
     }
+
+    .bodycontainer .maincontent .message,
+    .bodycontainer .maincontent table.message td {
+        font-family: "DejaVu Sans Mono" !important;
+        font-size: 10pt !important;
+    }
 }
