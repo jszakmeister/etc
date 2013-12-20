@@ -11,7 +11,7 @@ if [[ "$OS" != "linux" && "$OS" != "darwin" ]]; then
     exit 1
 fi
 
-if [[ "$OS" == "darwin" ]]; then
+if [[ "$OS" == "darwin" && "$SKIP_GUI_CHECK" == "" ]]; then
     if test -z "$SECURITYSESSIONID" \
         -a "$TERM_PROGRAM" != "Apple_Terminal" \
         -a "$TERM_PROGRAM" != "iTerm.app" ; then
