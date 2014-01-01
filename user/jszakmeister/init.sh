@@ -25,6 +25,7 @@ _add_dir_shortcut l ~/projects/local-homepage
 _add_dir_shortcut l ~/projects/jszakmeister/local-homepage
 _add_dir_shortcut p ~/projects true
 _add_dir_shortcut v ~/.vim true
+_add_dir_shortcut vu ~/.vim/user/jszakmeister true
 
 # In ZSH, we need to remove any completions associated with cdc, or this will
 # fail.
@@ -54,6 +55,8 @@ function man() {
     bindkey "${key[Up]}" history-beginning-search-backward
 [[ -n "${key[Down]}" ]] &&
     bindkey "${key[Down]}" history-beginning-search-forward
+
+export LESSOPEN='|$ETC_HOME/user/jszakmeister/lessfilter.sh %s'
 
 # Disable slow keys...
 # Not sure if this persists or not.
