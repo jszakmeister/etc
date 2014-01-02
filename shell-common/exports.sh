@@ -13,51 +13,51 @@ test -d "$HOME/local/bin" &&
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/local/bin")
 
 if [[ "$platform" == 'darwin' ]]; then
-        python_version=$(python -c "import sys; print '%d.%d' % sys.version_info[:2]" 2>/dev/null ||
-                         python -c "import sys; print('{}.{}'.format(*sys.version_info[:2]))" 2>/dev/null)
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/Library/Python/$python_version/bin")
-        PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "/Library/Python/$python_version/bin:/System/Library/Frameworks/Python.framework/Versions/$python_version/bin")
+    python_version=$(python -c "import sys; print '%d.%d' % sys.version_info[:2]" 2>/dev/null ||
+                     python -c "import sys; print('{}.{}'.format(*sys.version_info[:2]))" 2>/dev/null)
+    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/Library/Python/$python_version/bin")
+    PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "/Library/Python/$python_version/bin:/System/Library/Frameworks/Python.framework/Versions/$python_version/bin")
 
-        slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
-        if [[ $slickedit_path != '' ]]; then
-            if [ -f $slickedit_path/Contents/slickedit/bin/vs ]; then
-                PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$slickedit_path/Contents/slickedit/bin")
-            fi
-            if [ -f $slickedit_path/Contents/MacOS/vs ]; then
-                PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$slickedit_path/Contents/MacOS")
-            fi
+    slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
+    if [[ $slickedit_path != '' ]]; then
+        if [ -f $slickedit_path/Contents/slickedit/bin/vs ]; then
+            PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$slickedit_path/Contents/slickedit/bin")
         fi
+        if [ -f $slickedit_path/Contents/MacOS/vs ]; then
+            PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$slickedit_path/Contents/MacOS")
+        fi
+    fi
 
-        if [ -d /opt/local/bin ]; then
-                PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" /opt/local/bin)
-        fi
+    if [ -d /opt/local/bin ]; then
+        PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" /opt/local/bin)
+    fi
 
-        if [ -d /usr/local/texlive/2009/bin/universal-darwin ]; then
-                PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "/usr/local/texlive/2009/bin/universal-darwin")
-        fi
+    if [ -d /usr/local/texlive/2009/bin/universal-darwin ]; then
+        PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "/usr/local/texlive/2009/bin/universal-darwin")
+    fi
 fi
 if [[ "$platform" == 'linux' ]]; then
-        if [ -d /opt/slickedit ]; then
-                PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /opt/slickedit/bin)
-        fi
-        if [ -d $HOME/.local/slickedit ]; then
-                PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/.local/slickedit/bin")
-        fi
+    if [ -d /opt/slickedit ]; then
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /opt/slickedit/bin)
+    fi
+    if [ -d $HOME/.local/slickedit ]; then
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/.local/slickedit/bin")
+    fi
 fi
 
 if [ -d "$ETC_HOME/git-addons" ]; then
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/git-addons")
+    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/git-addons")
 fi
 
 if [ -d "$ETC_HOME/scripts" ]; then
-        PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts/all")
+    PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts/all")
 
-        # Add a platform-specific area too.
-        etc_scripts_platform="$ETC_HOME/scripts/$platform"
-        if [ -d "$etc_scripts_platform" ]; then
-            PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$etc_scripts_platform")
-        fi
-        unset etc_scripts_platform
+    # Add a platform-specific area too.
+    etc_scripts_platform="$ETC_HOME/scripts/$platform"
+    if [ -d "$etc_scripts_platform" ]; then
+        PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$etc_scripts_platform")
+    fi
+    unset etc_scripts_platform
 fi
 
 # Put user script directories on the path.
@@ -83,19 +83,19 @@ test -d /sbin &&
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /sbin)
 
 if [[ "$PATHS_TO_PREPEND" != '' ]]; then
-        export PATH=$PATHS_TO_PREPEND:$PATH
+    export PATH=$PATHS_TO_PREPEND:$PATH
 fi
 
 if [[ "$PATHS_TO_APPEND" != '' ]]; then
-        export PATH=$PATH:$PATHS_TO_APPEND
+    export PATH=$PATH:$PATHS_TO_APPEND
 fi
 
 if _has_executable vs; then
-        export VSLICKXNOPLUSNEWMSG=1
+    export VSLICKXNOPLUSNEWMSG=1
 
-        if [ -f /usr/local/share/firefox/firefox ]; then
-                export VSLICKHELP_WEB_BROWSER=/usr/local/share/firefox/firefox
-        fi
+    if [ -f /usr/local/share/firefox/firefox ]; then
+        export VSLICKHELP_WEB_BROWSER=/usr/local/share/firefox/firefox
+    fi
 fi
 
 # A few times I've run into the locale not being set correctly...
