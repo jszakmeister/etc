@@ -13,6 +13,11 @@ test -d "$HOME/local/bin" &&
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/local/bin")
 
 if [[ "$platform" == 'darwin' ]]; then
+    # We compute the path to the standard framework area in the user's area
+    # because site.USER_SITE lies in Python 2.6 and less (it points to the posix
+    # user's location, which should be picked up by adding ~/.local/bin to the
+    # path).  So we compute it manually.  Also, we do a bit of a dance to cope
+    # with Python 3 being the default python implementation.
     python_version=$(python -c "import sys; print '%d.%d' % sys.version_info[:2]" 2>/dev/null ||
                      python -c "import sys; print('{}.{}'.format(*sys.version_info[:2]))" 2>/dev/null)
     PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/Library/Python/$python_version/bin")
