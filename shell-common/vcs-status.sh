@@ -22,7 +22,7 @@ _git_has_diverged() {
 
 _vcs_status() {
     function git_status {
-        local ref dirty count ahead behind divergent upstream g differ
+        local ref dirty count ahead behind divergent upstream g differ remote
         g=$(git rev-parse --git-dir 2>/dev/null)
         if [[ -z "$g" ]]; then
                 return 1
@@ -53,12 +53,28 @@ _vcs_status() {
         fi
 
         ref="${ref#refs/heads/}"
-        upstream=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
-        if [[ $upstream == "@{upstream}" ]]; then
-            upstream=""
-        else
-            upstream=${upstream#refs/remotes/}
-        fi
+
+        case $(git config --get push.default || echo "matching") in
+            current | simple | matching)
+                remote=$(git config --get branch.${ref}.pushremote ||
+                    git config --get remote.pushdefault ||
+                    git config --get branch.${ref}.remote)
+                if [[ -n "$remote" ]]; then
+                    upstream="$remote/$ref"
+                fi
+                ;;
+            upstream)
+                upstream=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
+                if [[ $upstream == "@{upstream}" ]]; then
+                    upstream=""
+                else
+                    upstream=${upstream#refs/remotes/}
+                fi
+                ;;
+            *)
+                upstream=""
+                ;;
+        esac
 
         if [[ -f "$g/.nocount" ]]; then
             ahead="0"
