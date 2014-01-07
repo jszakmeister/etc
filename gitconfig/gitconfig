@@ -144,7 +144,7 @@
 "^((typedef|struct|class|enum)[^;]*)$"
 
 [push]
-	default = upstream
+	default = current
 
 [rerere]
 	enabled = 1
