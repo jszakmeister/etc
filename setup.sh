@@ -50,17 +50,23 @@ _maybeInstall() {
     return 0
 }
 
+_installLink() {
+    local name
+    name="$(basename "$1")"
+    [[ -n "$3" ]] && name="$3"
+    echo "Checking $name..."
+    test ! -e "$1" && \
+        ln -s "$PATH_TO_ETC/$2" "$1" &&
+        echo "Installed $name"
+}
+
 # Set up links to configuration bits
 
-echo "Checking .inputrc..."
-test ! -e "$HOME/.inputrc" && \
-    ln -s "$PATH_TO_ETC/inputrc/inputrc" "$HOME/.inputrc" &&
-    echo "Installed .inputrc"
-
-echo "Checking .tmux.conf..."
-test ! -e "$HOME/.tmux.conf" &&
-    ln -s "$PATH_TO_ETC/tmux/tmux.conf" "$HOME/.tmux.conf" &&
-    echo "Installed .tmux.conf"
+_installLink "$HOME/.inputrc" inputrc/inputrc
+_installLink "$HOME/.tmux.conf" tmux/tmux.conf
+_installLink "$HOME/.quiltrc" quilt/quiltrc
+_installLink "$HOME/.colordiffrc" colordiffrc/colordiffrc
+_installLink "$HOME/.ctags" ctags/ctags
 
 echo "Checking .gitconfig..."
 test ! -e "$HOME/.gitconfig" &&
@@ -72,32 +78,14 @@ test ! -e "$HOME/.gitconfig" &&
     echo 'Run the following to set the git user email:
     git config --global user.email "user@example.com"'
 
-echo "Checking .quiltrc..."
-test ! -e "$HOME/.quiltrc" && \
-    ln -s "$PATH_TO_ETC/quilt/quiltrc" "$HOME/.quiltrc" &&
-    echo "Installed .quiltrc"
-
-echo "Checking .colordiffrc..."
-test ! -e "$HOME/.colordiffrc" && \
-    ln -s "$PATH_TO_ETC/colordiffrc/colordiffrc" "$HOME/.colordiffrc" &&
-    echo "Installed .colordiffrc"
-
 echo "Checking svnwrap config..."
 test ! -e "$CONFIG_HOME/svnwrap/config.ini" &&
     mkdir -p "$CONFIG_HOME/svnwrap" &&
     cp "svnwrap/config.ini" "$CONFIG_HOME/svnwrap/config.ini" &&
     echo "Installed svnwrap config"
 
-echo "Checking .ctags..."
-test ! -e "$HOME/.ctags" && \
-    ln -s "$PATH_TO_ETC/ctags/ctags" "$HOME/.ctags" &&
-    echo "Installed .ctags"
-
 if [ "$(uname)" == "Darwin" ]; then
-    echo "Checking .editrc..."
-    test ! -e "$HOME/.editrc" &&
-        ln -s "$PATH_TO_ETC/editrc/editrc" "$HOME/.editrc" &&
-        echo "Installed .editrc"
+    _installLink "$HOME/.editrc" editrc/editrc
     mkdir -p $HOME/Library/Fonts &&
         cp fonts/*.ttf $HOME/Library/Fonts &&
         echo "Installed custom fonts"
