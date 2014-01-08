@@ -67,6 +67,7 @@ _installLink "$HOME/.tmux.conf" tmux/tmux.conf
 _installLink "$HOME/.quiltrc" quilt/quiltrc
 _installLink "$HOME/.colordiffrc" colordiffrc/colordiffrc
 _installLink "$HOME/.ctags" ctags/ctags
+_installLink "$HOME/.rpmmacros" rpm/rpmmacros
 
 echo "Checking .gitconfig..."
 test ! -e "$HOME/.gitconfig" &&
