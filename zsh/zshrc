@@ -14,7 +14,7 @@ if [[ -z "$ETC_ZSHENV_SOURCED" ]]; then
 	. "$ETC_HOME/zsh/zshenv"
 fi
 
-. "$ETC_HOME/shell-common/aliases.sh"
+. "$ETC_HOME/shell-common/interactive.sh"
 
 # add a function path
 fpath=("$ETC_HOME/zsh/functions" "$ETC_HOME/zsh/completions" $fpath)

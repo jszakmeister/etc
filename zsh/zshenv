@@ -8,8 +8,8 @@ ETC_ZSHENV_SOURCED=1
 # scripting environments.
 setopt case_glob            # case sensitive globbing
 setopt clobber              # redirection can create files
-setopt glob		    # want globbing
-unsetopt nomatch	    # don't warn about non-matching globs
+setopt glob                 # want globbing
+unsetopt nomatch            # don't warn about non-matching globs
 setopt pushd_silent         # don't print stack after push/pop
 
 # A function to help with creating directory aliases and providing
@@ -48,11 +48,7 @@ _find_executable() {
     whence -p "$@"
 }
 
-. "$ETC_HOME/shell-common/platform.sh"
-. "$ETC_HOME/shell-common/core-functions.sh"
-. "$ETC_HOME/shell-common/exports.sh"
-. "$ETC_HOME/shell-common/functions.sh"
-. "$ETC_HOME/shell-common/common-init.sh"
+. "$ETC_HOME/shell-common/noninteractive.sh"
 
 test -s "$ETC_HOME/user/$ETC_USER/env.sh" &&
     . "$ETC_HOME/user/$ETC_USER/env.sh"
