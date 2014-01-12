@@ -46,8 +46,19 @@ if [ "$platform" = "darwin" ]; then
 fi
 
 # Use Vim as a front-end to man.
+# function man() {
+#     $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
+# }
+
 function man() {
-    $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
+    env LESS_TERMCAP_mb=$'\E[01;31m' \
+    LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+    LESS_TERMCAP_me=$'\E[0m' \
+    LESS_TERMCAP_se=$'\E[0m' \
+    LESS_TERMCAP_so=$'\E[38;7;246m' \
+    LESS_TERMCAP_ue=$'\E[0m' \
+    LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+    man "$@"
 }
 
 # I prefer having the cursor stay where it's at when searching through history.
