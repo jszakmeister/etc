@@ -109,7 +109,7 @@
 
 	# Helper to set origin (for instance, when I clone a repo, and then
 	# decide to fork it).
-	set-origin = "!sh -c 'git remote rename origin upstream && git remote add origin $1 && git fetch origin && git config remote.upstream.pushurl $1' -"
+	set-origin = !sh -c 'git remote rename origin upstream && git remote add origin $1 && git fetch origin && git config branch.master.pushremote origin' -
 
 	# Compute interdiff between two commits...
 	interdiff = !sh -c 'git -c color.ui=off show "$1" > .git/commit1 && git -c color.ui=off show "$2" > .git/commit2 && interdiff .git/commit[12]' -
