@@ -63,7 +63,8 @@ _vcs_status() {
                     remote="origin"
                 fi
                 if [[ -n "$remote" ]]; then
-                    upstream="$remote/$ref"
+                    git rev-parse "$remote/$ref" > /dev/null 2>&1 &&
+                        upstream="$remote/$ref"
                 fi
                 ;;
             upstream)
