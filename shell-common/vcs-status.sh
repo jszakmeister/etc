@@ -59,6 +59,9 @@ _vcs_status() {
                 remote=$(git config --get branch.${ref}.pushremote ||
                     git config --get remote.pushdefault ||
                     git config --get branch.${ref}.remote)
+                if [ -z "$remote" -a -n "$(git config --get remote.origin.url 2> /dev/null)" ]; then
+                    remote="origin"
+                fi
                 if [[ -n "$remote" ]]; then
                     upstream="$remote/$ref"
                 fi
