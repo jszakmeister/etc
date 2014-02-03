@@ -12,19 +12,20 @@ die () {
 find_upstream() {
     for up in "upstream" "origin"
     do
-        git config --local remote.$up.url >& /dev/null
+        git config --get --local remote.$up.url > /dev/null 2>&1
         if test $? -eq 0; then
             echo $up
             return 0
         fi
     done
-
-    die "No upstream or origin remote.  " \
-        "Can't determine where to fetch pull requests"
 }
 
 pull () {
     upstream=$(find_upstream)
+    if test $? -ne 0; then
+        die "No upstream or origin remote.  " \
+            "Can't determine where to fetch pull requests"
+    fi
 
     cmd="git fetch $upstream "
     for var in "$@"
