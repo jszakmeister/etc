@@ -102,7 +102,9 @@ _jszakmeister_prompt() {
                 let "length = $length - 5"
                 regex="s|^/.*?(/.{1,$length})$|/...\1|"
             fi
-            current_dir=$(echo -n $current_dir | perl -pe "$regex")
+            if (( $length > 0 )); then
+                current_dir=$(echo -n $current_dir | perl -pe "$regex")
+            fi
         fi
     fi
 
