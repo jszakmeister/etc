@@ -108,7 +108,14 @@ _vcs_status() {
         fi
 
         if [[ -n "$upstream" ]]; then
-            upstream=" ${fg_no_bold_white}[${upstream/%origin\/$ref/u}]${ansi_reset}"
+            # Use a simple "u" if the it's at origin/<branch-name>.
+            upstream="${upstream/%origin\/$ref/u}"
+
+            # If the remote is different, use "remote/...".
+            if [[ "$upstream" == *${ref} ]]; then
+                upstream="${upstream%%${ref}}..."
+            fi
+            upstream=" ${fg_no_bold_white}[${upstream}]${ansi_reset}"
         fi
 
         if (( ${behind} > 0 )); then
