@@ -26,6 +26,7 @@ _add_dir_shortcut l ~/projects/jszakmeister/local-homepage
 _add_dir_shortcut p ~/projects true
 _add_dir_shortcut v ~/.vim true
 _add_dir_shortcut vu ~/.vim/user/jszakmeister true
+_add_dir_shortcut s ~/sources true
 
 # In ZSH, we need to remove any completions associated with cdc, or this will
 # fail.
