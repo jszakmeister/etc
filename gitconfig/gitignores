@@ -88,10 +88,15 @@ junitvmwatcher*.properties
 auto-save-list
 tramp
 
+# Object files
+*.o
+*.obj
+
 # Libs
 *.lib
 *.so
 *.dll
+*.a
 
 # Python
 *.pyc
