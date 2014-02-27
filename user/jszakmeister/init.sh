@@ -73,6 +73,9 @@ if _has_executable hexdump; then
     alias hexdump="hexdump -v -e '/16 \"%10_ad:  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \" \"    \" 16/1 \"%_p\" \"\\n\"'"
 fi
 
+if _has_executable cninja; then
+    alias cn=cninja
+fi
 # Disable slow keys...
 # Not sure if this persists or not.
 #
