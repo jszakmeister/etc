@@ -1,5 +1,6 @@
 export WORKON_HOME=$HOME/.virtualenvs
 export PAGER=less
+export CACHE_CPP2=1
 
 if [ "$platform" = "darwin" ]; then
     alias ostat="stat -f '%Mp%Lp %N'"
