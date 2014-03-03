@@ -1,15 +1,23 @@
 #!/bin/bash
 OS=$(uname | tr '[A-Z]' '[a-z]')
 
+IS_X_BASED=
+
 GVIM=$(type -P mvim)
 if test -z "$GVIM"; then
     GVIM=gvim
 fi
 
-if [[ "$OS" != "linux" && "$OS" != "darwin" ]]; then
-    echo "Unrecognized OS" >& 2
-    exit 1
-fi
+case "$OS" in
+    linux | *bsd)
+        IS_X_BASED=true
+        ;;
+    darwin)
+        ;;
+    *)
+        echo "Unrecognized OS: $OS" >& 2
+        exit 1
+esac
 
 if [[ "$OS" == "darwin" && "$SKIP_GUI_CHECK" == "" ]]; then
     if test -z "$SECURITYSESSIONID" \
@@ -27,7 +35,7 @@ else
 fi
 
 extraopts=""
-if [[ "$OS" == "linux" ]]; then
+if [ -n "$IS_X_BASED" ]; then
     extraopts="$extraopts --name $SERVER_NAME"
 
     type -a wmctrl > /dev/null 2>&1 || {
@@ -58,7 +66,7 @@ if [ $? -eq 0 ]; then
         if [[ -n "$running" ]]; then
             echo 'tell application "System Events" to set frontmost of process "MacVim" to true' | osascript
         fi
-    elif [[ "$OS" == "linux" ]]; then
+    elif [ -n "$IS_X_BASED" ]; then
         wmctrl -xa $SERVER_NAME.Gvim
     fi
 else
