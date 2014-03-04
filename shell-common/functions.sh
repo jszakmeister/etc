@@ -6,7 +6,7 @@ function find-project-root
     do
         if [ -d "$tmp_path/.svn" ]; then
             last_found="$tmp_path"
-        elif [ -e "$tmp_path/.git" -o -d "$tmp_path/.hg" -o -d "$tmp_path/.bzr" ]; then
+        elif [ -e "$tmp_path/.git" -o -d "$tmp_path/.hg" -o -d "$tmp_path/.bzr" -o -f "$tmp_path/.cdt-stop" ]; then
             last_found="$tmp_path"
             break
         fi
