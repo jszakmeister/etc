@@ -10,6 +10,6 @@ SOURCE_LENGTH=$(( ${#SOURCE} + 1 ))
 
 find -L "$SOURCE" -type f | while read LINK; do
     TARGET=${LINK:$SOURCE_LENGTH}
-    echo ln -s "$LINK" "$TARGET"
-    ln -s "$LINK" "$TARGET"
+    echo ln -sf "$LINK" "$TARGET"
+    ln -sf "$LINK" "$TARGET"
 done
