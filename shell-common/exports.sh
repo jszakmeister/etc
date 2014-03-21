@@ -73,6 +73,8 @@ test -d "$ETC_HOME/user/$ETC_USER/scripts/$platform" &&
     PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/$platform")
 
 # Put ccache links on the path, if they're available.
+test -d /usr/local/opt/ccache/libexec &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/opt/ccache/libexec)
 test -d /usr/local/lib/ccache &&
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/lib/ccache)
 test -d /usr/lib/ccache &&
