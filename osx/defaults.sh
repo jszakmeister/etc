@@ -1,3 +1,4 @@
+#!/bin/bash
 # This largely taken from the excellent set of settings Mathias Bynens put
 # together here:
 #   https://github.com/mathiasbynens/dotfiles/blob/master/.osx
