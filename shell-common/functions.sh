@@ -4,11 +4,11 @@ function find-project-root
     local tmp_path=$(dirname "$last_found")
     while [[ "$tmp_path" != "/" ]];
     do
-        if [ -d "$tmp_path/.svn" ]; then
-            last_found="$tmp_path"
-        elif [ -e "$tmp_path/.git" -o -d "$tmp_path/.hg" -o -d "$tmp_path/.bzr" -o -f "$tmp_path/.cdt-stop" ]; then
+        if [ -e "$tmp_path/.git" -o -d "$tmp_path/.hg" -o -d "$tmp_path/.bzr" -o -f "$tmp_path/.cdt-stop" ]; then
             last_found="$tmp_path"
             break
+        elif [ -d "$tmp_path/.svn" ]; then
+            last_found="$tmp_path"
         fi
         tmp_path=$(dirname "$tmp_path")
     done
