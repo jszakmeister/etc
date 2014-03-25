@@ -23,7 +23,7 @@ find_upstream() {
         "Can't determine where to fetch pull requests"
 }
 
-pull () {
+fetch() {
     upstream=$(find_upstream)
 
     cmd="git fetch $upstream "
@@ -35,4 +35,4 @@ pull () {
     $cmd || die "Could not fetch all the pull requests."
 }
 
-pull "$@"
+fetch "$@"
