@@ -12,7 +12,7 @@ die () {
 find_upstream() {
     for up in "upstream" "origin"
     do
-        git config --local remote.$up.url >& /dev/null
+        git config --get --local remote.$up.url 2>&1 > /dev/null
         if test $? -eq 0; then
             echo $up
             return 0
