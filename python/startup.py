@@ -38,7 +38,8 @@ def setup_readline():
 
         def save_history(historypath=historypath):
             import readline
-            readline.write_history_file(historypath)
+            if readline.get_current_history_length():
+                readline.write_history_file(historypath)
 
         if os.path.exists(historypath):
             readline.read_history_file(historypath)
