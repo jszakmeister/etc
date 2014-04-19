@@ -63,3 +63,18 @@ function gdb
         "$gdb_path" -x "$ETC_HOME/gdb/default.gdb" "$@"
     fi
 }
+
+# For clang when running under pip and tox.  This is to help prevent errors from
+# unused arguments, and to prevent accidentally selecting gcc when ccache is
+# installed, but gcc is not.
+cc --version 2>&1 | grep clang > /dev/null 2>&1 && {
+    pip() {
+        CC=clang CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments \
+            $(_find_executable pip) "$@"
+    }
+
+    tox() {
+        CC=clang CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments \
+            $(_find_executable tox) "$@"
+    }
+}
