@@ -40,6 +40,10 @@ if [[ "$platform" == 'darwin' ]]; then
     if [ -d /usr/local/texlive/2009/bin/universal-darwin ]; then
         PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "/usr/local/texlive/2009/bin/universal-darwin")
     fi
+
+    if [ -d /usr/local/git/bin ]; then
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/git/bin)
+    fi
 fi
 if [[ "$platform" == 'linux' ]]; then
     if [ -d /opt/slickedit ]; then
