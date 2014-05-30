@@ -49,6 +49,7 @@ _jszakmeister_filter_ansi() {
 _jszakmeister_prompt() {
     local separator="${fg_bold_blue}::${ansi_reset}"
     local user_host vcs_status topline SRMT ERMT regex virtualenv_status
+    local user_color="${fg_bold_yellow}"
     local ret_code="$1"
 
     [ -z "$ret_code" ] && ret_code=0
@@ -65,7 +66,12 @@ _jszakmeister_prompt() {
         SRMT=""
         ERMT=""
     fi
-    user_host="$SRMT${fg_bold_yellow}${USER}${fg_bold_cyan}@${fg_bold_blue}${host}$ERMT${ansi_reset}"
+
+    if [ $(id -u) -eq 0 ]; then
+        user_color="${fg_bold_red}"
+    fi
+
+    user_host="$SRMT${user_color}${USER}${fg_bold_cyan}@${fg_bold_blue}${host}$ERMT${ansi_reset}"
 
     vcs_status=$(_vcs_status)
     [ -n "${vcs_status}" ] && vcs_status=" ${vcs_status}"
