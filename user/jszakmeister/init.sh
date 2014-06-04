@@ -78,6 +78,21 @@ fi
 if _has_executable cninja; then
     alias cn=cninja
 fi
+
+function find-domain-controllers() {
+    local DNS_SERVER
+
+    # Use the domain name as the argument, and the DNS server as a secondary
+    # argument.
+    if [ -n "$2" ]; then
+        DNS_SERVER="@${2}"
+    else
+        DNS_SERVER=
+    fi
+
+    dig $DNS_SERVER -t SRV _ldap._tcp.$1
+}
+
 # Disable slow keys...
 # Not sure if this persists or not.
 #
