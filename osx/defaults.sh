@@ -377,4 +377,5 @@ test -z $userOnly && hash tmutil &> /dev/null && sudo tmutil disablelocal
 # defaults write com.apple.DiskUtility DUDebugMenuEnabled -bool true
 defaults write com.apple.DiskUtility advanced-image-options -bool true
 
-
+# Disable swipe page on Chrome
+defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool FALSE
