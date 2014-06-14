@@ -1,18 +1,23 @@
 #!/bin/bash
 PACKAGES_TO_INSTALL='
-    automake
     autoconf
-    libtool
-    ninja
+    automake
     ccache
-    tree
-    pkg-config
-    wget
-    patchutils
     colordiff
+    gettext
+    libdvdcss
+    libtool
     md5sha1sum
     minicom
-    libdvdcss
+    ninja
+    nmap
+    patchutils
+    pkg-config
+    rsync
+    tmux
+    tree
+    wget
+    xz
 '
 
 for package in ${PACKAGES_TO_INSTALL}; do
