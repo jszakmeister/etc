@@ -69,7 +69,7 @@ function man() {
 [[ -n "${key[Down]}" ]] &&
     bindkey "${key[Down]}" history-beginning-search-forward
 
-export LESSOPEN='|$ETC_HOME/user/jszakmeister/lessfilter.sh %s'
+export LESSOPEN="|$ETC_HOME/user/jszakmeister/lessfilter.sh %s"
 
 if _has_executable hexdump; then
     alias hexdump="hexdump -v -e '/16 \"%10_ad:  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \" \"    \" 16/1 \"%_p\" \"\\n\"'"
