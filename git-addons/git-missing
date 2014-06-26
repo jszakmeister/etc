@@ -16,6 +16,45 @@ log_options="--pretty=oneline --abbrev-commit"
 git config --get-colorbool color.missing &&
     log_options="$log_options --color=always"
 
+infer_tracking_branch()
+{
+    ref="$(git symbolic-ref HEAD 2>/dev/null)"
+    if [[ "$ref" == "" ]]; then
+        return
+    fi
+
+    ref="${ref#refs/heads/}"
+
+    case $(git config --get push.default || echo "matching") in
+        current | simple | matching)
+            remote=$(git config --get branch.${ref}.pushremote ||
+                git config --get remote.pushdefault ||
+                git config --get branch.${ref}.remote)
+            if [ -z "$remote" -a -n "$(git config --get remote.origin.url 2> /dev/null)" ]; then
+                remote="origin"
+            fi
+            if [[ -n "$remote" ]]; then
+                git rev-parse "$remote/$ref" > /dev/null 2>&1 &&
+                    tracking_branch="$remote/$ref"
+            fi
+            ;;
+        upstream)
+            tracking_branch=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
+            if [[ $upstream == "@{upstream}" ]]; then
+                tracking_branch=""
+            else
+                tracking_branch=${upstream#refs/remotes/}
+            fi
+            ;;
+        *)
+            tracking_branch=""
+            ;;
+    esac
+
+    echo "$tracking_branch"
+}
+
+
 cmd_missing()
 {
     local firstbranch=$1
@@ -23,7 +62,7 @@ cmd_missing()
 
     if test -z "$firstbranch"; then
         # Compare against the tracking branch...
-        tracking_branch=$(git rev-parse --revs-only @{u} 2>/dev/null)
+        tracking_branch=$(infer_tracking_branch)
         test -z "$tracking_branch" &&
             die "Can't infer branch to compare to. At least one branch required"
         firstbranch=$tracking_branch
