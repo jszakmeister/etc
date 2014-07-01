@@ -344,6 +344,22 @@ defaults write com.apple.dock wvous-tl-modifier -int 0
 defaults write com.apple.dock wvous-tr-corner -int 8
 defaults write com.apple.dock wvous-tr-modifier -int 0
 
+# Disable switching desktops via control keys.
+# Control-up (Mission Control)
+defaults write com.apple.symbolichotkeys -dict-add 32 '{ enabled = 0; value = { parameters = (65535, 126, 262144); type = standard; }; }'
+defaults write com.apple.symbolichotkeys -dict-add 34 '{ enabled = 0; value = { parameters = (65535, 126, 393216); type = standard; }; }'
+# Control-down (Applications)
+defaults write com.apple.symbolichotkeys -dict-add 33 '{ enabled = 0; value = { parameters = (65535, 125, 262144); type = standard; }; }'
+defaults write com.apple.symbolichotkeys -dict-add 35 '{ enabled = 0; value = { parameters = (65535, 125, 393216); type = standard; }; }'
+# Control-left (Move left a space)
+defaults write com.apple.symbolichotkeys -dict-add 79 '{ enabled = 0; value = { parameters = (65535, 123, 262144); type = standard; }; }'
+defaults write com.apple.symbolichotkeys -dict-add 80 '{ enabled = 0; value = { parameters = (65535, 123, 393216); type = standard; }; }'
+# Control-right (Move right a space)
+defaults write com.apple.symbolichotkeys -dict-add 81 '{ enabled = 0; value = { parameters = (65535, 124, 262144); type = standard; }; }'
+defaults write com.apple.symbolichotkeys -dict-add 82 '{ enabled = 0; value = { parameters = (65535, 124, 393216); type = standard; }; }'
+# Control-1 (Switch to desktop 1)
+defaults write com.apple.symbolichotkeys -dict-add 118 '{ enabled = 0; value = { parameters = (65535, 18, 262144); type = standard; }; }'
+
 ###############################################################################
 # Time Machine                                                                #
 ###############################################################################
