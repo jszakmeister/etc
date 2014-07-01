@@ -346,19 +346,23 @@ defaults write com.apple.dock wvous-tr-modifier -int 0
 
 # Disable switching desktops via control keys.
 # Control-up (Mission Control)
-defaults write com.apple.symbolichotkeys -dict-add 32 '{ enabled = 0; value = { parameters = (65535, 126, 262144); type = standard; }; }'
-defaults write com.apple.symbolichotkeys -dict-add 34 '{ enabled = 0; value = { parameters = (65535, 126, 393216); type = standard; }; }'
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:32:enabled 0" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:34:enabled 0" ~/Library/Preferences/com.apple.symbolichotkeys.plist
 # Control-down (Applications)
-defaults write com.apple.symbolichotkeys -dict-add 33 '{ enabled = 0; value = { parameters = (65535, 125, 262144); type = standard; }; }'
-defaults write com.apple.symbolichotkeys -dict-add 35 '{ enabled = 0; value = { parameters = (65535, 125, 393216); type = standard; }; }'
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:33:enabled 0" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:35:enabled 0" ~/Library/Preferences/com.apple.symbolichotkeys.plist
 # Control-left (Move left a space)
-defaults write com.apple.symbolichotkeys -dict-add 79 '{ enabled = 0; value = { parameters = (65535, 123, 262144); type = standard; }; }'
-defaults write com.apple.symbolichotkeys -dict-add 80 '{ enabled = 0; value = { parameters = (65535, 123, 393216); type = standard; }; }'
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:79:enabled 0" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:80:enabled 0" ~/Library/Preferences/com.apple.symbolichotkeys.plist
 # Control-right (Move right a space)
-defaults write com.apple.symbolichotkeys -dict-add 81 '{ enabled = 0; value = { parameters = (65535, 124, 262144); type = standard; }; }'
-defaults write com.apple.symbolichotkeys -dict-add 82 '{ enabled = 0; value = { parameters = (65535, 124, 393216); type = standard; }; }'
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:81:enabled 0" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:82:enabled 0" ~/Library/Preferences/com.apple.symbolichotkeys.plist
 # Control-1 (Switch to desktop 1)
-defaults write com.apple.symbolichotkeys -dict-add 118 '{ enabled = 0; value = { parameters = (65535, 18, 262144); type = standard; }; }'
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:118:enabled 0" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+
+# Get rid of cached preferences...
+killall cfprefsd
+launchctl stop com.apple.Dock.agent
 
 ###############################################################################
 # Time Machine                                                                #
@@ -395,3 +399,5 @@ defaults write com.apple.DiskUtility advanced-image-options -bool true
 
 # Disable swipe page on Chrome
 defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool FALSE
+
+echo "You need to logout and back in for some preferences to take effect."
