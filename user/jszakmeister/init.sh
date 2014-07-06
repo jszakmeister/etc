@@ -82,6 +82,18 @@ if _has_executable cninja; then
     alias cn=cninja
 fi
 
+if [ -f "/Applications/VMware Fusion.app/Contents/Library/vmrun" ]; then
+    alias vmrun="/Applications/VMware\ Fusion.app/Contents/Library/vmrun"
+    [ -f ~/Documents/Virtual\ Machines.localized/dev-ubuntu.vmwarevm/dev-ubuntu.vmx ] && {
+        alias start-dev-ubuntu="vmrun -T fusion start ~/Documents/Virtual\ Machines.localized/dev-ubuntu.vmwarevm/dev-ubuntu.vmx nogui"
+        alias stop-dev-ubuntu="vmrun -T fusion stop ~/Documents/Virtual\ Machines.localized/dev-ubuntu.vmwarevm/dev-ubuntu.vmx"
+    }
+    [ -f ~/Documents/Virtual\ Machines.localized/freebsd-10.vmwarevm/freebsd-10.vmx ] && {
+        alias start-freebsd-10="vmrun -T fusion start ~/Documents/Virtual\ Machines.localized/freebsd-10.vmwarevm/freebsd-10.vmx nogui"
+        alias stop-freebsd-10="vmrun -T fusion stop ~/Documents/Virtual\ Machines.localized/freebsd-10.vmwarevm/freebsd-10.vmx"
+    }
+fi
+
 function find-domain-controllers() {
     local DNS_SERVER
 
