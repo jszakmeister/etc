@@ -1,17 +1,17 @@
 /* This should get copied to the following location under a Mac:
  *   ~/Library/Application Support/Google/Chrome/Default/User StyleSheets
+ *
+ * Note: Custom.css isn't supported by Chrome anymore, but you can drop
+ * these into the Stylish extension for Chrome.
  */
 /* @document domain("mail.google.com") */
 /*{*/
     /* GMail messages and textarea should use fixed-width font */
-    .gs .ii, textarea.dV, textarea.Ak, div.editable[role="textbox"] {
+    div[role="main"] table[role="presentation"] tr td.Bu .gs .ii {
         font-family: "DejaVu Sans Mono" !important;
-        font-size: 10pt !important;
     }
-    .bodycontainer .maincontent .message,
-    .bodycontainer .maincontent table.message td {
+    div.editable[role="textbox"] {
         font-family: "DejaVu Sans Mono" !important;
-        font-size: 10pt !important;
     }
 /*}*/
 /* @document domain("github.com") */
