@@ -55,8 +55,8 @@ if [[ "$platform" == 'linux' ]]; then
     alias scons='scons -u -j$(grep -c ^processor /proc/cpuinfo)'
     alias make='nice -n 3 make -j$(grep -c ^processor /proc/cpuinfo)'
     alias ps='ps -ef'
-    alias ls='ls -hFGA --color=auto'
-    alias ll='ls -hFlG --color=auto'
+    alias ls='ls -hFA --color=auto'
+    alias ll='ls -hFl --color=auto'
     alias top='top -d 1'
     if _has_executable xsel; then
         alias pbcopy='xsel --clipboard --input'
