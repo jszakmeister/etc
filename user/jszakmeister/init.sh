@@ -5,6 +5,10 @@ export HOMEBREW_NO_EMOJI=1
 
 if [ "$platform" = "darwin" ]; then
     alias ostat="stat -f '%Mp%Lp %N'"
+    if _has_executable gnu-ls; then
+        alias ls='gnu-ls -hFA --color=auto'
+        alias ll='gnu-ls -hFl --color=auto'
+    fi
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
 fi
