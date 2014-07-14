@@ -69,10 +69,10 @@ _vcs_status() {
                 ;;
             upstream)
                 upstream=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
-                if [[ $upstream == "@{upstream}" ]]; then
-                    upstream=""
-                else
+                if [ $? -eq 0 -a "$upstream" != "@{upstream}" ]; then
                     upstream=${upstream#refs/remotes/}
+                else
+                    upstream=""
                 fi
                 ;;
             *)
