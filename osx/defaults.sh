@@ -37,7 +37,7 @@ if test -z $noDetect ; then
 fi
 
 # Just suspend to RAM, rather than writing the image to disk.
-test -n "$isLaptop" -z "$userOnly" && sudo pmset -a hibernatemode 0
+test -n "$isLaptop" -a -z "$userOnly" && sudo pmset -a hibernatemode 0
 
 ###############################################################################
 # General UI/UX                                                               #
