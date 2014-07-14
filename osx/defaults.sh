@@ -27,7 +27,7 @@ done
 
 if test -z $noDetect ; then
     system_profiler SPHardwareDataType | grep 'Model Identifier' | grep -q MacPro
-    if $? -eq 0 ; then
+    if [ $? -eq 0 ]; then
         isMacPro=t
         isLaptop=
     else
