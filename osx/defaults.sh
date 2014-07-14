@@ -9,7 +9,7 @@ isLaptop=
 userOnly=
 noDetect=
 
-while getopts p name
+while getopts pdlu name
 do
     case $name in
         p)  proMode=t
