@@ -112,7 +112,7 @@ _vcs_status() {
             upstream="${upstream/%origin\/$ref/u}"
 
             # If the remote is different, use "remote/...".
-            if [[ "$upstream" == *${ref} ]]; then
+            if [[ "$upstream" == */${ref} ]]; then
                 upstream="${upstream%%${ref}}..."
             fi
             upstream=" ${fg_no_bold_white}[${upstream}]${ansi_reset}"
