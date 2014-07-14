@@ -20,6 +20,48 @@ _git_has_diverged() {
     return 1
 }
 
+# This is duplicated in git-missing.  Make sure to update both if you make
+# changes.
+_git_infer_publish_branch()
+{
+    local publish_branch
+
+    ref="$(git symbolic-ref HEAD 2>/dev/null)"
+    if [[ "$ref" == "" ]]; then
+        return
+    fi
+
+    ref="${ref#refs/heads/}"
+
+    case $(git config --get push.default || echo "matching") in
+        current | simple | matching)
+            remote=$(git config --get branch.${ref}.pushremote ||
+                git config --get remote.pushdefault ||
+                git config --get branch.${ref}.remote)
+            if [ -z "$remote" -a -n "$(git config --get remote.origin.url 2> /dev/null)" ]; then
+                remote="origin"
+            fi
+            if [[ -n "$remote" ]]; then
+                git rev-parse "$remote/$ref" > /dev/null 2>&1 &&
+                    publish_branch="$remote/$ref"
+            fi
+            ;;
+        upstream)
+            publish_branch=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
+            if [ $? -eq 0 -a "$publish_branch" != "@{upstream}" ]; then
+                publish_branch=${publish_branch#refs/remotes/}
+            else
+                publish_branch=""
+            fi
+            ;;
+        *)
+            publish_branch=""
+            ;;
+    esac
+
+    echo "$publish_branch"
+}
+
 _vcs_status() {
     function git_status {
         local ref dirty count ahead behind divergent upstream g differ remote
@@ -54,31 +96,7 @@ _vcs_status() {
 
         ref="${ref#refs/heads/}"
 
-        case $(git config --get push.default || echo "matching") in
-            current | simple | matching)
-                remote=$(git config --get branch.${ref}.pushremote ||
-                    git config --get remote.pushdefault ||
-                    git config --get branch.${ref}.remote)
-                if [ -z "$remote" -a -n "$(git config --get remote.origin.url 2> /dev/null)" ]; then
-                    remote="origin"
-                fi
-                if [[ -n "$remote" ]]; then
-                    git rev-parse "$remote/$ref" > /dev/null 2>&1 &&
-                        upstream="$remote/$ref"
-                fi
-                ;;
-            upstream)
-                upstream=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
-                if [ $? -eq 0 -a "$upstream" != "@{upstream}" ]; then
-                    upstream=${upstream#refs/remotes/}
-                else
-                    upstream=""
-                fi
-                ;;
-            *)
-                upstream=""
-                ;;
-        esac
+        upstream="$(_git_infer_publish_branch)"
 
         if [[ -f "$g/.nocount" ]]; then
             ahead="0"

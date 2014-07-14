@@ -16,8 +16,12 @@ log_options="--pretty=oneline --abbrev-commit"
 git config --get-colorbool color.missing &&
     log_options="$log_options --color=always"
 
-infer_tracking_branch()
+# This is duplicated in vcs-status.  Make sure to update both if you make
+# changes.
+_git_infer_publish_branch()
 {
+    local publish_branch
+
     ref="$(git symbolic-ref HEAD 2>/dev/null)"
     if [[ "$ref" == "" ]]; then
         return
@@ -35,23 +39,23 @@ infer_tracking_branch()
             fi
             if [[ -n "$remote" ]]; then
                 git rev-parse "$remote/$ref" > /dev/null 2>&1 &&
-                    tracking_branch="$remote/$ref"
+                    publish_branch="$remote/$ref"
             fi
             ;;
         upstream)
-            tracking_branch=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
-            if [[ $upstream == "@{upstream}" ]]; then
-                tracking_branch=""
+            publish_branch=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
+            if [ $? -eq 0 -a "$publish_branch" != "@{upstream}" ]; then
+                publish_branch=${publish_branch#refs/remotes/}
             else
-                tracking_branch=${upstream#refs/remotes/}
+                publish_branch=""
             fi
             ;;
         *)
-            tracking_branch=""
+            publish_branch=""
             ;;
     esac
 
-    echo "$tracking_branch"
+    echo "$publish_branch"
 }
 
 
@@ -61,11 +65,11 @@ cmd_missing()
     local secondbranch=$2
 
     if test -z "$firstbranch"; then
-        # Compare against the tracking branch...
-        tracking_branch=$(infer_tracking_branch)
-        test -z "$tracking_branch" &&
+        # Compare against the publish branch...
+        publish_branch="$(_git_infer_publish_branch)"
+        test -z "$publish_branch" &&
             die "Can't infer branch to compare to. At least one branch required"
-        firstbranch=$tracking_branch
+        firstbranch=$publish_branch
     fi
 
     git rev-parse $firstbranch -- > /dev/null 2>&1 ||
