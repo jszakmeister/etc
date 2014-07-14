@@ -25,7 +25,7 @@ do
     esac
 done
 
-if test -z $noDetect ; then
+if test -z "$noDetect" ; then
     system_profiler SPHardwareDataType | grep 'Model Identifier' | grep -q MacPro
     if [ $? -eq 0 ]; then
         isMacPro=t
@@ -118,13 +118,13 @@ defaults write com.apple.helpviewer DevMode -bool true
 
 # Reveal IP address, hostname, OS version, etc. when clicking the clock
 # in the login window
-test -z $userOnly && sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
+test -z "$userOnly" && sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
 
 # Restart automatically if the computer freezes
-test -z $userOnly && systemsetup -setrestartfreeze on
+test -z "$userOnly" && systemsetup -setrestartfreeze on
 
 # Never go into computer sleep mode
-test -z $userOnly && systemsetup -setcomputersleep Off > /dev/null
+test -z "$userOnly" && systemsetup -setcomputersleep Off > /dev/null
 
 # Check for software updates daily, not just once per week
 # defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
@@ -135,14 +135,14 @@ test -z $userOnly && systemsetup -setcomputersleep Off > /dev/null
 
 # Trackpad: enable tap to click for this user and for the login screen
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-test -z $userOnly && defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+test -z "$userOnly" && defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
 # Trackpad: map bottom right corner to right-click
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 2
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
-test -z $userOnly && defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
-test -z $userOnly && defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
+test -z "$userOnly" && defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
+test -z "$userOnly" && defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true
 
 # Trackpad: swipe between pages with three fingers
 # defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerHorizSwipeGesture -int 1
@@ -165,7 +165,7 @@ defaults write com.apple.BezelServices kDim -bool true
 defaults write com.apple.BezelServices kDimTime -int 300
 
 # Set the timezone; see `systemsetup -listtimezones` for other values
-test -z $userOnly && systemsetup -settimezone "America/New_York" > /dev/null
+test -z "$userOnly" && systemsetup -settimezone "America/New_York" > /dev/null
 
 # Disable auto-correct
 # defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
@@ -372,7 +372,7 @@ launchctl stop com.apple.Dock.agent
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 # Disable local Time Machine backups
-test -z $userOnly && hash tmutil &> /dev/null && sudo tmutil disablelocal
+test -z "$userOnly" && hash tmutil &> /dev/null && sudo tmutil disablelocal
 
 ###############################################################################
 # Address Book, Dashboard, iCal, TextEdit, and Disk Utility                   #
