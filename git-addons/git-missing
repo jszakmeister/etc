@@ -61,39 +61,39 @@ _git_infer_publish_branch()
 
 cmd_missing()
 {
-    local firstbranch=$1
-    local secondbranch=$2
+    local firstbranch="$1"
+    local secondbranch="$2"
 
     if test -z "$firstbranch"; then
         # Compare against the publish branch...
         publish_branch="$(_git_infer_publish_branch)"
         test -z "$publish_branch" &&
             die "Can't infer branch to compare to. At least one branch required"
-        firstbranch=$publish_branch
+        firstbranch="$publish_branch"
     fi
 
-    git rev-parse $firstbranch -- > /dev/null 2>&1 ||
+    git rev-parse "$firstbranch" -- > /dev/null 2>&1 ||
         die "Invalid branch or rev: $firstbranch"
 
     if test -z "$secondbranch"; then
-        secondbranch=$firstbranch
+        secondbranch="$firstbranch"
         firstbranch=
     else
-        git rev-parse $secondbranch -- > /dev/null 2>&1 ||
+        git rev-parse "$secondbranch" -- > /dev/null 2>&1 ||
             die "Invalid branch or rev: $secondbranch"
     fi
 
-    local extra=$(git rev-list --count --cherry-pick --right-only --no-merges $secondbranch...$firstbranch)
-    local missing=$(git rev-list --count --cherry-pick --left-only --no-merges $secondbranch...$firstbranch)
+    local extra=$(git rev-list --count --cherry-pick --right-only --no-merges "$secondbranch...$firstbranch")
+    local missing=$(git rev-list --count --cherry-pick --left-only --no-merges "$secondbranch...$firstbranch")
     local output=0
 
     if [ "$extra" != "0" ]; then
         output=1
 
         line="You have $extra extra revisions"
-        echo $line
-        echo $line | sed -e 's/./-/g'
-        git log $log_options --cherry-pick --right-only --no-merges $secondbranch...$firstbranch
+        echo "$line"
+        echo "$line" | sed -e 's/./-/g'
+        git log $log_options --cherry-pick --right-only --no-merges "$secondbranch...$firstbranch"
     fi
 
     if [ "$missing" != "0" ]; then
@@ -104,9 +104,9 @@ cmd_missing()
         output=1
 
         line="You have $missing missing revisions"
-        echo $line
-        echo $line | sed -e 's/./-/g'
-        git log $log_options --cherry-pick --left-only --no-merges $secondbranch...$firstbranch
+        echo "$line"
+        echo "$line" | sed -e 's/./-/g'
+        git log $log_options --cherry-pick --left-only --no-merges "$secondbranch...$firstbranch"
     fi
 
     if [ $output != "0" ]; then
