@@ -65,6 +65,8 @@ _git_infer_publish_branch()
 _vcs_status() {
     function git_status {
         local ref dirty count ahead behind divergent upstream g differ remote
+        local nomaster=""
+
         g=$(git rev-parse --git-dir 2>/dev/null)
         if [[ -z "$g" ]]; then
                 return 1
@@ -98,29 +100,36 @@ _vcs_status() {
 
         upstream="$(_git_infer_publish_branch)"
 
-        if [[ -f "$g/.nocount" ]]; then
-            ahead="0"
-            behind="0"
-        elif [[ -n "$upstream" ]]; then
+        [ -f "$g/.nomaster" ] && nomaster=true
+
+        if [[ -n "$upstream" ]]; then
             ahead=$(git rev-list --count --cherry-pick --right-only --no-merges $upstream... 2>/dev/null || echo "0")
             behind=$(git rev-list --count --cherry-pick --left-only --no-merges $upstream... 2>/dev/null || echo "0")
         elif [[ -n "$(git symbolic-ref HEAD 2>/dev/null)" ]]; then
-            ahead=$(git rev-list --count --cherry-pick --right-only --no-merges master... 2>/dev/null || echo "0")
-            behind=$(git rev-list --count --cherry-pick --left-only --no-merges master... 2>/dev/null || echo "0")
+            if [[ -n "$nomaster" ]]; then
+                ahead="0"
+                behind="0"
+            else
+                ahead=$(git rev-list --count --cherry-pick --right-only --no-merges master... 2>/dev/null || echo "0")
+                behind=$(git rev-list --count --cherry-pick --left-only --no-merges master... 2>/dev/null || echo "0")
+            fi
         else
             ahead="0"
             behind="0"
         fi
 
-        # Compute divergence separate from counts.  Since counts can take a long
-        # time, and someone can turn them off, we repeat a similar block here to
-        # help compute whether we diverge or not.
+        # Divergence isn't the same as counts (counts checks patch id, where as
+        # divergence takes into account the real commit id).
         if [[ -n "$upstream" ]]; then
             _git_has_diverged HEAD "$upstream"
             differ=$?
         elif [[ -n "$(git symbolic-ref HEAD 2>/dev/null)" ]]; then
-            _git_has_diverged HEAD master
-            differ=$?
+            if [[ -n "$nomaster" ]]; then
+                differ=0
+            else
+                _git_has_diverged HEAD master
+                differ=$?
+            fi
         else
             differ=0
         fi
