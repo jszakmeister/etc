@@ -141,6 +141,30 @@ Or, if you have ``etc.git`` checked out elsewhere::
   source $ETC_HOME/zsh/zshenv
 
 
+Prompt Configuration
+====================
+
+The prompt in the shell configuration will provide some useful information about
+the status of your branch in a Git working tree or repository.  However, some of
+what it provides can be expensive if you work in a large repository, or on a
+branch that is many commits behind master.
+
+To turn of the status indicator (the red ``*`` that lets you know the working
+tree is dirty), simply create a file called ``.nostatus`` in the ``.git``
+folder::
+
+    touch .git/.nostatus
+
+Whenever you create a new branch, if there's no upstream branch configured or if
+there is no matching remote branch (in the case you have ``push.default`` set to
+``current``, ``matching``, or ``simple``), then the prompt will perform a
+comparison against ``master`` to let you know if you have real work hanging
+around on a local branch, and how much.  To turn this off, create a file called
+``.nomaster`` in the ``.git`` folder::
+
+    touch .git/.nomaster
+
+
 Readline
 ========
 
