@@ -79,7 +79,7 @@ if _has_executable pygmentize; then
 fi
 
 if _has_executable hexdump; then
-    alias hexdump="hexdump -v -e '/16 \"%10_ad:  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \" \"    \" 16/1 \"%_p\" \"\\n\"'"
+    alias hexdump="hexdump -v -e '/16 \"%10_ad:  \"' -e '8/1 \"%02x \"' -e '\"  \"' -e '8/1 \"%02x \"' -e '\"  \"' -e '16/1 \"%_p\"' -e '\"\n\"'"
 fi
 
 if _has_executable cninja; then
