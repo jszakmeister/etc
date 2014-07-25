@@ -5,7 +5,14 @@ if test -z "$1"; then
 	exit 1
 fi
 
-SOURCE="${1/\/%/}"
+SOURCE="${1}"
+
+# Strip trailing slashes.
+while [[ "${SOURCE:$((${#SOURCE}-1)):1}" == "/" ]]
+do
+    SOURCE="${SOURCE%/}"
+done
+
 SOURCE_LENGTH=$(( ${#SOURCE} + 1 ))
 
 find -L "$SOURCE" -type f | while read LINK; do
