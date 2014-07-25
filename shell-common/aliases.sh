@@ -12,7 +12,7 @@ if [[ "$platform" == 'freebsd' ]]; then
     alias make='nice -n 3 make -j$(sysctl -n hw.ncpu)'
     alias ps='ps aux'
     alias ls='ls -hFGA'
-    alias ll='ls -hFlG'
+    alias ll='ls -l'
     alias top='top -o cpu -i 1'
 fi
 
@@ -42,7 +42,7 @@ if [[ "$platform" == 'darwin' ]]; then
         alias ec="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n"
     fi
     alias ls='ls -hFGAO'
-    alias ll='ls -hFlG'
+    alias ll='ls -l'
     alias top='top -o cpu -i 1'
     alias arp-clear='dscacheutil -flushcache'
     alias eject='diskutil eject'
@@ -56,7 +56,7 @@ if [[ "$platform" == 'linux' ]]; then
     alias make='nice -n 3 make -j$(grep -c ^processor /proc/cpuinfo)'
     alias ps='ps -ef'
     alias ls='ls -hFA --color=auto'
-    alias ll='ls -hFl --color=auto'
+    alias ll='ls -l'
     alias top='top -d 1'
     if _has_executable xsel; then
         alias pbcopy='xsel --clipboard --input'
