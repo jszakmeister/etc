@@ -41,7 +41,7 @@ if [[ "$platform" == 'darwin' ]]; then
         alias em="$HOME/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
         alias ec="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n"
     fi
-    alias ls='ls -hFGA'
+    alias ls='ls -hFGAO'
     alias ll='ls -hFlG'
     alias top='top -o cpu -i 1'
     alias arp-clear='dscacheutil -flushcache'
