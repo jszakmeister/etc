@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if test -z "$1"; then
-	echo "You must provide a source for the links." >&2
-	exit 1
+    echo "You must provide a source for the links." >&2
+    exit 1
 fi
 
 SOURCE="${1}"
