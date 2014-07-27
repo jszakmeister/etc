@@ -50,7 +50,8 @@ if [[ "$OS" == "darwin" && "$SKIP_GUI_CHECK" == "" ]]; then
     fi
 fi
 
-SERVER_NAME=$(find-up-tree .gr-name)
+GR_NAME=$(find-up-tree .gr-name)
+SERVER_NAME="$GR_NAME"
 
 if [[ -n "$SSH_TTY" ]]; then
     if [[ -z "$SERVER_NAME" ]]; then
@@ -90,7 +91,7 @@ fi
 running=$("$GVIM" --serverlist | grep $SERVER_NAME)
 
 if [[ -n "$@" ]]; then
-    "$GVIM" $extraopts --servername $SERVER_NAME $remote_opt "$@" > /dev/null 2>&1
+    GR_NAME="$GR_NAME" "$GVIM" $extraopts --servername $SERVER_NAME $remote_opt "$@" > /dev/null 2>&1
 elif [[ -z "$running" ]]; then
     "$GVIM" $extraopts --servername $SERVER_NAME > /dev/null 2>&1
 fi
