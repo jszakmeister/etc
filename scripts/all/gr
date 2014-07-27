@@ -1,4 +1,26 @@
 #!/bin/bash
+
+function find-up-tree
+{
+    local last_found=$(pwd)
+    local tmp_path=$(dirname "$last_found")
+    local name="$1"
+    while [[ "$tmp_path" != "/" ]];
+    do
+        if [ -e "$tmp_path/$name" ]; then
+            last_found="$tmp_path"
+            break
+        fi
+        tmp_path=$(dirname "$tmp_path")
+    done
+    if [ -e "$last_found/$name" ]; then
+        cat "$last_found/$name"
+    else
+        echo -n
+    fi
+}
+
+
 OS=$(uname | tr '[A-Z]' '[a-z]')
 
 IS_X_BASED=
@@ -28,10 +50,18 @@ if [[ "$OS" == "darwin" && "$SKIP_GUI_CHECK" == "" ]]; then
     fi
 fi
 
+SERVER_NAME=$(find-up-tree .gr-name)
+
 if [[ -n "$SSH_TTY" ]]; then
-    SERVER_NAME="GVIM1"
+    if [[ -z "$SERVER_NAME" ]]; then
+        SERVER_NAME="GVIM1"
+    else
+        SERVER_NAME="ssh-$SERVER_NAME"
+    fi
 else
-    SERVER_NAME="GVIM0"
+    if [[ -z "$SERVER_NAME" ]]; then
+        SERVER_NAME="GVIM0"
+    fi
 fi
 
 extraopts=""
