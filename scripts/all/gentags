@@ -21,16 +21,37 @@ function die
 }
 
 
-if [ "$1" == "--init" ]; then
-    shift
-    tag_dir="$1"
-    shift
-else
+if test -n "$1"
+then
+    while [ "$1" != "" ]
+    do
+        case $1 in
+            --init)
+                tag_dir="$2"
+                shift
+                ;;
+            -o)
+                output_path="$2"
+                shift
+                ;;
+            *)
+                die "Unknown option: $1"
+                ;;
+        esac
+        shift
+    done
+fi
+
+if [ -z "$tag_dir" ]; then
     tag_dir="$(find_tags)"
 fi
 
 if [ "$tag_dir" == "" ]; then
     die "No tag directory found."
+fi
+
+if [ -z "$output_path" ]; then
+    output_path="$tag_dir/tags"
 fi
 
 ctags -R --exclude=build \
@@ -50,5 +71,5 @@ ctags -R --exclude=build \
          --c++-kinds=+px \
          --fields=+iaS \
          --extra=+qf \
-         -o "$tag_dir/tags" \
+         -o "$output_path" \
          "$tag_dir/" || die "Error executing ctags"
