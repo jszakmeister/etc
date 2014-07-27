@@ -83,6 +83,10 @@ if [[ $1 == --remote* ]]; then
     shift
 fi
 
+if [[ -n "$GR_VERBOSE" ]]; then
+    extra_opts="$extra_opts -V${GR_VERBOSE}"
+fi
+
 running=$("$GVIM" --serverlist | grep $SERVER_NAME)
 
 if [[ -n "$@" ]]; then
