@@ -4,6 +4,9 @@ ETC_USER="${ETC_USER:-$(whoami)}"
 _start_ansi='%{'
 _end_ansi='%}'
 
+# add a function path
+fpath=("$ETC_HOME/zsh/functions" "$ETC_HOME/zsh/completions" $fpath)
+
 . "$ETC_HOME/zsh/shell-options.zsh"
 
 # If the user setup ~/.zshenv, and sourced our zshenv,
@@ -15,9 +18,6 @@ if [[ -z "$ETC_ZSHENV_SOURCED" ]]; then
 fi
 
 . "$ETC_HOME/shell-common/interactive.sh"
-
-# add a function path
-fpath=("$ETC_HOME/zsh/functions" "$ETC_HOME/zsh/completions" $fpath)
 
 for config_file ($ETC_HOME/zsh/lib/*.zsh) source $config_file
 
