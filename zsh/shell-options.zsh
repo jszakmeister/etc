@@ -15,7 +15,12 @@ bashcompinit
 . "$ETC_HOME/bash/bash_completion.sh"
 
 # This is necessary for git-completion to work correctly for zsh.
-zstyle ':completion:*:*:git:*' script "$ETC_HOME/bash/git-completion.bash"
+if [ -f /usr/local/etc/bash_completion.d/git-completion.bash ]; then
+    zstyle ':completion:*:*:git:*' script \
+        /usr/local/etc/bash_completion.d/git-completion.bash
+else
+    zstyle ':completion:*:*:git:*' script "$ETC_HOME/bash/git-completion.bash"
+fi
 
 autoload colors
 colors
