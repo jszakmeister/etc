@@ -7,6 +7,11 @@ _end_ansi='%}'
 # add a function path
 fpath=("$ETC_HOME/zsh/functions" "$ETC_HOME/zsh/completions" $fpath)
 
+# Put /usr/local in front as it is likely to be newer than what is packaged in
+# etc.
+test -d /usr/local/share/zsh/site-functions &&
+    fpath=(/usr/local/share/zsh/site-functions $fpath)
+
 . "$ETC_HOME/zsh/shell-options.zsh"
 
 # If the user setup ~/.zshenv, and sourced our zshenv,
