@@ -44,7 +44,12 @@ if [[ "$platform" == 'darwin' ]]; then
     if [ -d /usr/local/git/bin ]; then
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/git/bin)
     fi
+
+    if [ -d "$HOME/Library/Haskell/bin" ]; then
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/Library/Haskell/bin")
+    fi
 fi
+
 if [[ "$platform" == 'linux' ]]; then
     if [ -d /opt/slickedit ]; then
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /opt/slickedit/bin)
