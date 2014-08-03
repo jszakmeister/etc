@@ -400,4 +400,7 @@ defaults write com.apple.DiskUtility advanced-image-options -bool true
 # Disable swipe page on Chrome
 defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool FALSE
 
+# Disable App Nap for iTerm2
+defaults write com.googlecode.iterm2 NSAppSleepDisabled -bool YES
+
 echo "You need to logout and back in for some preferences to take effect."
