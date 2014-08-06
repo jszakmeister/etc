@@ -89,8 +89,14 @@ test -d /usr/local/lib/ccache &&
 test -d /usr/lib/ccache &&
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/lib/ccache)
 
+# It turns out there are some brain-dead apps out there that expect /usr/bin to
+# come before /usr/sbin, like mock.
 test -d /usr/local/bin &&
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/bin)
+test -d /usr/bin &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/bin)
+test -d /bin &&
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /bin)
 test -d /usr/local/sbin &&
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/sbin)
 test -d /usr/sbin &&
