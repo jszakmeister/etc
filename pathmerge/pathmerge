@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+import os
+import sys
+
+
+def split_path(s):
+    return s.split(':')
+
+
+def main():
+    args = sys.argv[1:]
+
+    paths = []
+    unique_paths = set([])
+
+    for arg in args:
+        new_paths = split_path(arg)
+
+        for p in new_paths:
+            if p not in unique_paths:
+                paths.append(p)
+                unique_paths.add(p)
+
+    print ':'.join(paths)
+
+if __name__ == '__main__':
+    main()
