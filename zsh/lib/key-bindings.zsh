@@ -64,3 +64,10 @@ bindkey "\e\e[C"  forward-word
 bindkey "\e\e[D"  backward-word
 
 bindkey -s "\C-o\C-o" "^E | less^M"
+
+function zle-line-init () {
+    echoti smkx
+}
+function zle-line-finish () {
+    echoti rmkx
+}
