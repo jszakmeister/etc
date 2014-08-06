@@ -1,1 +1,25 @@
+# By default, build rpms in ~/.rpmbuild
+%_topdir %(echo $HOME)/.rpmbuild
+
+# Set the build flags to allow the use of a minimum of 3 jobs and a maximum of
+# 16.  If you're system has between 3 and 16 processors, it will use that number
+# of jobs.
+%_smp_mflags %( \
+    [ -z "$RPM_BUILD_NCPUS" ] \\\
+        && RPM_BUILD_NCPUS="`/usr/bin/nproc 2>/dev/null || \\\
+                             /usr/bin/getconf _NPROCESSORS_ONLN`"; \\\
+    if [ "$RPM_BUILD_NCPUS" -gt 16 ]; then \\\
+        echo "-j16"; \\\
+    elif [ "$RPM_BUILD_NCPUS" -gt 3 ]; then \\\
+        echo "-j$RPM_BUILD_NCPUS"; \\\
+    else \\\
+        echo "-j3"; \\\
+    fi )
+
+%__arch_install_post \
+    [ "%{buildarch}" = "noarch" ] || QA_CHECK_RPATHS=1 ; \
+    case "${QA_CHECK_RPATHS:-}" in [1yY]*) /usr/lib/rpm/check-rpaths ;; esac \
+    /usr/lib/rpm/check-buildroot
+
+# Show the epoch in the RPM listing.  It's hidden by default.
 %_query_all_fmt %{name}-%|epoch?{%{epoch}:}:{}|%{version}-%{release}%|arch?{.%{arch}}:{}|
