@@ -16,6 +16,7 @@ function update_repo ()
 }
 
 update_repo ~/.vim
+update_repo ~/.vimuser
 update_repo ~/.etc
 update_repo ~/.ssh
 update_repo ~/projects/etc
