@@ -1,0 +1,22 @@
+# Customize Pidgin to use a monospace font in the conversation view
+# and other input areas.
+
+style "imhtml-fix"
+{
+    font_name = "DejaVu Sans Mono 12"
+}
+
+# Conversation entry box--where you type.
+widget "*pidgin_conv_entry" style "imhtml-fix"
+
+# Conversation history pane--where you read the conversation.
+widget "*pidgin_conv_imhtml" style "imhtml-fix"
+
+# Log viewer--where you read stored logs
+widget "*pidgin_log_imhtml" style "imhtml-fix"
+
+# formatting-capable entry areas (IMHtml widgets) in request dialogs
+widget "*pidgin_request_imhtml" style "imhtml-fix"
+
+# formatting-capable notification areas in dialogs (again, IMHtml widgets)
+widget "*pidgin_notify_imhtml" style "imhtml-fix"
