@@ -9,17 +9,18 @@ function trim ()
 
 function update_repo ()
 {
-	if test ! -d "$1" ; then
+	local repo_path=$(echo -n "$1" | sed -e "s|~|$HOME|")
+	if test ! -d "$repo_path" ; then
 		return 0
 	fi
 
-	if test ! -d "$1/.git" ; then
+	if test ! -d "$repo_path/.git" ; then
 		return 0
 	fi
 
-	echo "Updating $1..."
+	echo "Updating $repo_path..."
 	local curDir=$(pwd)
-	cd "$1" && git ffwd
+	cd "$repo_path" && git ffwd
 	cd "$curDir"
 }
 
