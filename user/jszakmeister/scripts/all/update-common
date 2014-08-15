@@ -1,4 +1,12 @@
 #!/bin/bash
+function trim ()
+{
+    local var="$@"
+    var="${var#"${var%%[![:space:]]*}"}"
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "$var"
+}
+
 function update_repo ()
 {
 	if test ! -d "$1" ; then
@@ -22,3 +30,14 @@ update_repo ~/.ssh
 update_repo ~/projects/etc
 update_repo ~/projects/jszakmeister/local-homepage
 update_repo ~/projects/local-homepage
+
+if test -f ~/.update-commonrc ; then
+    while read line
+    do
+        line=$(trim "$line")
+
+        if [ -n "$line" ] && [[ $line != \#* ]] ; then
+            update_repo "$line"
+        fi
+    done < ~/.update-commonrc
+fi
