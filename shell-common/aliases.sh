@@ -103,7 +103,16 @@ alias negrep="egrep -n $_grep_extra"
 unset _grep_extra
 
 hash colordiff > /dev/null 2>&1 &&
-    alias diff="colordiff"
+    {
+        function diff() {
+            if test -t 1
+            then
+                colordiff "$@"
+            else
+                "$(_find_executable diff)" "$@"
+            fi
+        }
+    }
 
 if [ -d "$HOME/local/erlang" ]; then
     alias erl="'$HOME/local/erlang/bin/erl'"
