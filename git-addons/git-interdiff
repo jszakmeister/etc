@@ -3,8 +3,6 @@
 SUBDIRECTORY_OK=1 . "$(git --exec-path)/git-sh-setup" ||
     die "Not a git repository."
 
-cd_to_toplevel
-
 test -t 1 && color=t
 
 if [ -n "$color" ]
@@ -14,10 +12,10 @@ fi
 
 function do_interdiff()
 {
-    git -c color.ui=off show "$1" > .git/commit1 &&
-        git -c color.ui=off show "$2" > .git/commit2 &&
+    git -c color.ui=off show "$1" > "$GIT_DIR/commit1" &&
+        git -c color.ui=off show "$2" > "$GIT_DIR/commit2" &&
         (
-            interdiff .git/commit[12] |
+            interdiff "$GIT_DIR"/commit[12] |
             (
                 test -n "$color" && { colordiff | diff-highlight ; } || cat -
             )
