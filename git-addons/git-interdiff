@@ -1,0 +1,22 @@
+#!/bin/sh
+
+test -t 1 && color=t
+
+if [ -n "$color" ]
+then
+    command -v colordiff > /dev/null || color=
+fi
+
+function do_interdiff()
+{
+    git -c color.ui=off show "$1" > .git/commit1 &&
+        git -c color.ui=off show "$2" > .git/commit2 &&
+        (
+            interdiff .git/commit[12] |
+            (
+                test -n "$color" && { colordiff | diff-highlight ; } || cat -
+            )
+        )
+}
+
+do_interdiff "$@"
