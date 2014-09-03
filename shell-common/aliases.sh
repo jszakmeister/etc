@@ -189,12 +189,12 @@ if _has_executable svnwrap; then
 
     function svndiff
     {
-        svnwrap diff --color on "$@" | less
+        svnwrap diff --color on "$@" | diff-highlight | less
     }
 else
     function svndiff
     {
-        svn diff "$@" | colordiff | less
+        svn diff "$@" | colordiff | diff-highlight | less
     }
 fi
 
