@@ -167,7 +167,6 @@
 	diff = diff-highlight | less
 	show = diff-highlight | less
 	log = diff-highlight | less
-	interdiff = (type cdiff >& /dev/null && cdiff || cat -) | diff-highlight | less
 
 # You might need the below, if you regularly work against HTTPS servers that
 # don't validate because of missing CA certs.  It's always better to fix that
