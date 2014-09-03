@@ -32,3 +32,7 @@ test -f "$ETC_HOME/user/$ETC_USER/init.sh" &&
 	. "$ETC_HOME/user/$ETC_USER/init.sh"
 
 test -f "$HOME/.etcrc" && . "$HOME/.etcrc"
+
+# Make sure the exit code is 0, so that we don't show an error code immediately
+# on the prompt.
+true
