@@ -1,5 +1,10 @@
 #!/bin/sh
 
+SUBDIRECTORY_OK=1 . "$(git --exec-path)/git-sh-setup" ||
+    die "Not a git repository."
+
+cd_to_toplevel
+
 test -t 1 && color=t
 
 if [ -n "$color" ]
@@ -19,4 +24,4 @@ function do_interdiff()
         )
 }
 
-do_interdiff "$@"
+do_interdiff "$@" | git_pager
