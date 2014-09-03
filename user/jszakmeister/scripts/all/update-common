@@ -7,6 +7,19 @@ function trim ()
     echo -n "$var"
 }
 
+if test -t 1 ; then
+    color_bold_yellow=$(tput bold;tput setaf 3)
+    color_reset=$(tput sgr0)
+else
+    color_bold_yellow=
+    color_reset=
+fi
+
+function say ()
+{
+    echo "$color_bold_yellow${@/$HOME/~}$color_reset"
+}
+
 function update_repo ()
 {
 	local repo_path=$(echo -n "$1" | sed -e "s|~|$HOME|")
@@ -18,7 +31,7 @@ function update_repo ()
 		return 0
 	fi
 
-	echo "Updating $repo_path..."
+	say "Updating $repo_path..."
 	local curDir=$(pwd)
 	cd "$repo_path" && git ffwd
 	cd "$curDir"
