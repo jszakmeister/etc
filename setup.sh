@@ -72,8 +72,13 @@ _installLink "$HOME/.wgetrc" wgetrc/wgetrc
 
 echo "Checking .gitconfig..."
 test ! -e "$HOME/.gitconfig" &&
-    cat gitconfig/gitconfig |
-        sed -e "s|~/projects/etc|$TILDE_ETC_HOME|" > "$HOME/.gitconfig" &&
+    echo "\
+[include]
+	path = $TILDE_ETC_HOME/gitconfig/gitconfig
+
+[core]
+	excludesfile = $TILDE_ETC_HOME/gitconfig/gitignores
+" > "$HOME/.gitconfig" &&
     echo "Installed .gitconfig" &&
     echo 'Run the following to set the git user name:
     git config --global user.name "User Name"' &&
