@@ -1,0 +1,14 @@
+AcceptEnv LANG LC_* TERM_PROGRAM COLORFGBG
+
+# Disable password-based logins.
+PermitRootLogin no
+PasswordAuthentication no
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+
+# Don't resolve hostnames.
+UseDNS no
+
+# Use something other than the default port (22).
+# Replace 1234 with something more reasonable.
+Port 1234
