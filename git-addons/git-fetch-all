@@ -36,7 +36,10 @@ def run_git(*args, **kwargs):
     path = kwargs.get('path', None)
 
     if path is not None:
-        args = ['--git-dir=%s/.git' % path, '--work-tree=%s' % path] + list(args)
+        if path.endswith('.git'):
+            args = ['--git-dir=%s' % path] + list(args)
+        else:
+            args = ['--git-dir=%s/.git' % path, '--work-tree=%s' % path] + list(args)
 
     command = ['git'] + list(args)
     return run(*command, **kwargs).strip()
@@ -80,6 +83,10 @@ def find_git_repos(path, max_depth, current_depth=0):
     if '.git' in entries:
         entries.remove('.git')
         git_repos.append(path)
+    elif path.endswith('.git'):
+        # Bare repository...
+        git_repos.append(path)
+        entries.clear()
 
     entries = [os.path.join(path, e) for e in os.listdir(path)]
     dirs = set([e for e in entries if os.path.isdir(e)])
