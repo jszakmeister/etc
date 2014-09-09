@@ -9,8 +9,10 @@ if [ "$platform" = "darwin" ]; then
         alias ls='gnu-ls -hFA --color=auto'
         alias ll='gnu-ls -hFl --color=auto'
     fi
+    alias clear-arp="sudo arp -a -d"
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
+    alias clear-arp="sudo ip -s -s neighbor flush all"
 fi
 
 _add_dir_shortcut() {
