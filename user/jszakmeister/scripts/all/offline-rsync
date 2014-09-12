@@ -1,0 +1,203 @@
+#!/usr/bin/python
+from StringIO import StringIO
+
+import argparse
+import hashlib
+import os
+import shutil
+import sys
+import tarfile
+import time
+
+
+CHUNK_SIZE = 64 * 1024 * 1024
+
+
+def hash_file(path):
+    m = hashlib.md5()
+
+    with open(path, 'rb') as f:
+        while True:
+            buf = f.read(CHUNK_SIZE)
+            if not buf:
+                break
+            m.update(buf)
+
+    return m.hexdigest()
+
+
+def tarsum(path):
+    overall_hash = hashlib.md5()
+
+    tar = tarfile.open(path, mode="r|*")
+
+    for member in tar:
+        if not member.isfile():
+            continue
+
+        f = tar.extractfile(member)
+        h = hashlib.md5()
+        data = f.read(CHUNK_SIZE)
+        while data:
+            h.update(data)
+            data = f.read(CHUNK_SIZE)
+
+        s  = '%s %s' % (member.name, h.hexdigest())
+        overall_hash.update(s)
+
+    return overall_hash.hexdigest()
+
+
+def crawl_dir(dir_path):
+    hash_map = {}
+
+    for root, dirs, files in os.walk(dir_path):
+        relative_root = root[len(dir_path)+1:]
+        for file in files:
+            path = os.path.join(root, file)
+            h = hash_file(path)
+            hash_map[h] = os.path.join(relative_root, file)
+
+    return hash_map
+
+
+def tarfiles_match(path1, path2):
+    h1 = tarsum(path1)
+    h2 = tarsum(path2)
+
+    return h1 == h2
+
+
+def determine_files(old, old_root, new, new_root):
+    old_hash_set = set(old.keys())
+    new_hash_set = set(new.keys())
+
+    # Filter out any matching hashes.
+    diff_hash_set = new_hash_set - old_hash_set
+
+    # Now, because some tarfiles can be generated on the fly from projects like
+    # OpenWRT, we'll want to check for filename collisions and actually examine
+    # the content of the tarfiles.
+
+    # Convert the remaining hashes to file names.
+    diff_names_map = dict(
+            (new[h], h) for h in diff_hash_set)
+    diff_names_set = set(diff_names_map.keys())
+    old_names_map = dict((os.path.basename(v), k) for k, v in old.items())
+    old_names_set = set(old_names_map.keys())
+
+    # Use intersection to see which ones had different hashes, but the same
+    # name.
+    collision_names_set = diff_names_set & old_names_set
+
+    diff_remove = old_hash_set - new_hash_set
+
+    for name in collision_names_set:
+        old_hash = old_names_map[name]
+        new_hash = diff_names_map[name]
+        old_full_path = os.path.join(old_root, old[old_hash])
+        new_full_path = os.path.join(new_root, new[new_hash])
+
+        if tarfile.is_tarfile(old_full_path) and tarfiles_match(old_full_path,
+                                                                new_full_path):
+            diff_hash_set.remove(new_hash)
+            diff_remove.remove(old_hash)
+
+    # keep, remove
+    return [new[h] for h in diff_hash_set], [old[h] for h in diff_remove]
+
+
+SCRIPT_TEMPLATE = r"""
+#!/bin/bash -e
+
+function die()
+{
+    echo 1>&2 "ERROR: $@"
+    exit 1
+}
+
+COPY_SRC=$(dirname "$0")
+SRC="$1"
+DEST="$2"
+
+[ -z "$SRC" ] && die "Must specify src directory."
+[ -z "$DEST" ] && die "Must specify destination directory."
+
+[ -e "$DEST" ] && die "Destination must not exist."
+
+cp -a "${SRC}" "${DEST}"
+
+$REMOVE_FILES$
+
+$MAKE_DIRECTORIES$
+
+$COPY_FILES$
+"""
+
+
+def generate_script(files_to_remove, files_to_copy):
+    remove_files = StringIO()
+    make_directories = StringIO()
+    copy_files = StringIO()
+
+    mkdir_tmpl = 'mkdir -p "$DEST/%(dirpath)s"\n'
+    copy_file_tmpl = 'cp -a "$COPY_SRC/%(path)s" "$DEST/%(path)s"\n'
+    remove_file_tmpl = 'rm -f "$DEST/%(path)s"\n'
+
+    for path in files_to_remove:
+        remove_files.write(remove_file_tmpl % locals())
+
+    dirs = set([os.path.dirname(x) for x in files_to_copy])
+    for dirpath in dirs:
+        make_directories.write(mkdir_tmpl % locals())
+
+    for path in files_to_copy:
+        copy_files.write(copy_file_tmpl % locals())
+
+    data = SCRIPT_TEMPLATE.replace('$REMOVE_FILES$', remove_files.getvalue())
+    data = data.replace('$MAKE_DIRECTORIES$', make_directories.getvalue())
+    data = data.replace('$COPY_FILES$', copy_files.getvalue())
+
+    return StringIO(data)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('src1')
+    parser.add_argument('src2')
+    parser.add_argument('dest')
+
+    args = parser.parse_args()
+
+    old_root = args.src1
+    new_root = args.src2
+
+    if not args.dest.endswith('.tar'):
+        print >>sys.stderr, "ERROR: destination must end with .tar"
+        sys.exit(1)
+
+    basename = os.path.basename(args.dest)
+    prefix = basename[:basename.index('.tar')]
+
+    old = crawl_dir(old_root)
+    new = crawl_dir(new_root)
+
+    files_to_copy, files_to_remove = \
+            determine_files(old, old_root, new, new_root)
+
+    with tarfile.open(args.dest, mode='w:', bufsize=64*1024*1024) as t:
+        for path in files_to_copy:
+            print "Keeping %r..." % (path,)
+            t.add(os.path.join(new_root, path), os.path.join(prefix, path))
+
+        contents = generate_script(files_to_remove, files_to_copy)
+        mtime = time.time()
+        ti = tarfile.TarInfo(os.path.join(prefix, "offline-rsync.sh"))
+        ti.size = contents.len
+        ti.mtime = mtime
+        ti.mode = 0755
+        t.addfile(ti, contents)
+
+
+if __name__ == '__main__':
+    main()
