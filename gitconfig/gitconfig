@@ -21,6 +21,9 @@
 	ru = reset --hard @{u}
 	k = !gitk --date-order
 
+	# Tell me the first tag that contains this commit.
+	contains = describe --contains
+
 	# A quick way to squash changes into the previous commit using
 	# the same log message
 	amend = commit --amend --no-edit
