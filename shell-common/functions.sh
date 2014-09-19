@@ -64,6 +64,25 @@ function gdb
     fi
 }
 
+# Some git-related setup for completion.
+
+if _has_executable git; then
+    if _has_executable git-ffwd; then
+        _git_ffwd ()
+        {
+            __gitcomp_nl "$(__git_remotes)"
+        }
+    fi
+
+    if _has_executable git-ff || \
+            git config --get alias.ff > /dev/null 2>&1; then
+        _git_ff ()
+        {
+            __gitcomp_nl "$(__git_refs)"
+        }
+    fi
+fi
+
 # For clang when running under pip and tox.  This is to help prevent errors from
 # unused arguments, and to prevent accidentally selecting gcc when ccache is
 # installed, but gcc is not.
