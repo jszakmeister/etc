@@ -1,6 +1,7 @@
 # May be overridden later
 alias em='emacs -nw'
 alias ec='emacsclient -n'
+alias pd='pushd'
 
 if _has_executable vs; then
     alias vs='vs -new'
