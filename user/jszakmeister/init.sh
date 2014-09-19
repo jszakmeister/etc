@@ -15,16 +15,6 @@ elif [ "$platform" = "linux" ]; then
     alias clear-arp="sudo ip -s -s neighbor flush all"
 fi
 
-_add_dir_shortcut() {
-    local shortcut="$1"
-    local shortcut_path="$2"
-    test -e "$shortcut_path" &&
-        _make_dir_complete "cd$shortcut" cd "$shortcut_path" &&
-        _make_dir_complete "pd$shortcut" pushd "$shortcut_path" &&
-        [ -n "$3" ] && [ -n "$ZSH_VERSION" ] &&
-        hash -d $shortcut="$shortcut_path"
-}
-
 _add_dir_shortcut e ~/.etc true
 _add_dir_shortcut e ~/projects/etc true
 _add_dir_shortcut i ~/projects/intelesys true
