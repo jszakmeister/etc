@@ -30,7 +30,8 @@ function append_path
 # The last argument, if present an non-empty, says to create a zsh directory
 # alias, if you're running zsh.  In this example, you could then use ~p as a
 # shortcut to ~/projects.
-_add_dir_shortcut() {
+function _add_dir_shortcut
+{
     local shortcut="$1"
     local shortcut_path="$2"
     test -e "$shortcut_path" &&
