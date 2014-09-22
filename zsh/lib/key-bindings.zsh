@@ -1,3 +1,15 @@
+# default to emacs bindings, just like bash
+bindkey -e
+
+# Set up tab completion to use only the prefix.
+bindkey "^I" expand-or-complete-prefix
+
+# Keybinding overrides
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
 # create a zkbd compatible hash;
 # to add other keys to this hash, see: man 5 terminfo
 typeset -A key
@@ -18,34 +30,28 @@ key[CRight]=${terminfo[kRIT5]}
 key[PageUp]=${terminfo[kpp]}
 key[PageDown]=${terminfo[knp]}
 
+_setup_keys()
+{
+    # setup key accordingly
+    [[ -n "${key[Delete]}"  ]]  && bindkey  "${key[Delete]}"  delete-char
+    [[ -n "${key[Up]}"      ]]  && bindkey  "${key[Up]}"      up-line-or-beginning-search
+    [[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    down-line-or-beginning-search
+    [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
+    [[ -n "${key[CLeft]}"   ]]  && bindkey  "${key[CLeft]}"   backward-word
+    [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
+    [[ -n "${key[CRight]}"  ]]  && bindkey  "${key[CRight]}"  forward-word
+    [[ -n "${key[Home]}"    ]]  && bindkey  "${key[Home]}"    beginning-of-line
+    [[ -n "${key[End]}"     ]]  && bindkey  "${key[End]}"     end-of-line
+}
+
 for k in ${(k)key} ; do
     # $terminfo[] entries are weird in ncurses application mode...
     [[ ${key[$k]} == $'\eO'* ]] && key[$k]=${key[$k]/O/[}
 done
 unset k
 
-# default to emacs bindings, just like bash
-bindkey -e
-
-# Set up tab completion to use only the prefix.
-bindkey "^I" expand-or-complete-prefix
-
-# Keybinding overrides
-autoload -U up-line-or-beginning-search
-autoload -U down-line-or-beginning-search
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-search
-
-# setup key accordingly
-[[ -n "${key[Delete]}"  ]]  && bindkey  "${key[Delete]}"  delete-char
-[[ -n "${key[Up]}"      ]]  && bindkey  "${key[Up]}"      up-line-or-beginning-search
-[[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    down-line-or-beginning-search
-[[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
-[[ -n "${key[CLeft]}"   ]]  && bindkey  "${key[CLeft]}"   backward-word
-[[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
-[[ -n "${key[CRight]}"  ]]  && bindkey  "${key[CRight]}"  forward-word
-[[ -n "${key[Home]}"    ]]  && bindkey  "${key[Home]}"    beginning-of-line
-[[ -n "${key[End]}"     ]]  && bindkey  "${key[End]}"     end-of-line
+_setup_keys
+unfunction _setup_keys
 
 # Other potential entries for Home/End
 bindkey "\eOH" 	beginning-of-line
