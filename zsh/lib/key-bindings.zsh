@@ -44,12 +44,16 @@ _setup_keys()
     [[ -n "${key[End]}"     ]]  && bindkey  "${key[End]}"     end-of-line
 }
 
+# Setup before altering the escape sequences.
+_setup_keys
+
 for k in ${(k)key} ; do
     # $terminfo[] entries are weird in ncurses application mode...
     [[ ${key[$k]} == $'\eO'* ]] && key[$k]=${key[$k]/O/[}
 done
 unset k
 
+# Setup after altering the escape sequences.
 _setup_keys
 unfunction _setup_keys
 
