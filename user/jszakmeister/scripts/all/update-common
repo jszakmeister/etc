@@ -33,9 +33,13 @@ function update_repo ()
 
 	say "Updating $repo_path..."
 	local curDir=$(pwd)
-	cd "$repo_path" && git ffwd
+	cd "$repo_path" && git ffwd ${FFWD_OPTIONS}
 	cd "$curDir"
 }
+
+if [[ "--no-remote" == "$1" ]]; then
+    FFWD_OPTIONS="--no-remote"
+fi
 
 update_repo ~/.vim
 update_repo ~/.vimuser
