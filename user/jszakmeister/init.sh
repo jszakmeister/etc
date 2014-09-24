@@ -121,6 +121,30 @@ function find-domain-controllers() {
     dig $DNS_SERVER -t SRV _ldap._tcp.$1
 }
 
+function ssh-add()
+{
+    function kill-ssh-agent()
+    {
+        command ssh-add -D > /dev/null 2>&1
+        ( eval $(ssh-agent -k) ) > /dev/null 2>&1
+    }
+
+    if test -z "$SSH_AGENT_PID" ||
+            ps | grep ${SSH_AGENT_PID} | grep -qv ssh-agent; then
+        if [ "$ZSH_VERSION" ]
+        then
+            autoload -Uz add-zsh-hook
+            add-zsh-hook zshexit kill-ssh-agent
+        else
+            trap kill-ssh-agent EXIT
+        fi
+
+        eval $(ssh-agent -s)
+    fi
+
+    command ssh-add "$@"
+}
+
 # Disable slow keys...
 # Not sure if this persists or not.
 #
