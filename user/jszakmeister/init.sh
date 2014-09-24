@@ -10,9 +10,21 @@ if [ "$platform" = "darwin" ]; then
         alias ll='gnu-ls -hFl --color=auto'
     fi
     alias clear-arp="sudo arp -a -d"
+
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
+
+    function disassemble_func() {
+        i=$(nm -S --size-sort "$2" | grep "\<$1\>"  |
+            awk '{print toupper($1),toupper($2)}')
+        echo "$i" | while read line; do
+            start=${line%% *}; size=${line##* }
+            end=$(echo "obase=16; ibase=16; $start + $size" | bc -l)
+            objdump -S -M intel -d --start-address="0x$start" \
+                --stop-address="0x$end" "$2"
+        done
+    }
 fi
 
 _add_dir_shortcut e ~/.etc true
