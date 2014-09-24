@@ -3,14 +3,15 @@ alias em='emacs -nw'
 alias ec='emacsclient -n'
 alias pd='pushd'
 
+_has_executable scons && alias scons='scons -u -j$(_num_cpus)'
+_has_executable make && alias make='nice -n 3 make -j$(_num_cpus)'
+
 if _has_executable vs; then
     alias vs='vs -new'
 fi
 
 if [[ "$platform" == 'freebsd' ]]; then
     alias du='du -h -d1'
-    alias scons='scons -u -j$(sysctl -n hw.ncpu)'
-    alias make='nice -n 3 make -j$(sysctl -n hw.ncpu)'
     alias ps='ps aux'
     alias ls='ls -hFGA'
     alias ll='ls -l'
@@ -21,8 +22,6 @@ if [[ "$platform" == 'darwin' ]]; then
     alias twistd="/System/Library/Frameworks/Python.framework/Versions/Current/Extras/bin/twistd"
 
     alias du='du -h -d1'
-    alias scons='scons -u -j$(sysctl -n hw.ncpu)'
-    alias make='nice -n 3 make -j$(sysctl -n hw.ncpu)'
     alias ps='ps aux'
     slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
     if [[ $slickedit_path != '' ]]; then
@@ -53,8 +52,6 @@ fi
 
 if [[ "$platform" == 'linux' ]]; then
     alias du='du -bh --max-depth=1'
-    alias scons='scons -u -j$(grep -c ^processor /proc/cpuinfo)'
-    alias make='nice -n 3 make -j$(grep -c ^processor /proc/cpuinfo)'
     alias ps='ps -ef'
     alias ls='ls -hFA --color=auto'
     alias ll='ls -l'
