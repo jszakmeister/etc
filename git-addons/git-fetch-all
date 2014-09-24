@@ -88,7 +88,7 @@ def find_git_repos(path, max_depth, current_depth=0):
         git_repos.append(path)
         entries.clear()
 
-    entries = [os.path.join(path, e) for e in os.listdir(path)]
+    entries = [os.path.join(path, e) for e in entries]
     dirs = set([e for e in entries if os.path.isdir(e)])
 
     if max_depth < 0 or current_depth < max_depth:
