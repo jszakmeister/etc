@@ -64,16 +64,20 @@ main() {
     local upstream
     local ALR
     local LR
+    local REMOTES
 
     local CLB=$(git branch -l|awk '/^\*/{print $2}')
 
-    local REMOTES="$@"
-    if [ -z "$REMOTES" ]; then
-        REMOTES="$(git remote)"
-    fi
-    REMOTES="$(echo "$REMOTES" | xargs -n1 echo)"
+    if [[ "--no-remote" != "$1" ]]; then
+        REMOTES="$@"
+        if [ -z "$REMOTES" ]; then
+            REMOTES="$(git remote)"
+        fi
+        REMOTES="$(echo "$REMOTES" | xargs -n1 echo)"
 
-    git remote update -p $REMOTE
+        git remote update -p $REMOTE
+    fi
+
     git show-ref --heads | cut -d ' ' -f 2 | while read ALB; do
         LB="${ALB#refs/heads/}"
         RB="$(determine_upstream_branch "${LB}")"
