@@ -129,10 +129,10 @@ def main():
             print "Fetching %s..." % r
             try:
                 run_git('ffwd', path=r, show_cmd=True)
-            except ScriptError:
+            except ScriptError as e:
                 print >>sys.stderr, \
                     "WARNING: Couldn't fetch %r.  " \
-                    "Probably because we can't reach the repo." % (r)
+                    "Probably because we can't reach the repo.\n%s" % (r, e)
 
 
 if __name__ == '__main__':
