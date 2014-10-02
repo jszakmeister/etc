@@ -2,7 +2,7 @@ banner=no
 color_patches=no
 
 plain=off
-newtext=green
-oldtext=red
+newtext=darkgreen
+oldtext=196
 diffstuff=darkcyan
 cvsstuff=darkyellow
