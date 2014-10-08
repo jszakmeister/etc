@@ -1,0 +1,21 @@
+# Like up-line-or-search, but uses the whole line prefix up to the
+# cursor position for searching backwards.  If there is no prefix, move the
+# cursor to the end of the line, just like Bash.
+
+emulate -L zsh
+
+if [[ $LBUFFER == *$'\n'* ]]; then
+    zle .up-line-or-history
+    __searching=''
+elif [[ -n $PREBUFFER ]] &&
+    zstyle -t ':zle:bash-up-line-or-beginning-search' edit-buffer
+then
+    zle .push-line-or-edit
+else
+    [[ $LASTWIDGET = $__searching ]] && CURSOR=$__savecursor
+    __savecursor=$CURSOR
+    __searching=$WIDGET
+    zle .history-beginning-search-backward
+    zstyle -T ':zle:bash-up-line-or-beginning-search' leave-cursor &&
+        [[ $__savecursor = "0" ]] && zle .end-of-line
+fi
