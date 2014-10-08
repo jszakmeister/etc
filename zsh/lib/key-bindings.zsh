@@ -24,39 +24,34 @@ key[CRight]=${terminfo[kRIT5]}
 key[PageUp]=${terminfo[kpp]}
 key[PageDown]=${terminfo[knp]}
 
-_setup_keys()
+_bindkey()
 {
-    # setup key accordingly
-    [[ -n "${key[Delete]}"  ]]  && bindkey  "${key[Delete]}"  delete-char
-    [[ -n "${key[Up]}"      ]]  && bindkey  "${key[Up]}"      history-beginning-search-backward
-    [[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    history-beginning-search-forward
-    [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
-    [[ -n "${key[CLeft]}"   ]]  && bindkey  "${key[CLeft]}"   backward-word
-    [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
-    [[ -n "${key[CRight]}"  ]]  && bindkey  "${key[CRight]}"  forward-word
-    [[ -n "${key[Home]}"    ]]  && bindkey  "${key[Home]}"    beginning-of-line
-    [[ -n "${key[End]}"     ]]  && bindkey  "${key[End]}"     end-of-line
+    [[ -z "$1" ]] &&
+        return
+
+    local app_key="$1"
+    local num_key="${app_key/O/[}"
+
+    bindkey "$app_key" "$2"
+    bindkey "$num_key" "$2"
 }
 
-# Setup before altering the escape sequences.
-_setup_keys
-
-for k in ${(k)key} ; do
-    # $terminfo[] entries are weird in ncurses application mode...
-    [[ ${key[$k]} == $'\eO'* ]] && key[$k]=${key[$k]/O/[}
-done
-unset k
-
-# Setup after altering the escape sequences.
-_setup_keys
-unfunction _setup_keys
+_bindkey  "${key[Delete]}"  delete-char
+_bindkey  "${key[Up]}"      history-beginning-search-backward
+_bindkey  "${key[Down]}"    history-beginning-search-forward
+_bindkey  "${key[Left]}"    backward-char
+_bindkey  "${key[CLeft]}"   backward-word
+_bindkey  "${key[Right]}"   forward-char
+_bindkey  "${key[CRight]}"  forward-word
+_bindkey  "${key[Home]}"    beginning-of-line
+_bindkey  "${key[End]}"     end-of-line
 
 # Other potential entries for Home/End
-bindkey "\eOH" 	beginning-of-line
-bindkey "\e[H" 	beginning-of-line
+bindkey "\eOH"  beginning-of-line
+bindkey "\e[H"  beginning-of-line
 bindkey "\e[1~" beginning-of-line
-bindkey "\eOF" 	end-of-line
-bindkey "\e[F" 	end-of-line
+bindkey "\eOF"  end-of-line
+bindkey "\e[F"  end-of-line
 bindkey "\e[4~" end-of-line
 
 # Other potential entries for Ctrl-Left/Right
@@ -72,6 +67,7 @@ bindkey -s "\C-o\C-o" "^E | less^M"
 function zle-line-init () {
     echoti smkx
 }
+
 function zle-line-finish () {
     echoti rmkx
 }
