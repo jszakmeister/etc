@@ -105,6 +105,8 @@ def determine_files(repo, repo_path, dest, dest_path, symlinked):
     repo_path_set = set(repo.keys())
     dest_path_set = set(dest.keys())
 
+    verbose("determining missing paths...")
+
     # Paths that are not in the repo, will definitely need to be linked in.
     missing_paths = dest_path_set - repo_path_set
 
@@ -114,23 +116,30 @@ def determine_files(repo, repo_path, dest, dest_path, symlinked):
     # path.
     matching_paths = dest_path_set & repo_path_set
 
+    verbose("examining matching paths...")
+
     paths_to_link = set([])
     for path in matching_paths:
         full_repo_path = os.path.join(repo_path, path)
         full_dest_path = os.path.join(dest_path, path)
+
         if is_linked(full_repo_path, full_dest_path, symlinked):
             continue
 
         # Check the hashes.
         if repo[path] == dest[path]:
+            verbose("hashes match for %r", path)
+
             paths_to_link.add(path)
 
         # Now, because some tarfiles can be generated on the fly from projects
         # like OpenWRT, we'll want to check for filename collisions and actually
         # examine the content of the tarfiles.
-        elif tarfile.is_tarfile(full_repo_path) and \
-             tarfiles_match(full_repo_path, full_dest_path):
-            paths_to_link.add(path)
+        elif tarfile.is_tarfile(full_repo_path):
+            verbose("checking tar file contents for %r", path)
+
+            if tarfiles_match(full_repo_path, full_dest_path):
+                paths_to_link.add(path)
 
     return sorted(missing_paths), sorted(paths_to_link)
 
@@ -186,6 +195,8 @@ def main():
 
     repo_path = args.repo_path
     dest_path = args.path
+
+    verbose("collecting file names...")
 
     repo = crawl_dir(repo_path)
     dest = crawl_dir(dest_path)
