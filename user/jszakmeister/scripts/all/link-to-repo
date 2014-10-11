@@ -1,0 +1,229 @@
+#!/usr/bin/python
+from StringIO import StringIO
+
+import argparse
+import errno
+import hashlib
+import os
+import shutil
+import stat
+import sys
+
+
+if sys.version_info[:2] < (2, 6):
+    print >>sys.stderr, "Need Python 2.6 or better"
+    sys.exit(1)
+
+
+CHUNK_SIZE = 64 * 1024 * 1024
+
+
+def hash_file(path):
+    m = hashlib.md5()
+
+    with open(path, 'rb') as f:
+        while True:
+            buf = f.read(CHUNK_SIZE)
+            if not buf:
+                break
+            m.update(buf)
+
+    return m.hexdigest()
+
+
+def tarsum(path):
+    overall_hash = hashlib.md5()
+
+    tar = tarfile.open(path, mode="r|*")
+
+    for member in tar:
+        if not member.isfile():
+            continue
+
+        f = tar.extractfile(member)
+        h = hashlib.md5()
+        data = f.read(CHUNK_SIZE)
+        while data:
+            h.update(data)
+            data = f.read(CHUNK_SIZE)
+
+        s  = '%s %s' % (member.name, h.hexdigest())
+        overall_hash.update(s)
+
+    return overall_hash.hexdigest()
+
+
+def crawl_dir(dir_path):
+    path_hash_map = {}
+
+    for root, dirs, files in os.walk(dir_path):
+        relative_root = root[len(dir_path)+1:]
+        for file in files:
+            path = os.path.join(root, file)
+            h = hash_file(path)
+            path_hash_map[os.path.join(relative_root, file)] = h
+
+    return path_hash_map
+
+
+def tarfiles_match(path1, path2):
+    h1 = tarsum(path1)
+    h2 = tarsum(path2)
+
+    return h1 == h2
+
+
+def is_linked(path1, path2, symlink=False):
+    """
+    Is path1 linked to path2?
+    """
+
+    stat1 = os.lstat(path1)
+    stat2 = os.lstat(path2)
+
+    if symlink:
+        if not stat.S_ISLNK(stat2.st_mode):
+            return False
+
+        link_path = os.readlink(path2)
+        if not os.path.isabs(link_path):
+            # Convert to absolute path.
+            link_path = os.path.join(os.path.dirname(path2), link_path)
+
+        # Normalize path for comparison
+        path1 = os.path.abspath(path1)
+        link_path = os.path.abspath(link_path)
+
+        return path1 == link_path
+    else:
+        return (stat.S_IFMT(stat1.st_mode), stat1.st_dev, stat1.st_ino) == \
+               (stat.S_IFMT(stat2.st_mode), stat2.st_dev, stat2.st_ino)
+
+
+def determine_files(repo, repo_path, dest, dest_path, symlinked):
+    repo_path_set = set(repo.keys())
+    dest_path_set = set(dest.keys())
+
+    # Paths that are not in the repo, will definitely need to be linked in.
+    missing_paths = dest_path_set - repo_path_set
+
+    # The more tricky part is determining the matching paths.  So, we need to
+    # check if there is an already existing link of the correct type.  If so,
+    # then we don't need to do anything.  If not, then we need to include the
+    # path.
+    matching_paths = dest_path_set & repo_path_set
+
+    paths_to_link = set([])
+    for path in matching_paths:
+        full_repo_path = os.path.join(repo_path, path)
+        full_dest_path = os.path.join(dest_path, path)
+        if is_linked(full_repo_path, full_dest_path, symlinked):
+            continue
+
+        # Check the hashes.
+        if repo[path] == dest[path]:
+            paths_to_link.add(path)
+
+        # Now, because some tarfiles can be generated on the fly from projects
+        # like OpenWRT, we'll want to check for filename collisions and actually
+        # examine the content of the tarfiles.
+        elif tarfile.is_tarfile(full_repo_path) and \
+             tarfiles_match(full_repo_path, full_dest_path):
+            paths_to_link.add(path)
+
+    return sorted(missing_paths), sorted(paths_to_link)
+
+
+VERBOSE = False
+
+
+def verbose(fmt, *args):
+    if VERBOSE:
+        print fmt % args
+
+
+def main():
+    global VERBOSE
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+            'repo_path',
+            help="The repository to hard/sym-link files against.")
+    parser.add_argument(
+            'path',
+            nargs='?',
+            default='.',
+            help="The path that will get hard/sym-linked")
+    parser.add_argument(
+            '--no-inject',
+            action='store_false',
+            dest='inject',
+            default=True,
+            help="Don't insert files missing from the repo into the repo")
+    parser.add_argument(
+            '-s', '--symlink',
+            action='store_true',
+            default=False,
+            help="Create symlinks to the files, instead of hard links")
+    parser.add_argument(
+            '-v', '--verbose',
+            action='store_true',
+            default=False,
+            help="Be verbose.")
+
+    args = parser.parse_args()
+
+    VERBOSE = args.verbose
+
+    repo_path = args.repo_path
+    dest_path = args.path
+
+    repo = crawl_dir(repo_path)
+    dest = crawl_dir(dest_path)
+
+    missing_paths, files_to_link = \
+            determine_files(repo, repo_path, dest, dest_path, args.symlink)
+
+    if args.symlink:
+        def link_fn(src, dst):
+            target = os.path.relpath(full_repo_path, os.path.dirname(dst))
+            os.symlink(target, dst)
+    else:
+        link_fn = os.link
+
+    def create_link(src, dst):
+        verbose("link %r -> %r", src, dst)
+
+        try:
+            os.unlink(dst)
+        except OSError as e:
+            if e.errno != errno.NOENT:
+                raise
+
+        link_fn(src, dst)
+
+    if args.inject:
+        for path in missing_paths:
+            full_repo_path = os.path.join(repo_path, path)
+            full_dest_path = os.path.join(dest_path, path)
+
+            print os.path.relpath(full_repo_path, os.path.dirname(full_dest_path))
+
+            dir_path = os.path.dirname(full_repo_path)
+            if not os.path.exists(dir_path):
+                os.makedirs(dir_path)
+
+            verbose("copy %r -> %r", full_dest_path, full_repo_path)
+            shutil.copy2(full_dest_path, full_repo_path)
+
+            create_link(full_repo_path, full_dest_path)
+
+    for path in files_to_link:
+        full_repo_path = os.path.join(repo_path, path)
+        full_dest_path = os.path.join(dest_path, path)
+
+        create_link(full_repo_path, full_dest_path)
+
+
+if __name__ == '__main__':
+    main()
