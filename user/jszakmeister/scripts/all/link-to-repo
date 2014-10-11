@@ -136,6 +136,7 @@ def determine_files(repo, repo_path, dest, dest_path, symlinked):
 
 
 VERBOSE = False
+DRYRUN = False
 
 
 def verbose(fmt, *args):
@@ -145,6 +146,7 @@ def verbose(fmt, *args):
 
 def main():
     global VERBOSE
+    global DRYRUN
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -171,10 +173,16 @@ def main():
             action='store_true',
             default=False,
             help="Be verbose.")
+    parser.add_argument(
+            '-n', '--dryrun',
+            action='store_true',
+            default=False,
+            help="Don't actually make any changes.")
 
     args = parser.parse_args()
 
     VERBOSE = args.verbose
+    DRYRUN = args.dryrun
 
     repo_path = args.repo_path
     dest_path = args.path
@@ -195,6 +203,9 @@ def main():
     def create_link(src, dst):
         verbose("link %r -> %r", src, dst)
 
+        if DRYRUN:
+            return
+
         try:
             os.unlink(dst)
         except OSError as e:
@@ -210,12 +221,14 @@ def main():
 
             print os.path.relpath(full_repo_path, os.path.dirname(full_dest_path))
 
-            dir_path = os.path.dirname(full_repo_path)
-            if not os.path.exists(dir_path):
-                os.makedirs(dir_path)
-
             verbose("copy %r -> %r", full_dest_path, full_repo_path)
-            shutil.copy2(full_dest_path, full_repo_path)
+
+            if not DRYRUN:
+                dir_path = os.path.dirname(full_repo_path)
+                if not os.path.exists(dir_path):
+                    os.makedirs(dir_path)
+
+                shutil.copy2(full_dest_path, full_repo_path)
 
             create_link(full_repo_path, full_dest_path)
 
