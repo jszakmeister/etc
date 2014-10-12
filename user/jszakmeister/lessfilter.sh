@@ -4,17 +4,17 @@ case "$1" in
     *.ad[asb]|*.asm|*.inc|*.[ch]|*.[ch]pp|*.[ch]xx|*.cc|*.hh|\
     *.lsp|*.l|*.pas|*.p|*.xml|*.xps|*.xsl|*.axp|*.ppd|*.pov|\
     *.py|*.rb|*.sql|*.ebuild|*.eclass|*.vim)
-        pygmentize -f 256 "$1";;
+        pygmentize -f 256 -O style=native "$1" 2>/dev/null;;
     .bashrc|.bash_aliases|.bash_environment)
-        pygmentize -f 256 -l sh "$1"
+        pygmentize -f 256 -O style=native -l sh "$1" 2>/dev/null
         ;;
     *.patch|*.diff)
-        pygmentize -f 256 "$1" | diff-highlight
+        pygmentize -f 256 -O style=native "$1" 2>/dev/null | diff-highlight
         ;;
     *)
         grep "#\!/bin/bash" "$1" > /dev/null
         if [ "$?" -eq "0" ]; then
-            pygmentize -f 256 -l sh "$1"
+            pygmentize -f 256 -O style=native -l sh "$1" 2>/dev/null
         else
             exit 1
         fi
