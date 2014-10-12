@@ -1,0 +1,765 @@
+#!/usr/bin/env ruby
+
+#
+# Copyright (C) 2013-2014 Felipe Contreras
+#
+# This file may be used under the terms of the GNU GPL version 2.
+#
+
+require 'fileutils'
+
+$merged = []
+$actions = []
+
+$need_rebuild = false
+$branches_to_add = []
+$autocontinue = false
+
+NULL_SHA1 = '0' * 40
+
+def die(*args)
+  fmt = args.shift
+  $stderr.printf("fatal: %s\n" % fmt, *args)
+  exit 128
+end
+
+def git_editor(*args)
+  editor = %x[git var GIT_EDITOR].chomp.split(' ')
+  system(*editor, *args)
+end
+
+class ParseOpt
+  attr_writer :usage
+
+  class Option
+    attr_reader :short, :long, :help
+
+    def initialize(short, long, help, &block)
+      @block = block
+      @short = short
+      @long = long
+      @help = help
+    end
+
+    def call(v)
+      @block.call(v)
+    end
+  end
+
+  def initialize
+    @list = {}
+  end
+
+  def on(short = nil, long = nil, help = nil, &block)
+    opt = Option.new(short, long, help, &block)
+    @list[short] = opt if short
+    @list[long] = opt if long
+  end
+
+  def parse
+    if ARGV.member?('-h') or ARGV.member?('--help')
+      usage
+      exit 0
+    end
+    seen_dash = false
+    ARGV.delete_if do |cur|
+      opt = val = nil
+      next false if cur[0,1] != '-' or seen_dash
+      case cur
+      when '--'
+        seen_dash = true
+        next true
+      when /^--no-(.+)$/
+        opt = @list[$1]
+        val = false
+      when /^-([^-])(.+)?$/, /^--(.+?)(?:=(.+))?$/
+        opt = @list[$1]
+        val = $2 || true
+      end
+      if opt
+        opt.call(val)
+        true
+      else
+        usage
+        exit 1
+      end
+    end
+  end
+
+  def usage
+    def fmt(prefix, str)
+      return str ? prefix + str : nil
+    end
+    puts 'usage: %s' % @usage
+    @list.values.uniq.each do |opt|
+      s = '    '
+      s << ''
+      s << [fmt('-', opt.short), fmt('--', opt.long)].compact.join(', ')
+      s << ''
+      s << '%*s%s' % [26 - s.size, '', opt.help] if opt.help
+      puts s
+    end
+  end
+
+end
+
+def parse_merge(other, commit, msg, body)
+  case msg
+  when /^Merge branch '(.*)'/
+    ref = 'refs/heads/' + $1
+  when /^Merge remote branch '(.*)'/
+    ref = 'refs/' + $1
+  else
+    $stderr.puts "Huh?: #{msg}"
+    return
+  end
+
+  merged = %x[git name-rev --refs="#{ref}" "#{other}" 2> /dev/null].chomp
+  if merged =~ /\h{40} (.*)/
+    merged = $1
+  end
+  merged = "merge #{merged}"
+  merged += "\n\n" + body.gsub(/^/, '  ') unless body.empty?
+  merged
+end
+
+class Branch
+
+  attr_reader :name, :ref, :int
+  attr_reader :into_name, :into_ref
+
+  def initialize(name)
+    @name = name
+  end
+
+  def into_name=(name)
+    @into_name = name
+    @into_ref = %x[git rev-parse --symbolic-full-name "refs/heads/#{name}"].chomp
+  end
+
+  def get
+    if @name
+      @ref = %x[git rev-parse --symbolic-full-name "refs/heads/#{@name}"].chomp
+      die "no such branch: #{@name}" unless $?.success?
+    else
+      @ref = %x[git symbolic-ref HEAD].chomp
+      die "HEAD is detached, could not figure out which integration branch to use" unless $?.success?
+      @name = @ref.gsub(%r{^refs/heads/}, '')
+    end
+
+    @int = @ref.gsub(%r{^refs/heads/}, 'refs/int/')
+
+    system(*%w[git rev-parse --quiet --verify], @int, :out => File::NULL)
+    die "Not an integration branch: #{@name}" unless $?.success?
+  end
+
+  def create(base = nil)
+    @ref = %x[git check-ref-format --normalize "refs/heads/#{@name}"].chomp
+    die "invalid branch name: #{@name}" unless $?.success?
+
+    if base
+      system(*%w[git rev-parse --quiet --verify], "#{base}^{commit}", :out => File::NULL)
+      die "no such commit: #{base}" unless $?.success?
+    else
+      base = 'master'
+    end
+
+    @int = @ref.gsub(%r{^refs/heads/}, 'refs/int/')
+
+    system(*%w[git update-ref], @ref, base, NULL_SHA1)
+    write_instructions("base #{base}\n")
+    system(*%w[git checkout], @name)
+    puts "Integration branch #{@name} created."
+  end
+
+  def generate(base = nil)
+    if @name
+      @ref = %x[git rev-parse --symbolic-full-name "refs/heads/#{@name}"].chomp
+      die "no such branch: #{@name}" unless $?.success?
+    else
+      @ref = %x[git symbolic-ref HEAD].chomp
+      die "HEAD is detached, could not figure out which integration branch to use" unless $?.success?
+      @name = @ref.gsub(%r{^refs/heads/}, '')
+    end
+
+    if base
+      system(*%w[git rev-parse --quiet --verify], "#{base}^{commit}", :out => File::NULL)
+      die "no such commit: #{base}" unless $?.success?
+    else
+      base = 'master'
+    end
+
+    @int = @ref.gsub(%r{^refs/heads/}, 'refs/int/')
+
+    series = []
+
+    series << "base #{base}"
+
+    IO.popen(%w[git log --no-decorate --format=%H%n%B -z --reverse --first-parent] + ["^#{base}", @name]) do |io|
+      io.each("\0") do |l|
+        commit, summary, body = l.chomp("\0").split("\n", 3)
+        body.lstrip!
+        other = %x[git rev-parse -q --verify "#{commit}^2"].chomp
+        if not other.empty?
+          body.gsub!(/\n?(\* .*:.*\n.*)/m, '')
+          series << parse_merge(other, commit, summary, body)
+        end
+      end
+    end
+
+    write_instructions(series.join("\n") + "\n")
+
+    puts "Integration branch #{@name} generated."
+  end
+
+  def read_instructions
+    %x[git cat-file blob #{@int}:instructions].chomp
+  end
+
+  def write_instructions(content)
+    insn_blob = insn_tree = insn_commit = nil
+
+    parent = %x[git rev-parse --quiet --verify #{@int}].chomp
+    parent_tree = %x[git rev-parse --quiet --verify #{@int}^{tree}].chomp
+
+    parent = nil if parent.empty?
+
+    IO.popen(%[git hash-object -w --stdin], 'r+') do |io|
+      io.write(content)
+      io.close_write
+      insn_blob = io.read.chomp
+    end
+    die "Failed to write instruction sheet blob object" unless $?.success?
+
+    IO.popen(%[git mktree], 'r+') do |io|
+      io.printf "100644 blob %s\t%s\n", insn_blob, 'instructions'
+      io.close_write
+      insn_tree = io.read.chomp
+    end
+    die "Failed to write instruction sheet tree object" unless $?.success?
+
+    # If there isn't anything to commit, stop now.
+    return if insn_tree == parent_tree
+
+    op = parent ? 'Update' : 'Create'
+    opts = parent ? ['-p', parent] : []
+    opts << insn_tree
+    IO.popen(%w[git commit-tree] + opts, 'r+') do |io|
+      io.write("#{op} integration branch #{@int}")
+      io.close_write
+      insn_commit = io.read.chomp
+    end
+    die "Failed to write instruction sheet commit" unless $?.success?
+
+    system(*%w[git update-ref], @int, insn_commit, parent || NULL_SHA1)
+    die "Failed to update instruction sheet reference" unless $?.success?
+  end
+
+end
+
+class Integration
+
+  attr_reader :commands
+
+  class Stop < Exception
+  end
+
+  class Pause < Exception
+  end
+
+  @@map = { '.' => :cmd_dot }
+
+  def initialize(obj)
+    self.load(obj)
+  end
+
+  def load(obj)
+    cmd, args = nil
+    msg = ""
+    cmds = []
+    obj.each_line do |l|
+      l.chomp!
+      case l
+      when ''
+      when /^\s(.*)$/
+        msg << $1
+      when /(\S+) ?(.*)$/
+        cmds << [cmd, args, msg] if cmd
+        cmd, args = [$1, $2]
+        msg = ""
+      end
+    end
+    cmds << [cmd, args, msg] if cmd
+    @commands = cmds
+  end
+
+  def self.run(obj)
+    self.new(obj).run
+  end
+
+  def self.start(branch, into_name, inst)
+    require_clean_work_tree('integrate', "Please commit or stash them.")
+
+    orig_head = %x[git rev-parse --quiet --verify "#{branch}^{commit}"].chomp
+    system(*%w[git update-ref ORIG_HEAD], orig_head)
+
+    system(*%w[git checkout --quiet], "#{branch}^0")
+    die "could not detach HEAD" unless $?.success?
+
+    FileUtils.mkdir_p($state_dir)
+
+    File.write($head_file, branch)
+    commit = %x[git rev-parse --quiet --verify #{branch}].chomp
+    File.write($start_file, commit)
+
+    $branch.into_name = into_name
+    File.write($into_file, into_name)
+
+    File.write($insns, inst)
+    self.run(inst)
+  end
+
+  def run
+    begin
+      while cmd = @commands.first
+        finalize_command(*cmd)
+        @commands.shift
+      end
+    rescue Integration::Stop => e
+      stop(e.message)
+    rescue Integration::Pause => e
+      @commands.shift
+      stop(e.message)
+    else
+      finish
+    end
+  end
+
+  def finalize_command(cmd, args, message)
+    begin
+      fun = @@map[cmd] || "cmd_#{cmd}".to_sym
+      send(fun, message, *args)
+    rescue NoMethodError
+      raise Integration::Stop, "Unknown command: #{cmd}"
+    end
+  end
+
+  def finish
+    system(*%w[git update-ref], $branch.into_ref, 'HEAD', File.read($start_file))
+    system(*%w[git symbolic-ref], 'HEAD', $branch.into_ref)
+    FileUtils.rm_rf($state_dir)
+    system(*%w[git gc --auto])
+    if $branch.name == $branch.into_name
+      puts "Successfully re-integrated #{$branch.name}."
+    else
+      puts "Successfully applied #{$branch.name} into #{$branch.into_name}."
+    end
+  end
+
+  def stop(msg = nil)
+    File.open($insns, 'w') do |f|
+      @commands.each do |cmd, args, msg|
+        str = "%s %s\n" % [cmd, args]
+        str += "%s\n" % msg if msg and not msg.empty?
+        f.write(str)
+      end
+    end
+
+    File.write($merged_file, $merged.join("\n"))
+
+    $stderr.puts(msg) if msg and ! msg.empty?
+    $stderr.puts <<EOF
+
+Once you have resolved this, run:
+
+  git reintegrate --continue
+
+NOTE: Any changes to the instruction sheet will not be saved.
+EOF
+    exit 1
+  end
+
+end
+
+def do_edit
+  edit_file = "#{$git_dir}/GIT-INTEGRATION"
+  comment_char = '#'
+
+  content = $branch.read_instructions
+  if not $branches_to_add.empty?
+    content += "\n" + $branches_to_add.map { |e| "merge #{e}" }.join("\n") + "\n"
+  end
+  comment = <<EOF
+
+Format:
+ command args
+
+    Indented lines form a comment for certain commands.
+    For other commands these are ignored.
+
+Lines beginning with #{comment_char} are stripped.
+
+Commands:
+ base           Resets the branch to the specified state.  Every integration
+                instruction list should begin with a "base" command.
+ merge          Merges the specified branch.  Extended comment lines are
+                added to the commit message for the merge.
+ fixup          Picks up an existing commit to be applied on top of a merge as
+                a fixup.
+ commit         Adds an empty commit with the specified message mostly to be
+                used as a comment.
+ pause          Pauses the rebuild process.
+ .              The command is ignored.
+EOF
+  File.write(edit_file, content + "\n" + comment.gsub(/^/, "#{comment_char} \\1"))
+
+  if $edit
+    git_editor(edit_file) || die
+  end
+
+  content = File.read(edit_file).gsub(/^#{comment_char} .*?\n/m, '')
+
+  $branch.write_instructions(content)
+end
+
+def cmd_base(message, base)
+  puts "Resetting to base #{base}..."
+  system(*%w[git reset --quiet --hard], base)
+  raise Integration::Stop, "Failed to reset to base #{base}" unless $?.success?
+end
+
+def deindent(msg)
+  msg = msg.lstrip
+  indent = msg.lines.first.gsub(/^([ \t]*).*$/, '\1')
+  return msg.gsub(/^#{indent}/, '')
+end
+
+def cmd_merge(message, branch_to_merge, *args)
+  merge_msg = "Merge branch '#{branch_to_merge}' into #{$branch.into_name}\n"
+  merge_msg += "\n#{deindent(message)}\n" unless message.empty?
+
+  merge_opts = args
+  merge_opts += %w[--quiet --no-ff]
+  merge_opts += ['-m', merge_msg]
+
+  puts "Merging branch #{branch_to_merge}..."
+  system(*%w[git merge], *merge_opts, branch_to_merge)
+  if not $?.success?
+    if $autocontinue && %x[git rerere remaining].chomp == ''
+      system(*%w[git commit --no-edit --no-verify -a])
+      raise Integration::Stop, '' unless $?.success?
+    else
+      raise Integration::Stop, ''
+    end
+  end
+  $merged << branch_to_merge
+end
+
+def cmd_fixup(message, fixup_commit, *args)
+  puts "Fixing up with #{fixup_commit}"
+
+  system(*%w[git cherry-pick --no-commit], fixup_commit) &&
+  system({ 'EDITOR' => ':' }, *%w[git commit --amend -a])
+  raise Integration::Stop, '' unless $?.success?
+end
+
+def cmd_commit(message, *args)
+  puts "Emtpy commit"
+
+  system(*%w[git commit --allow-empty -m], message)
+  raise Integration::Stop, '' unless $?.success?
+end
+
+def cmd_pause(message, *args)
+  raise Integration::Pause, (message || 'Pause')
+end
+
+def cmd_dot(message, *args)
+end
+
+def require_clean_work_tree(action = nil, msg = nil, quiet = false)
+  system(*%w[git update-index -q --ignore-submodules --refresh])
+  errors = []
+
+  system(*%w[git diff-files --quiet --ignore-submodules])
+  errors << "Cannot #{action}: You have unstaged changes." unless $?.success?
+
+  system(*%w[git diff-index --cached --quiet --ignore-submodules HEAD --])
+  if not $?.success?
+    if errors.empty?
+      errors << "Cannot #{action}: Your index contains uncommitted changes."
+    else
+      errors << "Additionally, your index contains uncommitted changes."
+    end
+  end
+
+  if not errors.empty? and not quiet
+    errors.each do |e|
+      $stderr.puts(e)
+    end
+    $stderr.puts(msg) if msg
+    exit 1
+  end
+
+  return errors.empty?
+end
+
+def do_rebuild
+  inst = $branch.read_instructions
+  die "Failed to read instruction list for branch #{$branch.name}" unless $?.success?
+
+  Integration.start($branch.name, $branch.name, inst)
+end
+
+def get_head_file
+  die "no integration in progress" unless test('f', $head_file)
+  branch_name = File.read($head_file).gsub(%r{^refs/heads/}, '')
+  branch = Branch.new(branch_name)
+  branch.get
+  branch.into_name = File.read($into_file)
+  return branch
+end
+
+def do_continue
+  $branch = get_head_file
+
+  if File.exists?("#{$git_dir}/MERGE_HEAD")
+    # We are being called to continue an existing operation,
+    # without the user having manually committed the result of
+    # resolving conflicts.
+    system(*%w[git update-index --ignore-submodules --refresh]) &&
+      system(*%w[git diff-files --quiet --ignore-submodules]) ||
+      die("You must edit all merge conflicts and then mark them as resolved using git add")
+
+    system(*%w[git commit --quiet --no-edit])
+    die "merge_head" unless $?.success?
+  end
+
+  $merged = File.read($merged_file).split("\n")
+
+  File.open($insns) do |f|
+    Integration.run(f)
+  end
+end
+
+def do_abort
+  $branch = get_head_file
+
+  system(*%w[git symbolic-ref HEAD], $branch.into_ref) &&
+    system(*%w[git reset --hard], $branch.into_ref) &&
+    FileUtils.rm_rf($state_dir)
+end
+
+def do_apply
+  head = %x[git rev-parse --symbolic --abbrev-ref HEAD].chomp
+
+  inst = $branch.read_instructions
+  die "Failed to read instruction list for branch #{$branch.name}" unless $?.success?
+
+  inst = inst.lines.reject do |line|
+    next true if line =~ /^base /
+    if line =~ /^merge (.*)$/
+      system(*%W[git merge-base --is-ancestor #{$1} HEAD])
+      next true if $?.success?
+    end
+    false
+  end.join
+
+  Integration.start(head, head, inst)
+end
+
+def status_merge(branch_to_merge = nil)
+  if not branch_to_merge
+    $stderr.puts "no branch specified with 'merge' command"
+    return
+  end
+  $status_base ||= 'master'
+
+  if ! system(*%w[git rev-parse --verify --quiet], "#{branch_to_merge}^{commit}", :out => File::NULL)
+    state = "."
+    verbose_state = "branch not found"
+  elsif system(*%w[git merge-base --is-ancestor], branch_to_merge, $status_base)
+    state = "+"
+    verbose_state = "merged to #{$status_base}"
+  elsif system(*%w[git-merge-base --is-ancestor], branch_to_merge, $branch.name)
+    state = "*"
+    verbose_state = "up-to-date"
+  else
+    state = "-"
+    verbose_state = "branch changed"
+  end
+
+  printf("%s %-*s(%s)", state, $longest_branch, branch_to_merge, verbose_state)
+  puts $message.gsub(/^./, '     \&') if $message
+  puts
+
+  log = %x[git --no-pager log --oneline --cherry "#{$status_base}...#{branch_to_merge}" -- 2> /dev/null].chomp
+  print(log.gsub(/^/, '  ') + "\n\n") unless log.empty?
+end
+
+def status_dot(*args)
+  args.each do |arg|
+    puts ". #{arg}\n"
+  end
+  puts $message.gsub(/^./, '     \&') if $message
+end
+
+def do_status
+  inst = $branch.read_instructions
+  die "Failed to read instruction list for branch #{$branch.name}" unless $?.success?
+
+  int = Integration.new(inst)
+  cmds = int.commands
+
+  $longest_branch = cmds.map do |cmd, args, msg|
+    next 0 if cmd != 'merge'
+    args.split(' ').first.size
+  end.max
+
+  cmds.each do |cmd, args, msg|
+    case cmd
+    when 'base'
+      $status_base = args
+    when 'merge'
+      status_merge(*args)
+    when '.'
+      status_dot(*args)
+    else
+      $stderr.puts "unhandled command: #{cmd} #{args}"
+    end
+  end
+end
+
+opts = ParseOpt.new
+opts.usage = 'git reintegrate'
+
+opts.on('c', 'create', 'create a new integration branch') do |v|
+  $create = true
+  $need_rebuild = true
+end
+
+opts.on('e', 'edit', 'edit the instruction sheet for a branch') do |v|
+  $edit = true
+  $need_rebuild = true
+end
+
+opts.on('r', 'rebuild', 'rebuild an integration branch') do |v|
+  $rebuild = v
+end
+
+opts.on(nil, 'continue', 'continue an in-progress rebuild') do |v|
+  $actions << :continue
+end
+
+opts.on(nil, 'abort', 'abort an in-progress rebuild') do |v|
+  $actions << :abort
+end
+
+opts.on('g', 'generate', 'generate instruction sheet') do |v|
+  $generate = true
+end
+
+opts.on('a', 'add', 'add a branch to merge in the instruction sheet') do |v|
+  $branches_to_add << v
+  $need_rebuild = true
+end
+
+opts.on(nil, 'autocontinue', 'continue automatically on merge conflicts if possible') do |v|
+  $autocontinue = v
+end
+
+opts.on(nil, 'cat', 'show the instructions of an integration branch') do |v|
+  $cat = v
+end
+
+opts.on('s', 'status', 'shows the status of all the dependencies of an integration branch') do |v|
+  $status = true
+end
+
+opts.on('l', 'list', 'list integration branches') do |v|
+  $list = true
+end
+
+opts.on('d', 'delete', 'delete an integration branch') do |v|
+  $delete = true
+end
+
+opts.on(nil, 'apply', 'apply an integration branch on the current branch') do |v|
+  $apply = true
+end
+
+%x[git config --bool --get integration.autocontinue].chomp == "true" &&
+$autocontinue = true
+
+opts.parse
+
+$git_dir = %x[git rev-parse --git-dir].chomp
+
+$state_dir = "#{$git_dir}/integration"
+$start_file = "#{$state_dir}/start-point"
+$head_file = "#{$state_dir}/head-name"
+$merged_file = "#{$state_dir}/merged"
+$insns = "#{$state_dir}/instructions"
+$into_file = "#{$state_dir}/into"
+
+case $actions.first
+when :continue
+  do_continue
+when :abort
+  do_abort
+end
+
+if $list
+  IO.popen(%w[git for-each-ref refs/int/]).each do |line|
+    if line =~ %r{.*\trefs/int/(.*)}
+      puts $1
+    end
+  end
+  exit
+end
+
+if $delete
+  name = ARGV[0]
+  msg = 'reintegrate: delete branch'
+  system(*%W[git update-ref -d refs/int/#{name}] + ['-m', msg])
+  exit
+end
+
+$branches_to_add.each do |branch|
+  system(*%w[git rev-parse --quiet --verify], "#{branch}^{commit}", :out => File::NULL)
+  die "not a valid commit: #{branch}" unless $?.success?
+end
+
+$branch = Branch.new(ARGV[0])
+if $create
+  $branch.create(ARGV[1])
+elsif $generate
+  $branch.generate(ARGV[1])
+else
+  $branch.get
+end
+
+if $edit || ! $branches_to_add.empty?
+  do_edit
+end
+
+if $cat
+  puts $branch.read_instructions
+end
+
+if $rebuild == nil && $need_rebuild == true
+  %x[git config --bool --get integration.autorebuild].chomp == "true" &&
+  $rebuild = true
+end
+
+if $rebuild
+  do_rebuild
+end
+
+if $apply
+  do_apply
+end
+
+if $status
+  do_status
+end
