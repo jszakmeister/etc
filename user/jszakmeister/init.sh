@@ -32,8 +32,6 @@ _add_dir_shortcut e ~/.etc true
 _add_dir_shortcut e ~/projects/etc true
 _add_dir_shortcut i ~/projects/intelesys true
 _add_dir_shortcut j ~/projects/jszakmeister true
-_add_dir_shortcut l ~/projects/local-homepage
-_add_dir_shortcut l ~/projects/jszakmeister/local-homepage
 _add_dir_shortcut p ~/projects true
 _add_dir_shortcut v ~/.vim true
 
