@@ -73,6 +73,9 @@ case $- in
 
         source "$ETC_HOME/bash/themes/${BASH_THEME:-jszakmeister}.bash-theme"
 
+        # Ensure the prompt is in normal mode.
+        PS1="${PS1}$(tput rmkx)"
+
         test -f "$ETC_HOME/user/$ETC_USER/init.sh" &&
             . "$ETC_HOME/user/$ETC_USER/init.sh"
 
