@@ -103,6 +103,15 @@ if [ "$(uname)" == "Linux" ]; then
         cp fonts/*.ttf $HOME/.fonts &&
         echo "Installed custom fonts"
 fi
+
+if [ "$(uname)" == "Darwin" ]; then
+    # Under Mac OS X, it opens login shells, and the default /etc/bashrc doesn't
+    # source the user's ~/.bashrc.
+    if ! test -r "$HOME/.bash_profile"; then
+        echo '[ -r ~/.bashrc ] && . ~/.bashrc' > ~/.bash_profile
+    fi
+fi
+
 _maybeInstall "source \"$SOURCE_PREFIX/bash/bashrc\"" "$HOME/.bashrc"
 _maybeInstall "source \"$SOURCE_PREFIX/zsh/zshenv\"" "$HOME/.zshenv"
 _maybeInstall "source \"$SOURCE_PREFIX/zsh/zshrc\"" "$HOME/.zshrc"
