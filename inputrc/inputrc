@@ -2,7 +2,9 @@ $include /etc/inputrc
 
 # Link this to ~/.inputrc in your home folder
 "\e[A": history-search-backward
+"\eOA": history-search-backward
 "\e[B": history-search-forward
+"\eOB": history-search-forward
 "\e[3~": delete-char
 "\e[5C": forward-word
 "\e[5D": backward-word
