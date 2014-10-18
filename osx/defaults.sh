@@ -404,3 +404,5 @@ defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool FALSE
 defaults write com.googlecode.iterm2 NSAppSleepDisabled -bool YES
 
 echo "You need to logout and back in for some preferences to take effect."
+
+echo "Run 'sudo scutil --set HostName <hostname>' to set the host name for the machine"
