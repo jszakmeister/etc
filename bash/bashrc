@@ -71,10 +71,10 @@ case $- in
             . "$ETC_HOME/bash/git-completion.bash"
         fi
 
-        source "$ETC_HOME/bash/themes/${BASH_THEME:-jszakmeister}.bash-theme"
-
         # Ensure the prompt is in normal mode.
-        PS1="${PS1}$(tput rmkx)"
+        PROMPT_COMMAND="tput rmkx"
+
+        source "$ETC_HOME/bash/themes/${BASH_THEME:-jszakmeister}.bash-theme"
 
         test -f "$ETC_HOME/user/$ETC_USER/init.sh" &&
             . "$ETC_HOME/user/$ETC_USER/init.sh"
