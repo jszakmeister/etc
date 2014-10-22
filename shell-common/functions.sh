@@ -81,6 +81,13 @@ if _has_executable git; then
             __gitcomp_nl "$(__git_refs)"
         }
     fi
+
+    if _has_executable git-missing; then
+        _git_missing ()
+        {
+            __gitcomp_nl "$(__git_refs)"
+        }
+    fi
 fi
 
 # For clang when running under pip and tox.  This is to help prevent errors from
