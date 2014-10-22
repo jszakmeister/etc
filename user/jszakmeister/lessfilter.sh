@@ -3,8 +3,12 @@ case "$(basename $1)" in
     *.awk|*.groff|*.java|*.js|*.m4|*.php|*.pl|*.pm|*.pod|*.sh|\
     *.ad[asb]|*.asm|*.inc|*.[ch]|*.[ch]pp|*.[ch]xx|*.cc|*.hh|\
     *.lsp|*.l|*.pas|*.p|*.xml|*.xps|*.xsl|*.axp|*.ppd|*.pov|\
-    *.py|*.rb|*.sql|*.ebuild|*.eclass|*.vim)
-        pygmentize -f 256 -O style=native "$1" 2>/dev/null;;
+    *.py|*.rb|*.sql|*.ebuild|*.eclass|*.vim|*.cmake|CMakeLists.txt|Makefile)
+        pygmentize -f 256 -O style=native "$1" 2>/dev/null
+        ;;
+    *.mk)
+        pygmentize -f 256 -O style=native -l make "$1" 2>/dev/null
+        ;;
     .bashrc|.bash_aliases|.bash_environment|*.zsh|.zshrc|.zshenv|.zsh-history)
         pygmentize -f 256 -O style=native -l sh "$1" 2>/dev/null
         ;;
