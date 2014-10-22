@@ -15,6 +15,23 @@ function find-project-root
     echo "$last_found"
 }
 
+function search-up-tree
+{
+    local tmp_path="$(pwd)"
+    while [[ "$tmp_path" != "/" ]];
+    do
+        for file in "$@"
+        do
+            if [ -e "$tmp_path/$file" ]; then
+                echo "$tmp_path/$file"
+                return
+            fi
+        done
+
+        tmp_path="$(dirname "$tmp_path")"
+    done
+}
+
 function cdt
 {
     local project_root=$(find-project-root)
