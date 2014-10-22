@@ -144,6 +144,24 @@ function ssh-add()
     command ssh-add "$@"
 }
 
+function buildall()
+{
+    local buildall_exec="$(search-up-tree buildall buildall.sh)"
+
+    if [ -z "$buildall_exec" ]
+    then
+        echo 1>&2 "ERROR: buildall or buildall.sh not found"
+        return 1
+    fi
+
+    pushd "$(dirname "$buildall_exec")" 2>&1 > /dev/null
+    "$buildall_exec" "$@"
+    local result=$?
+    popd 2>&1 > /dev/null
+
+    return $result
+}
+
 # Disable slow keys...
 # Not sure if this persists or not.
 #
