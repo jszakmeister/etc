@@ -46,6 +46,10 @@ _bindkey  "${key[CRight]}"  forward-word
 _bindkey  "${key[Home]}"    beginning-of-line
 _bindkey  "${key[End]}"     end-of-line
 
+# Allow glob patterns to be used in the incremental search.
+bindkey "^R" history-incremental-pattern-search-backward
+bindkey "^S" history-incremental-pattern-search-forward
+
 # Other potential entries for Home/End
 bindkey "\eOH"  beginning-of-line
 bindkey "\e[H"  beginning-of-line
