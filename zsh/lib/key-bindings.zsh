@@ -68,6 +68,13 @@ bindkey "\e\e[D"  backward-word
 
 bindkey -s "\C-o\C-o" "^E | less^M"
 
+# Allow Alt-m to be used to grab a previous argument.  For instance,
+# $ git status
+# Alt-. Alt-m would result in 'git'
+autoload -Uz copy-earlier-word
+zle -N copy-earlier-word
+bindkey "^[m" copy-earlier-word
+
 function zle-line-init () {
     echoti smkx
 }
