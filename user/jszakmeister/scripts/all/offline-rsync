@@ -192,7 +192,7 @@ def main():
 
         contents = generate_script(files_to_remove, files_to_copy)
         mtime = time.time()
-        ti = tarfile.TarInfo(os.path.join(prefix, "offline-rsync.sh"))
+        ti = tarfile.TarInfo(os.path.join(prefix, "apply-offline-rsync.sh"))
         ti.size = contents.len
         ti.mtime = mtime
         ti.mode = 0755
