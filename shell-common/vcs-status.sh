@@ -146,19 +146,19 @@ _vcs_status() {
         fi
 
         if (( ${behind} > 0 )); then
-            behind="${fg_no_bold_white}behind ${fg_bold_red}${behind}${ansi_reset}"
+            behind="${fg_no_bold_white}behind ${fg_light_red}${behind}${ansi_reset}"
         else
             behind=""
         fi
 
         if (( ${ahead} > 0 )); then
-            ahead="${fg_no_bold_white}ahead ${fg_bold_green}${ahead}${ansi_reset}"
+            ahead="${fg_no_bold_white}ahead ${fg_light_green}${ahead}${ansi_reset}"
         else
             ahead=""
         fi
 
         if [ "$differ" -ne 0 ]; then
-            differ="${fg_bold_red}∆${ansi_reset}"
+            differ="${fg_light_red}∆${ansi_reset}"
         else
             differ=""
         fi

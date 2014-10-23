@@ -9,7 +9,7 @@ source "${ETC_HOME}/shell-common/vcs-status.sh"
 
 _jszakmeister_prompt_virtualenv() {
     if [ -n "$VIRTUAL_ENV" ]; then
-        echo -ne " ${fg_bold_blue}[${fg_red}$(basename $VIRTUAL_ENV)${fg_bold_blue}]${ansi_reset}"
+        echo -ne " ${fg_light_blue}[${fg_red}$(basename $VIRTUAL_ENV)${fg_light_blue}]${ansi_reset}"
     fi
 }
 
@@ -47,9 +47,9 @@ _jszakmeister_filter_ansi() {
 }
 
 _jszakmeister_prompt() {
-    local separator="${fg_bold_blue}::${ansi_reset}"
+    local separator="${fg_light_blue}::${ansi_reset}"
     local user_host vcs_status topline SRMT ERMT regex virtualenv_status
-    local user_color="${fg_bold_yellow}"
+    local user_color="${fg_light_yellow}"
     local ret_code="$1"
 
     [ -z "$ret_code" ] && ret_code=0
@@ -71,7 +71,7 @@ _jszakmeister_prompt() {
         user_color="${fg_bold_red}"
     fi
 
-    user_host="$SRMT${user_color}${USER}${fg_bold_cyan}@${fg_bold_blue}${host}$ERMT${ansi_reset}"
+    user_host="$SRMT${user_color}${USER}${fg_light_cyan}@${fg_light_blue}${host}$ERMT${ansi_reset}"
 
     vcs_status=$(_vcs_status)
     [ -n "${vcs_status}" ] && vcs_status=" ${vcs_status}"
@@ -122,7 +122,7 @@ _jszakmeister_prompt() {
         last_status="$(printf "%${length}s" "")${last_status}"
     fi
 
-    current_dir="${fg_bold_yellow}[${fg_no_bold_magenta}${current_dir}${fg_bold_yellow}]${ansi_reset}"
+    current_dir="${fg_light_yellow}[${fg_no_bold_magenta}${current_dir}${fg_light_yellow}]${ansi_reset}"
     topline="${user_host} ${current_dir}${virtualenv_status}${vcs_status}${last_status}"
 
     if [ -n "$BASH" ]; then
@@ -136,4 +136,4 @@ _jszakmeister_prompt() {
     echo -e "$topline"
 }
 
-JSZAKMEISTER_PROMPT_PS1="${fg_bold_blue}::${ansi_reset} "
+JSZAKMEISTER_PROMPT_PS1="${fg_light_blue}::${ansi_reset} "
