@@ -14,6 +14,13 @@ my @removed;
 my @added;
 my $in_hunk;
 
+sub pipeHandler {
+    my $sig = shift @_;
+    exit(0);
+}
+
+$SIG{PIPE} = \&pipeHandler;
+
 while (<>) {
 	if (!$in_hunk) {
 		print;
