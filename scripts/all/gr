@@ -101,7 +101,13 @@ if [[ -n "$GR_VERBOSE" ]]; then
     extra_opts="$extra_opts -V${GR_VERBOSE}"
 fi
 
-running=$("$GVIM" --serverlist | grep $SERVER_NAME)
+for name in $("$GVIM" --serverlist | tr A-Z a-z)
+do
+    if [ "$name" == "$SERVER_NAME" ]
+    then
+        running=true
+    fi
+done
 
 if [[ -n "$@" ]]; then
     GR_NAME="$GR_NAME" "$GVIM" $extraopts --servername $SERVER_NAME $remote_opt "$@" > /dev/null 2>&1
