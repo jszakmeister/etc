@@ -5,6 +5,7 @@ function find-up-tree
     local last_found=$(pwd)
     local tmp_path=$(dirname "$last_found")
     local name="$1"
+
     while [[ "$tmp_path" != "/" ]];
     do
         if [ -e "$tmp_path/$name" ]; then
@@ -14,12 +15,24 @@ function find-up-tree
         tmp_path=$(dirname "$tmp_path")
     done
     if [ -e "$last_found/$name" ]; then
-        cat "$last_found/$name"
+        echo -n $(trim $(cat "$last_found/$name"))
     else
         echo -n
     fi
 }
 
+function trim
+{
+    local var="$@"
+
+    # Remove leading whitespace characters.
+    var="${var#"${var%%[![:space:]]*}"}"
+
+    # Remove trailing whitespace characters.
+    var="${var%"${var##*[![:space:]]}"}"
+
+    echo -n "$var"
+}
 
 OS=$(uname | tr '[A-Z]' '[a-z]')
 
