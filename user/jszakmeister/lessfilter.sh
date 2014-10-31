@@ -1,4 +1,8 @@
 #!/bin/sh
+if ! command -v pygmentize > /dev/null 2>&1; then
+    exit 1
+fi
+
 case "$(basename $1)" in
     *.awk|*.groff|*.java|*.js|*.m4|*.php|*.pl|*.pm|*.pod|*.sh|\
     *.ad[asb]|*.asm|*.inc|*.[ch]|*.[ch]pp|*.[ch]xx|*.cc|*.hh|\
