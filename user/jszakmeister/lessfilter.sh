@@ -17,7 +17,11 @@ case "$(basename $1)" in
         pygmentize -f 256 -O style=native -l sh "$1" 2>/dev/null
         ;;
     *.patch|*.diff)
-        pygmentize -f 256 -O style=native "$1" 2>/dev/null | diff-highlight
+        if command -v colordiff; then
+            cat "$1" | colordiff | diff-highlight
+        else
+            pygmentize -f 256 -O style=native "$1" 2>/dev/null | diff-highlight
+        fi
         ;;
     *)
         grep "#\!/bin/bash" "$1" > /dev/null
