@@ -60,11 +60,6 @@ function parse_git_branch
       sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
 }
 
-function pgl
-{
-  pygmentize -f terminal "$@" | less
-}
-
 function md
 {
     mkdir -p "$1"
