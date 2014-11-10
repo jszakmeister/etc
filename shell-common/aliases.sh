@@ -108,7 +108,7 @@ hash colordiff > /dev/null 2>&1 &&
         function diff() {
             if test -t 1
             then
-                colordiff "$@"
+                "$(_find_executable diff)" "$@" | colordiff | $PAGER
             else
                 "$(_find_executable diff)" "$@"
             fi
