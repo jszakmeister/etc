@@ -101,6 +101,8 @@ if [[ -n "$GR_VERBOSE" ]]; then
     extra_opts="$extra_opts -V${GR_VERBOSE}"
 fi
 
+SERVER_NAME="$(echo -n "$SERVER_NAME" | tr A-Z a-z)"
+
 for name in $("$GVIM" --serverlist | tr A-Z a-z)
 do
     if [ "$name" == "$SERVER_NAME" ]
