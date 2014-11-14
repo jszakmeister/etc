@@ -23,7 +23,7 @@ _git_infer_publish_branch()
     local publish_branch
 
     ref="$(git symbolic-ref HEAD 2>/dev/null)"
-    if [[ "$ref" == "" ]]; then
+    if [ "$ref" = "" ]; then
         return
     fi
 
@@ -37,7 +37,7 @@ _git_infer_publish_branch()
             if [ -z "$remote" -a -n "$(git config --get remote.origin.url 2> /dev/null)" ]; then
                 remote="origin"
             fi
-            if [[ -n "$remote" ]]; then
+            if [ -n "$remote" ]; then
                 git rev-parse "$remote/$ref" > /dev/null 2>&1 &&
                     publish_branch="$remote/$ref"
             fi
