@@ -24,7 +24,7 @@ case "$(basename $1)" in
         fi
         ;;
     *)
-        grep "#\!/bin/bash" "$1" > /dev/null
+        grep -E "#\!/bin/(bash|sh|zsh)" "$1" > /dev/null
         if [ "$?" -eq "0" ]; then
             pygmentize -f 256 -O style=native -l sh "$1" 2>/dev/null
         else
