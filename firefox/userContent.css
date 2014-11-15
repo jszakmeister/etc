@@ -1,18 +1,23 @@
+/* Install into your Firefox profile under a folder called chrome.
+ * On Mac, this would be something like:
+ * ~/Library/Application Support/Firefox/Profiles/*.default/chrome
+ */
 @-moz-document domain(mail.google.com)
 {
     /* GMail messages and textarea should use fixed-width font */
-    .gs .ii, textarea.dV {
-        font-family: MonoSpace !important;
-        font-size: 9pt !important;
+    div[role="main"] table[role="presentation"] tr td.Bu .gs .ii {
+        font-family: "DejaVu Sans Mono" !important;
     }
-
-    textarea.Ak {
-        font-family: MonoSpace !important;
-        font-size: 9pt !important;
+    div.editable[role="textbox"] {
+        font-family: "DejaVu Sans Mono" !important;
     }
+}
 
-    .bodycontainer .maincontent .message,
-    .bodycontainer .maincontent table.message td {
+@-moz-document domain(github.com)
+{
+    textarea[name="comment[body]"], textarea[name="issue[body]"],
+    textarea[name="issue_comment[body]"],
+    textarea[name="pull_request_review_comment[body]"] {
         font-family: "DejaVu Sans Mono" !important;
         font-size: 10pt !important;
     }
