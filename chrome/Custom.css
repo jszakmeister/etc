@@ -17,6 +17,7 @@
 /* @document domain("github.com") */
 /*{*/
     textarea[name="comment[body]"], textarea[name="issue[body]"],
+    textarea[name="issue_comment[body]"],
     textarea[name="pull_request_review_comment[body]"] {
         font-family: "DejaVu Sans Mono" !important;
         font-size: 10pt !important;
