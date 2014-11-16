@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e
+
 if ! command -v pygmentize > /dev/null 2>&1; then
     exit 1
 fi
