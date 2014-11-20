@@ -67,8 +67,13 @@ _jszakmeister_prompt() {
         ERMT=""
     fi
 
-    if [ $(id -u) -eq 0 ]; then
-        user_color="${fg_bold_red}"
+    if [ "${platform}" != "mingw" ]; then
+        if [ $(id -u) -eq 0 ]; then
+            user_color="${fg_bold_red}"
+        fi
+    else
+        # If USER is empty, try USERNAME.  This happens on Windows.
+        [ -z "${USER}" ] && USER="${USERNAME}"
     fi
 
     user_host="$SRMT${user_color}${USER}${fg_light_cyan}@${fg_light_blue}${host}$ERMT${ansi_reset}"
