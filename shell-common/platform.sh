@@ -1,6 +1,9 @@
 # A handy variable to detect which platform we're running on ('linux', 'darwin',
 # 'mingw', etc.).
 platform=$(uname -s | tr '[:upper:]' '[:lower:]')
+if [[ $platform == mingw* ]]; then
+    platform=mingw
+fi
 
 if [ "$platform" == 'freebsd' -o "$platform" == 'darwin' ]; then
     function _num_cpus
