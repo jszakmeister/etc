@@ -1,5 +1,4 @@
 export WORKON_HOME=$HOME/.virtualenvs
-export PAGER=less
 export CCACHE_CPP2=1
 export HOMEBREW_NO_EMOJI=1
 

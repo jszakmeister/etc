@@ -188,3 +188,6 @@ if [ "$platform" = "darwin" ]; then
     test -z "$TMPDIR" &&
         export TMPDIR=$(getconf DARWIN_USER_TEMP_DIR)
 fi
+
+# Setup less as the default pager.
+export PAGER=less
