@@ -98,9 +98,9 @@ if [ -f "/Applications/VMware Fusion.app/Contents/Library/vmrun" ]; then
         alias start-dev-ubuntu="vmrun -T fusion start ~/Documents/Virtual\ Machines.localized/dev-ubuntu.vmwarevm/dev-ubuntu.vmx nogui"
         alias stop-dev-ubuntu="vmrun -T fusion stop ~/Documents/Virtual\ Machines.localized/dev-ubuntu.vmwarevm/dev-ubuntu.vmx"
     }
-    [ -f ~/Documents/Virtual\ Machines.localized/freebsd-10.vmwarevm/freebsd-10.vmx ] && {
-        alias start-freebsd-10="vmrun -T fusion start ~/Documents/Virtual\ Machines.localized/freebsd-10.vmwarevm/freebsd-10.vmx nogui"
-        alias stop-freebsd-10="vmrun -T fusion stop ~/Documents/Virtual\ Machines.localized/freebsd-10.vmwarevm/freebsd-10.vmx"
+    [ -f /Volumes/parents/John/VMs/freebsd-10.vmwarevm/freebsd-10.vmx ] && {
+        alias start-freebsd-10="vmrun -T fusion start /Volumes/parents/John/VMs/freebsd-10.vmwarevm/freebsd-10.vmx nogui"
+        alias stop-freebsd-10="vmrun -T fusion stop /Volumes/parents/John/VMs/freebsd-10.vmwarevm/freebsd-10.vmx"
     }
 fi
 
