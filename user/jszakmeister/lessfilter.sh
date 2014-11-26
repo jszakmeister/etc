@@ -21,7 +21,7 @@ case "$(basename $1)" in
         ${PYGMENTIZE} -l sh "$1" 2>/dev/null
         ;;
     *.patch|*.diff)
-        if hash colordiff > /dev/null 2>&1; then
+        if command -v colordiff > /dev/null 2>&1; then
             cat "$1" | colordiff | diff-highlight
         else
             ${PYGMENTIZE} "$1" 2>/dev/null | diff-highlight

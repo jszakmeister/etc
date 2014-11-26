@@ -1,8 +1,7 @@
 # jszakmeister@localhost [~/path/to/somewhere] [version-control-status] -------------------------------------------- [something?]
 
 # Make sure perl is available to help trim the path
-[ "$ETC_TRIM_PWD" != "0" ] &&
-    hash perl > /dev/null 2>&1 && ETC_TRIM_PWD="1"
+[ "$ETC_TRIM_PWD" != "0" ] && _has_executable perl && ETC_TRIM_PWD="1"
 
 source "${ETC_HOME}/shell-common/colors.sh"
 source "${ETC_HOME}/shell-common/vcs-status.sh"

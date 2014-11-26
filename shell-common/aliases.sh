@@ -103,7 +103,7 @@ alias negrep="egrep -n $_grep_extra"
 
 unset _grep_extra
 
-hash colordiff > /dev/null 2>&1 &&
+_has_executable colordiff &&
     {
         function diff() {
             if test -t 1
