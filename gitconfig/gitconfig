@@ -20,6 +20,7 @@
 	up = !git remote update -p && git merge --ff --ff-only @{u}
 	ru = reset --hard @{u}
 	k = !gitk --date-order
+	fpr = fetch-pull-request
 
 	# Tell me the first tag that contains this commit.
 	contains = describe --contains
