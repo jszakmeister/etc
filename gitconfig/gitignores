@@ -14,6 +14,9 @@
 *.zip
 *.bzip
 
+# Don't ignore the zip file created by Keynote
+!*.key/*.zip
+
 # Ignore svn stuff
 /.svn/*
 */.svn/*
