@@ -21,6 +21,7 @@ PACKAGES_TO_INSTALL='
     pkg-config
     quilt
     rsync
+    the_silver_searcher
     tig
     tmux
     tree
