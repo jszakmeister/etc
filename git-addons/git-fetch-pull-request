@@ -29,10 +29,32 @@ fetch() {
     cmd="git fetch $upstream "
     for var in "$@"
     do
-        cmd="$cmd pull/$var/head:pr-$var"
+        cmd="$cmd ${REFSPEC_PREFIX}pull/$var/head:pr-$var"
     done
 
     $cmd || die "Could not fetch all the pull requests."
 }
+
+while [[ $# > 0 ]]
+do
+    key="$1"
+
+    case $key in
+        -f|--force)
+            REFSPEC_PREFIX="+"
+            shift
+            ;;
+        *)
+            if [[ "$key" == -* ]]
+            then
+                # unknown option
+                die "Unknown option '$key'"
+            else
+                break
+            fi
+            ;;
+    esac
+done
+
 
 fetch "$@"
