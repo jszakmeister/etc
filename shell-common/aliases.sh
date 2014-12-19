@@ -113,6 +113,15 @@ _has_executable colordiff &&
                 "$(_find_executable diff)" "$@"
             fi
         }
+
+        function interdiff() {
+            if test -t 1
+            then
+                "$(_find_executable interdiff)" "$@" | colordiff | $PAGER
+            else
+                "$(_find_executable interdiff)" "$@"
+            fi
+        }
     }
 
 if [ -d "$HOME/local/erlang" ]; then
