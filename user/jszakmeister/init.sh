@@ -163,6 +163,17 @@ function buildall()
     return $result
 }
 
+function grep() {
+    local _grep_path="$(_find_executable grep)"
+
+    if test -t 1
+    then
+        "$_grep_path" "$@" --color=always | less -K
+    else
+        "$_grep_path" "$@"
+    fi
+}
+
 # Disable slow keys...
 # Not sure if this persists or not.
 #
