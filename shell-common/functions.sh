@@ -76,6 +76,86 @@ function gdb
     fi
 }
 
+function grep
+{
+    local _grep_path="$(_find_executable grep)"
+    local _pager_options
+
+    # Let ctrl-c pass kill less.
+    [ "$PAGER" = "less" ] && _pager_options="-K"
+
+    if test -t 1
+    then
+        "$_grep_path" "$@" --color=always | $PAGER $_pager_options
+    else
+        "$_grep_path" "$@"
+    fi
+}
+
+function buildall
+{
+    local buildall_exec="$(search-up-tree buildall buildall.sh)"
+
+    if [ -z "$buildall_exec" ]
+    then
+        echo 1>&2 "ERROR: buildall or buildall.sh not found"
+        return 1
+    fi
+
+    pushd "$(dirname "$buildall_exec")" 2>&1 > /dev/null
+    "$buildall_exec" "$@"
+    local result=$?
+    popd 2>&1 > /dev/null
+
+    return $result
+}
+
+function ssh-add
+{
+    function kill-ssh-agent()
+    {
+        command ssh-add -D > /dev/null 2>&1
+        ( eval $(ssh-agent -k) ) > /dev/null 2>&1
+    }
+
+    if test -z "$SSH_AGENT_PID" ||
+        (ps | grep ${SSH_AGENT_PID} | grep -v grep | grep -qv ssh-agent)
+    then
+        if [ "$ZSH_VERSION" ]
+        then
+            autoload -Uz add-zsh-hook
+            add-zsh-hook zshexit kill-ssh-agent
+        else
+            trap kill-ssh-agent EXIT
+        fi
+
+        eval $(ssh-agent -s)
+    fi
+
+    command ssh-add "$@"
+}
+
+function find-domain-controllers
+{
+    local DNS_SERVER
+
+    if [ -z "$1" ]
+    then
+        echo "ERROR: must provide the AD domain name" 1>&2
+        return 1
+    fi
+
+    # Use the domain name as the argument, and the DNS server as a secondary
+    # argument.
+    if [ -n "$2" ]; then
+        DNS_SERVER="@${2}"
+    else
+        DNS_SERVER=
+    fi
+
+    dig $DNS_SERVER -t SRV _ldap._tcp.$1
+}
+
 # Some git-related setup for completion.
 
 if _has_executable git; then

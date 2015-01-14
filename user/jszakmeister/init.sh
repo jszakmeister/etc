@@ -51,8 +51,6 @@ if [ -n "$ZSH_VERSION" ]; then
 fi
 _add_dir_shortcut c ~/projects/clojure
 
-alias tree='tree --charset=ASCII -F -v'
-
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
@@ -88,12 +86,6 @@ if _has_executable pygmentize; then
     export LESSOPEN="|$ETC_HOME/user/jszakmeister/lessfilter.sh %s"
 fi
 
-if _has_executable hexdump; then
-    alias hexdump="hexdump -v -e '\"%10_ad:  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \"' -e'\"  \" 16/1 \"%_p\" \"\n\"'"
-fi
-
-_has_executable cninja && alias cn='nice -n 3 cninja'
-
 if [ -f "/Applications/VMware Fusion.app/Contents/Library/vmrun" ]; then
     alias vmrun="/Applications/VMware\ Fusion.app/Contents/Library/vmrun"
     [ -f ~/Documents/Virtual\ Machines.localized/dev-ubuntu.vmwarevm/dev-ubuntu.vmx ] && {
@@ -105,74 +97,6 @@ if [ -f "/Applications/VMware Fusion.app/Contents/Library/vmrun" ]; then
         alias stop-freebsd-10="vmrun -T fusion stop /Volumes/parents/John/VMs/freebsd-10.vmwarevm/freebsd-10.vmx"
     }
 fi
-
-function find-domain-controllers() {
-    local DNS_SERVER
-
-    # Use the domain name as the argument, and the DNS server as a secondary
-    # argument.
-    if [ -n "$2" ]; then
-        DNS_SERVER="@${2}"
-    else
-        DNS_SERVER=
-    fi
-
-    dig $DNS_SERVER -t SRV _ldap._tcp.$1
-}
-
-function ssh-add()
-{
-    function kill-ssh-agent()
-    {
-        command ssh-add -D > /dev/null 2>&1
-        ( eval $(ssh-agent -k) ) > /dev/null 2>&1
-    }
-
-    if test -z "$SSH_AGENT_PID" ||
-        (ps | grep ${SSH_AGENT_PID} | grep -v grep | grep -qv ssh-agent)
-    then
-        if [ "$ZSH_VERSION" ]
-        then
-            autoload -Uz add-zsh-hook
-            add-zsh-hook zshexit kill-ssh-agent
-        else
-            trap kill-ssh-agent EXIT
-        fi
-
-        eval $(ssh-agent -s)
-    fi
-
-    command ssh-add "$@"
-}
-
-function buildall()
-{
-    local buildall_exec="$(search-up-tree buildall buildall.sh)"
-
-    if [ -z "$buildall_exec" ]
-    then
-        echo 1>&2 "ERROR: buildall or buildall.sh not found"
-        return 1
-    fi
-
-    pushd "$(dirname "$buildall_exec")" 2>&1 > /dev/null
-    "$buildall_exec" "$@"
-    local result=$?
-    popd 2>&1 > /dev/null
-
-    return $result
-}
-
-function grep() {
-    local _grep_path="$(_find_executable grep)"
-
-    if test -t 1
-    then
-        "$_grep_path" "$@" --color=always | less -K
-    else
-        "$_grep_path" "$@"
-    fi
-}
 
 # Disable slow keys...
 # Not sure if this persists or not.
