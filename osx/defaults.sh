@@ -75,6 +75,8 @@ plist_buddy()
 
 # Menu bar: disable transparency
 defaults_write_global AppleEnableMenuBarTransparency -bool false
+
+# Disable transparency in the menu bar and elsewhere on Yosemite
 defaults_write com.apple.universalaccess reduceTransparency -bool true
 
 # Menu bar: show remaining battery time (on pre-10.8); hide percentage
