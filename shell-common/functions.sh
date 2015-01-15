@@ -119,7 +119,7 @@ function ssh-add
     }
 
     if test -z "$SSH_AGENT_PID" ||
-        (ps | grep ${SSH_AGENT_PID} | grep -v grep | grep -qv ssh-agent)
+        test -z "$(ps | grep ${SSH_AGENT_PID} | grep -v grep | grep ssh-agent)"
     then
         if [ "$ZSH_VERSION" ]
         then
