@@ -42,7 +42,7 @@ fi
 
 _add_dir_shortcut s ~/sources true
 
-_make_dir_complete pdt pushd ~/tmp
+test -e ~/tmp && _make_dir_complete pdt pushd ~/tmp
 
 # In ZSH, we need to remove any completions associated with cdc, or this will
 # fail.
