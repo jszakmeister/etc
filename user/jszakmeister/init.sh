@@ -98,6 +98,17 @@ if [ -f "/Applications/VMware Fusion.app/Contents/Library/vmrun" ]; then
     }
 fi
 
+function sudo-xauth()
+{
+    [ -z "$SUDO_USER" ] && return
+
+    local display=$(printenv DISPLAY | egrep -o ':[[:digit:]]+')
+
+    xauth -f $(eval echo "~${SUDO_USER}/.Xauthority") list |
+        grep "$display" |
+        xargs -n 3 xauth add
+}
+
 # Disable slow keys...
 # Not sure if this persists or not.
 #
