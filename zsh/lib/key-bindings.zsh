@@ -66,6 +66,12 @@ bindkey "\e[5D"   backward-word
 bindkey "\e\e[C"  forward-word
 bindkey "\e\e[D"  backward-word
 
+# Allow `Ctrl-x Ctrl-e` to be used to open the current command line
+# in an editor (just like Bash).
+autoload edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
+
 bindkey -s "\C-o\C-o" "^E | less^M"
 
 # Allow Alt-m to be used to grab a previous argument.  For instance,
