@@ -81,13 +81,16 @@ autoload -Uz copy-earlier-word
 zle -N copy-earlier-word
 bindkey "^[m" copy-earlier-word
 
-function zle-line-init () {
-    echoti smkx
-}
+if echoti smkx > /dev/null 2>&1
+then
+    function zle-line-init () {
+        echoti smkx
+    }
 
-function zle-line-finish () {
-    echoti rmkx
-}
+    function zle-line-finish () {
+        echoti rmkx
+    }
 
-zle -N zle-line-init
-zle -N zle-line-finish
+    zle -N zle-line-init
+    zle -N zle-line-finish
+fi
