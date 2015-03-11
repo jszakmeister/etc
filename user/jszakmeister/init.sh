@@ -14,6 +14,7 @@ if [ "$platform" = "darwin" ]; then
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
+    alias ll='ls -l --time-style=long-iso'
 
     function disassemble_func() {
         i=$(nm -S --size-sort "$2" | grep "\<$1\>"  |
