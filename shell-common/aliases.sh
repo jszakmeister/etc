@@ -94,12 +94,22 @@ alias apg='apg -M SNCL -m8 -n1 -t -a0'
 alias svnup='svn up $(find-project-root)'
 
 if [[ "$platform" == "mingw" ]]; then
-    _grep_extra=""
+    _grep_color=""
 else
-    _grep_extra="--color=auto"
+    _grep_color="--color=auto"
+fi
+
+# Don't descend into Subversion's admin area, or others like it.
+# Mac's bsd grep sucks... so there's no easy way to do this.
+# Also, suppress error messages.
+if [[ "$platform" == 'linux' ]]; then
+    _grep_extra="$_grep_color -s --exclude-dir=.svn --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.bzr"
+else
+    _grep_extra="$_grep_color -s"
 fi
 
 alias grep="grep $_grep_extra"
+
 alias ngrep="grep -n $_grep_extra"
 alias egrep="egrep $_grep_extra"
 alias negrep="egrep -n $_grep_extra"
