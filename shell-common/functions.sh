@@ -80,13 +80,16 @@ function grep
 {
     local _grep_path="$(_find_executable grep)"
     local _pager_options
+    local _grep_options
 
     # Let ctrl-c pass kill less.
     [ "$PAGER" = "less" ] && _pager_options="-K"
 
+    test -n "$_grep_color" && _grep_options="--color=always"
+
     if test -t 1
     then
-        "$_grep_path" "$@" --color=always | $PAGER $_pager_options
+        "$_grep_path" "$@" $_grep_options | $PAGER $_pager_options
     else
         "$_grep_path" "$@"
     fi
