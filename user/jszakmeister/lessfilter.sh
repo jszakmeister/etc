@@ -8,17 +8,11 @@ fi
 PYGMENTIZE="pygmentize -f 256 -O style=native,outencoding=utf-8"
 
 case "$(basename $1)" in
-    *.awk|*.groff|*.java|*.js|*.m4|*.php|*.pl|*.pm|*.pod|*.sh|\
-    *.ad[asb]|*.asm|*.inc|*.[ch]|*.[ch]pp|*.[ch]xx|*.cc|*.hh|\
-    *.lsp|*.l|*.pas|*.p|*.xml|*.xps|*.xsl|*.axp|*.ppd|*.pov|\
-    *.py|*.rb|*.sql|*.ebuild|*.eclass|*.vim|*.cmake|CMakeLists.txt|Makefile)
-        ${PYGMENTIZE} "$1" 2>/dev/null
-        ;;
-    *.mk)
-        ${PYGMENTIZE} -l make "$1" 2>/dev/null
-        ;;
-    .bashrc|.bash_aliases|.bash_environment|*.zsh|.zshrc|.zshenv|.zsh-history)
+    *.zsh*)
         ${PYGMENTIZE} -l sh "$1" 2>/dev/null
+        ;;
+    Vagrantfile)
+        ${PYGMENTIZE} -l ruby "$1" 2>/dev/null
         ;;
     *.patch|*.diff)
         if command -v colordiff > /dev/null 2>&1; then
@@ -26,6 +20,9 @@ case "$(basename $1)" in
         else
             ${PYGMENTIZE} "$1" 2>/dev/null | diff-highlight
         fi
+        ;;
+    *.*)
+        ${PYGMENTIZE} "$1" 2>/dev/null
         ;;
     *)
         grep -E "#\!/bin/(bash|sh|zsh)" "$1" > /dev/null
