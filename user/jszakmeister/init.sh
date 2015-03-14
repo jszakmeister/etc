@@ -115,6 +115,24 @@ sudo-xauth()
         xargs -n 3 xauth add
 }
 
+if _has_executable ag; then
+    function ag
+    {
+        local _ag_path="$(_find_executable ag)"
+        local _pager_options
+
+        # Let ctrl-c pass kill less.
+        [ "$PAGER" = "less" ] && _pager_options="-K"
+
+        if test -t 1
+        then
+            "$_ag_path" "$@" --group --color | $PAGER $_pager_options
+        else
+            "$_ag_path" "$@"
+        fi
+    }
+fi
+
 # Disable slow keys...
 # Not sure if this persists or not.
 #
