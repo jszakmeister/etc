@@ -16,7 +16,8 @@ elif [ "$platform" = "linux" ]; then
     alias clear-arp="sudo ip -s -s neighbor flush all"
     alias ll='ls -l --time-style=long-iso'
 
-    function disassemble_func() {
+    disassemble_func()
+    {
         i=$(nm -S --size-sort "$2" | grep "\<$1\>"  |
             awk '{print toupper($1),toupper($2)}')
         echo "$i" | while read line; do
@@ -62,11 +63,13 @@ if [ "$platform" = "darwin" ]; then
 fi
 
 # Use Vim as a front-end to man.
-# function man() {
+# man()
+# {
 #     $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
 # }
 
-function man() {
+man()
+{
     env LESS_TERMCAP_mb=$'\E[01;31m' \
     LESS_TERMCAP_md=$'\E[01;38;5;74m' \
     LESS_TERMCAP_me=$'\E[0m' \
@@ -78,10 +81,12 @@ function man() {
 }
 
 # I prefer having the cursor stay where it's at when searching through history.
-[[ -n "${key[Up]}" ]] &&
-    bindkey "${key[Up]}" history-beginning-search-backward
-[[ -n "${key[Down]}" ]] &&
-    bindkey "${key[Down]}" history-beginning-search-forward
+if [ -n "$ZSH_VERSION" ]; then
+    [ -n "${key[Up]}" ] &&
+        bindkey "${key[Up]}" history-beginning-search-backward
+    [ -n "${key[Down]}" ] &&
+        bindkey "${key[Down]}" history-beginning-search-forward
+fi
 
 if _has_executable pygmentize; then
     export LESSOPEN="|$ETC_HOME/user/jszakmeister/lessfilter.sh %s"
@@ -99,7 +104,7 @@ if [ -f "/Applications/VMware Fusion.app/Contents/Library/vmrun" ]; then
     }
 fi
 
-function sudo-xauth()
+sudo-xauth()
 {
     [ -z "$SUDO_USER" ] && return
 

@@ -10,7 +10,7 @@ then
     command -v colordiff > /dev/null || color=
 fi
 
-function do_interdiff()
+do_interdiff()
 {
     git -c color.ui=off show "$1" > "$GIT_DIR/commit1" &&
         git -c color.ui=off show "$2" > "$GIT_DIR/commit2" &&

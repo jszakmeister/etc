@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function find-up-tree
+find-up-tree()
 {
     local last_found=$(pwd)
     local tmp_path=$(dirname "$last_found")
@@ -21,7 +21,7 @@ function find-up-tree
     fi
 }
 
-function trim
+trim()
 {
     local var="$@"
 

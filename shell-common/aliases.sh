@@ -118,7 +118,8 @@ unset _grep_extra
 
 _has_executable colordiff &&
     {
-        function diff() {
+        diff()
+        {
             if test -t 1
             then
                 "$(_find_executable diff)" "$@" | colordiff | $PAGER
@@ -127,7 +128,8 @@ _has_executable colordiff &&
             fi
         }
 
-        function interdiff() {
+        interdiff()
+        {
             if test -t 1
             then
                 "$(_find_executable interdiff)" "$@" | colordiff | $PAGER
@@ -210,12 +212,12 @@ alias tree='tree -F -v'
 if _has_executable svnwrap; then
     alias svn=svnwrap
 
-    function svndiff
+    svndiff()
     {
         svnwrap diff -x -p --color on "$@" | diff-highlight | $PAGER
     }
 else
-    function svndiff
+    svndiff()
     {
         svn diff -x -p "$@" | colordiff | diff-highlight | $PAGER
     }

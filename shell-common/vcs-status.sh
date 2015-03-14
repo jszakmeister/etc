@@ -1,6 +1,7 @@
 source "${ETC_HOME}/shell-common/colors.sh"
 
-_git_has_diverged() {
+_git_has_diverged()
+{
     local a="$1"
     local b="$2"
     local m
@@ -62,8 +63,10 @@ _git_infer_publish_branch()
     echo "$publish_branch"
 }
 
-_vcs_status() {
-    function git_status {
+_vcs_status()
+{
+    git_status()
+    {
         local ref dirty count ahead behind divergent upstream g differ remote
         local nomaster=""
 
@@ -177,15 +180,18 @@ _vcs_status() {
         return 0
     }
 
-    function svn_status {
+    svn_status()
+    {
         return 1
     }
 
-    function bzr_status {
+    bzr_status()
+    {
         return 1
     }
 
-    function hg_status {
+    hg_status()
+    {
         return 1
     }
 

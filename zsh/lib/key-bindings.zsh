@@ -83,11 +83,13 @@ bindkey "^[m" copy-earlier-word
 
 if echoti smkx > /dev/null 2>&1
 then
-    function zle-line-init () {
+    zle-line-init()
+    {
         echoti smkx
     }
 
-    function zle-line-finish () {
+    zle-line-finish()
+    {
         echoti rmkx
     }
 

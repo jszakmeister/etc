@@ -16,7 +16,8 @@ source ${ETC_HOME}/shell-common/jszakmeister-prompt.sh
 unsetopt promptsp
 
 # Attempt to set the terminal's title.
-function precmd {
+precmd()
+{
     _jszakmeister_prompt_title
 }
 
@@ -24,4 +25,3 @@ PROMPT="\$(_jszakmeister_prompt)
 ${JSZAKMEISTER_PROMPT_PS1}"
 
 RPS1="%(?..${fg_red}%? ↵${ansi_reset})"
-

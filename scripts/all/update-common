@@ -1,5 +1,5 @@
 #!/bin/bash
-function trim ()
+trim()
 {
     local var="$@"
     var="${var#"${var%%[![:space:]]*}"}"
@@ -15,12 +15,12 @@ else
     color_reset=
 fi
 
-function say ()
+say()
 {
     echo "$color_bold_yellow${@/$HOME/~}$color_reset"
 }
 
-function update_repo ()
+update_repo()
 {
 	local repo_path=$(echo -n "$1" | sed -e "s|~|$HOME|")
 	if test ! -d "$repo_path" ; then

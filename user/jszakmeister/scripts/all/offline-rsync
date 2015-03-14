@@ -110,7 +110,7 @@ def determine_files(old, old_root, new, new_root):
 SCRIPT_TEMPLATE = r"""
 #!/bin/bash -e
 
-function die()
+die()
 {
     echo 1>&2 "ERROR: $@"
     exit 1

@@ -1,5 +1,5 @@
 #!/bin/bash
-function find_tags
+find_tags()
 {
     local last_found=$(pwd)
     local tmp_path=$(pwd)
@@ -14,7 +14,7 @@ function find_tags
 }
 
 
-function die
+die()
 {
     echo 1>&2 "ERROR: $1"
     exit 1

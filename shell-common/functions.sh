@@ -1,4 +1,4 @@
-function find-project-root
+find-project-root()
 {
     local last_found=$(pwd)
     local tmp_path=$(dirname "$last_found")
@@ -15,7 +15,7 @@ function find-project-root
     echo "$last_found"
 }
 
-function search-up-tree
+search-up-tree()
 {
     local tmp_path="$(pwd)"
     while [[ "$tmp_path" != "/" ]];
@@ -32,7 +32,7 @@ function search-up-tree
     done
 }
 
-function cdt
+cdt()
 {
     local project_root=$(find-project-root)
     if [ -n "$1" ]; then
@@ -42,7 +42,7 @@ function cdt
     fi
 }
 
-function find_clj_contrib
+find_clj_contrib()
 {
     local clj_contrib_jar=$(ls $HOME/projects/clojure-contrib/modules/standalone/target/standalone-*.jar 2>/dev/null | head -n1)
     if [[ "$clj_contrib_jar" != '' ]]; then
@@ -52,7 +52,7 @@ function find_clj_contrib
     fi
 }
 
-function parse_git_branch
+parse_git_branch()
 {
   declare -F __git_ps1 &>/dev/null && __git_ps1 "[%s]"
   declare -F __git_ps1 &>/dev/null ||
@@ -60,13 +60,13 @@ function parse_git_branch
       sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
 }
 
-function md
+md()
 {
     mkdir -p "$1"
     cd "$1"
 }
 
-function gdb
+gdb()
 {
     local gdb_path=$(_find_executable gdb)
     if "$gdb_path" 2>&1 --version | head -n 1 | grep "Apple version" > /dev/null; then
@@ -76,7 +76,7 @@ function gdb
     fi
 }
 
-function grep
+grep()
 {
     local _grep_path="$(_find_executable grep)"
     local _pager_options
@@ -95,7 +95,7 @@ function grep
     fi
 }
 
-function buildall
+buildall()
 {
     local buildall_exec="$(search-up-tree buildall buildall.sh)"
 
@@ -113,9 +113,9 @@ function buildall
     return $result
 }
 
-function ssh-add
+ssh-add()
 {
-    function kill-ssh-agent()
+    kill-ssh-agent()
     {
         command ssh-add -D > /dev/null 2>&1
         ( eval $(ssh-agent -k) ) > /dev/null 2>&1
@@ -138,7 +138,7 @@ function ssh-add
     command ssh-add "$@"
 }
 
-function find-domain-controllers
+find-domain-controllers()
 {
     local DNS_SERVER
 
@@ -163,7 +163,7 @@ function find-domain-controllers
 
 if _has_executable git; then
     if _has_executable git-ffwd; then
-        _git_ffwd ()
+        _git_ffwd()
         {
             __gitcomp_nl "$(__git_remotes)"
         }
@@ -171,14 +171,14 @@ if _has_executable git; then
 
     if _has_executable git-ff || \
             git config --get alias.ff > /dev/null 2>&1; then
-        _git_ff ()
+        _git_ff()
         {
             __gitcomp_nl "$(__git_refs)"
         }
     fi
 
     if _has_executable git-missing; then
-        _git_missing ()
+        _git_missing()
         {
             __gitcomp_nl "$(__git_refs)"
         }
@@ -191,13 +191,15 @@ fi
 [ "$platform" != 'darwin' ] && true || xcode-select -p > /dev/null 2>&1
 
 [ $? -eq 0 ] && cc --version 2>&1 | grep clang > /dev/null 2>&1 && {
-    pip() {
+    pip()
+    {
         CC=clang CFLAGS="$CFLAGS -Qunused-arguments" \
             CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
             $(_find_executable pip) "$@"
     }
 
-    tox() {
+    tox()
+    {
         CC=clang CFLAGS="$CFLAGS -Qunused-arguments" \
             CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
             $(_find_executable tox) "$@"

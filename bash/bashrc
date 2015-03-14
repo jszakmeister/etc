@@ -33,7 +33,8 @@ _make_dir_complete() {
     local realpath=$(pwd -P)
     cd - >/dev/null 2>&1
 
-    FUNC="function $prgname() {
+    FUNC="$prgname()
+    {
         local cur len wrkdir;
         local IFS=\$'\\n'
         wrkdir=\"$realpath\"

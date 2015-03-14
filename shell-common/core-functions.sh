@@ -1,9 +1,9 @@
-function _has_executable
+_has_executable()
 {
     _find_executable "$@" > /dev/null 2>&1
 }
 
-function prepend_path
+prepend_path()
 {
     if [[ "$1" == '' ]]; then
         echo $2
@@ -12,7 +12,7 @@ function prepend_path
     fi
 }
 
-function append_path
+append_path()
 {
     if [[ "$1" == '' ]]; then
         echo $2
@@ -30,7 +30,7 @@ function append_path
 # The last argument, if present an non-empty, says to create a zsh directory
 # alias, if you're running zsh.  In this example, you could then use ~p as a
 # shortcut to ~/projects.
-function _add_dir_shortcut
+_add_dir_shortcut()
 {
     local shortcut="$1"
     local shortcut_path="$2"
