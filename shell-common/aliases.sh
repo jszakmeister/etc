@@ -207,7 +207,6 @@ alias wget="wget --no-check-certificate"
 alias od='od -A x'
 alias traceroute='traceroute -n -w 2'
 alias netcat=nc
-alias tree='tree -F -v'
 
 if _has_executable svnwrap; then
     alias svn=svnwrap
