@@ -24,15 +24,17 @@ find_upstream() {
 }
 
 fetch() {
-    upstream=$(find_upstream)
+    local upstream=$(find_upstream)
+    local failed=
 
-    cmd="git fetch $upstream "
+    cmd="git fetch -v $upstream"
     for var in "$@"
     do
         cmd="$cmd ${REFSPEC_PREFIX}pull/$var/head:pr-$var"
+        $cmd || failed=true
     done
 
-    $cmd || die "Could not fetch all the pull requests."
+    test -z "$failed" || die "Could not fetch all the pull requests."
 }
 
 while [ "$#" -gt 0 ]
