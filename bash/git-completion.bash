@@ -16,9 +16,9 @@
 #
 # To use these routines:
 #
-#    1) Copy this file to somewhere (e.g. ~/.git-completion.sh).
+#    1) Copy this file to somewhere (e.g. ~/.git-completion.bash).
 #    2) Add the following line to your .bashrc/.zshrc:
-#        source ~/.git-completion.sh
+#        source ~/.git-completion.bash
 #    3) Consider changing your PS1 to also show the current branch,
 #       see git-prompt.sh for details.
 #
@@ -281,16 +281,12 @@ __gitcomp_file ()
 # argument, and using the options specified in the second argument.
 __git_ls_files_helper ()
 {
-	(
-		test -n "${CDPATH+set}" && unset CDPATH
-		cd "$1"
-		if [ "$2" == "--committable" ]; then
-			git diff-index --name-only --relative HEAD
-		else
-			# NOTE: $2 is not quoted in order to support multiple options
-			git ls-files --exclude-standard $2
-		fi
-	) 2>/dev/null
+	if [ "$2" == "--committable" ]; then
+		git -C "$1" diff-index --name-only --relative HEAD
+	else
+		# NOTE: $2 is not quoted in order to support multiple options
+		git -C "$1" ls-files --exclude-standard $2
+	fi 2>/dev/null
 }
 
 
@@ -523,7 +519,7 @@ __git_complete_index_file ()
 		;;
 	esac
 
-	__gitcomp_file "$(__git_index_files "$1" "$pfx")" "$pfx" "$cur_"
+	__gitcomp_file "$(__git_index_files "$1" ${pfx:+"$pfx"})" "$pfx" "$cur_"
 }
 
 __git_complete_file ()
@@ -1176,8 +1172,8 @@ __git_diff_common_options="--stat --numstat --shortstat --summary
 			--full-index --binary --abbrev --diff-filter=
 			--find-copies-harder
 			--text --ignore-space-at-eol --ignore-space-change
-			--ignore-all-space --exit-code --quiet --ext-diff
-			--no-ext-diff
+			--ignore-all-space --ignore-blank-lines --exit-code
+			--quiet --ext-diff --no-ext-diff
 			--no-prefix --src-prefix= --dst-prefix=
 			--inter-hunk-context=
 			--patience --histogram --minimal
@@ -1208,7 +1204,7 @@ _git_diff ()
 }
 
 __git_mergetools_common="diffuse diffmerge ecmerge emerge kdiff3 meld opendiff
-			tkdiff vimdiff gvimdiff xxdiff araxis p4merge bc3 codecompare
+			tkdiff vimdiff gvimdiff xxdiff araxis p4merge bc codecompare
 "
 
 _git_difftool ()
@@ -1309,7 +1305,7 @@ _git_gitk ()
 }
 
 __git_match_ctag() {
-	awk "/^${1////\\/}/ { print \$1 }" "$2"
+	awk "/^${1//\//\\/}/ { print \$1 }" "$2"
 }
 
 _git_grep ()
@@ -1429,7 +1425,7 @@ __git_log_gitk_options="
 # Options that go well for log and shortlog (not gitk)
 __git_log_shortlog_options="
 	--author= --committer= --grep=
-	--all-match
+	--all-match --invert-grep
 "
 
 __git_log_pretty_formats="oneline short medium full fuller email raw format:"
@@ -1468,6 +1464,7 @@ _git_log ()
 			--abbrev-commit --abbrev=
 			--relative-date --date=
 			--pretty= --format= --oneline
+			--show-signature
 			--cherry-pick
 			--graph
 			--decorate --decorate=
@@ -1696,6 +1693,7 @@ _git_rebase ()
 			--committer-date-is-author-date --ignore-date
 			--ignore-whitespace --whitespace=
 			--autosquash --fork-point --no-fork-point
+			--autostash
 			"
 
 		return
@@ -1876,6 +1874,10 @@ _git_config ()
 		;;
 	sendemail.suppresscc)
 		__gitcomp "$__git_send_email_suppresscc_options"
+		return
+		;;
+	sendemail.transferencoding)
+		__gitcomp "7bit 8bit quoted-printable base64"
 		return
 		;;
 	--get|--get-all|--unset|--unset-all)
@@ -2345,6 +2347,7 @@ _git_show ()
 		;;
 	--*)
 		__gitcomp "--pretty= --format= --abbrev-commit --oneline
+			--show-signature
 			$__git_diff_common_options
 			"
 		return
@@ -2548,6 +2551,16 @@ _git_tag ()
 		;;
 	*)
 		__gitcomp_nl "$(__git_refs)"
+		;;
+	esac
+
+	case "$cur" in
+	--*)
+		__gitcomp "
+			--list --delete --verify --annotate --message --file
+			--sign --cleanup --local-user --force --column --sort
+			--contains --points-at
+			"
 		;;
 	esac
 }
