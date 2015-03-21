@@ -58,7 +58,7 @@ function _jszakmeister_prompt() {
     host="${host:=${HOST}}"
 
     if [ -n "$SSH_TTY" ]; then
-	# We're remoted
+        # We're remoted
         SRMT="${fg_no_bold_white}{"
         ERMT="${fg_no_bold_white}}"
     else
