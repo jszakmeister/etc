@@ -1,4 +1,7 @@
-find-project-root()
+# Use the 'function funcname()' form to avoid collisions with aliases in
+# Bash.  Zsh seems smart enough to deal with it, but Bash errors.
+
+function find-project-root()
 {
     local last_found=$(pwd)
     local tmp_path=$(dirname "$last_found")
@@ -15,7 +18,7 @@ find-project-root()
     echo "$last_found"
 }
 
-search-up-tree()
+function search-up-tree()
 {
     local tmp_path="$(pwd)"
     while [[ "$tmp_path" != "/" ]];
@@ -32,7 +35,7 @@ search-up-tree()
     done
 }
 
-cdt()
+function cdt()
 {
     local project_root=$(find-project-root)
     if [ -n "$1" ]; then
@@ -42,7 +45,7 @@ cdt()
     fi
 }
 
-find_clj_contrib()
+function find_clj_contrib()
 {
     local clj_contrib_jar=$(ls $HOME/projects/clojure-contrib/modules/standalone/target/standalone-*.jar 2>/dev/null | head -n1)
     if [[ "$clj_contrib_jar" != '' ]]; then
@@ -52,7 +55,7 @@ find_clj_contrib()
     fi
 }
 
-parse_git_branch()
+function parse_git_branch()
 {
   declare -F __git_ps1 &>/dev/null && __git_ps1 "[%s]"
   declare -F __git_ps1 &>/dev/null ||
@@ -60,13 +63,13 @@ parse_git_branch()
       sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
 }
 
-md()
+function md()
 {
     mkdir -p "$1"
     cd "$1"
 }
 
-gdb()
+function gdb()
 {
     local gdb_path=$(_find_executable gdb)
     if "$gdb_path" 2>&1 --version | head -n 1 | grep "Apple version" > /dev/null; then
@@ -76,7 +79,7 @@ gdb()
     fi
 }
 
-grep()
+function grep()
 {
     local _grep_path="$(_find_executable grep)"
     local _pager_options
@@ -95,7 +98,7 @@ grep()
     fi
 }
 
-buildall()
+function buildall()
 {
     local buildall_exec="$(search-up-tree buildall buildall.sh)"
 
@@ -113,9 +116,9 @@ buildall()
     return $result
 }
 
-ssh-add()
+function ssh-add()
 {
-    kill-ssh-agent()
+    function kill-ssh-agent()
     {
         command ssh-add -D > /dev/null 2>&1
         ( eval $(ssh-agent -k) ) > /dev/null 2>&1
@@ -138,7 +141,7 @@ ssh-add()
     command ssh-add "$@"
 }
 
-find-domain-controllers()
+function find-domain-controllers()
 {
     local DNS_SERVER
 
@@ -163,7 +166,7 @@ find-domain-controllers()
 
 if _has_executable git; then
     if _has_executable git-ffwd; then
-        _git_ffwd()
+        function _git_ffwd()
         {
             __gitcomp_nl "$(__git_remotes)"
         }
@@ -171,14 +174,14 @@ if _has_executable git; then
 
     if _has_executable git-ff || \
             git config --get alias.ff > /dev/null 2>&1; then
-        _git_ff()
+        function _git_ff()
         {
             __gitcomp_nl "$(__git_refs)"
         }
     fi
 
     if _has_executable git-missing; then
-        _git_missing()
+        function _git_missing()
         {
             __gitcomp_nl "$(__git_refs)"
         }
@@ -191,14 +194,14 @@ fi
 [ "$platform" != 'darwin' ] && true || xcode-select -p > /dev/null 2>&1
 
 [ $? -eq 0 ] && cc --version 2>&1 | grep clang > /dev/null 2>&1 && {
-    pip()
+    function pip()
     {
         CC=clang CFLAGS="$CFLAGS -Qunused-arguments" \
             CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
             $(_find_executable pip) "$@"
     }
 
-    tox()
+    function tox()
     {
         CC=clang CFLAGS="$CFLAGS -Qunused-arguments" \
             CPPFLAGS="$CPPFLAGS -Qunused-arguments" \

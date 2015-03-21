@@ -6,17 +6,17 @@ if [[ $platform == mingw* ]]; then
 fi
 
 if [ "$platform" == 'freebsd' -o "$platform" == 'darwin' ]; then
-    _num_cpus()
+    function _num_cpus()
     {
         sysctl -n hw.ncpu
     }
 elif [ "$platform" == 'linux' ]; then
-    _num_cpus()
+    function _num_cpus()
     {
         grep -c ^processor /proc/cpuinfo
     }
 else
-    _num_cpus()
+    function _num_cpus()
     {
         echo 1
     }

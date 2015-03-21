@@ -118,7 +118,7 @@ unset _grep_extra
 
 _has_executable colordiff &&
     {
-        diff()
+        function diff()
         {
             if test -t 1
             then
@@ -128,7 +128,7 @@ _has_executable colordiff &&
             fi
         }
 
-        interdiff()
+        function interdiff()
         {
             if test -t 1
             then
@@ -211,12 +211,12 @@ alias netcat=nc
 if _has_executable svnwrap; then
     alias svn=svnwrap
 
-    svndiff()
+    function svndiff()
     {
         svnwrap diff -x -p --color on "$@" | diff-highlight | $PAGER
     }
 else
-    svndiff()
+    function svndiff()
     {
         svn diff -x -p "$@" | colordiff | diff-highlight | $PAGER
     }

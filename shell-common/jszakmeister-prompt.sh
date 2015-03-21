@@ -6,7 +6,7 @@
 source "${ETC_HOME}/shell-common/colors.sh"
 source "${ETC_HOME}/shell-common/vcs-status.sh"
 
-_jszakmeister_prompt_virtualenv() {
+function _jszakmeister_prompt_virtualenv() {
     if [ -n "$VIRTUAL_ENV" ]; then
         echo -ne " ${fg_light_blue}[${fg_red}$(basename $VIRTUAL_ENV)${fg_light_blue}]${ansi_reset}"
     fi
@@ -16,7 +16,7 @@ _jszakmeister_prompt_virtualenv() {
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # Attempt to set the terminal's title.
-_jszakmeister_prompt_title() {
+function _jszakmeister_prompt_title() {
     # HOSTNAME in some shells, HOST in others
     local host="${HOSTNAME}"
     host="${host:=${HOST}}"
@@ -35,7 +35,7 @@ _jszakmeister_prompt_title() {
     esac
 }
 
-_jszakmeister_filter_ansi() {
+function _jszakmeister_filter_ansi() {
     if [ -n "$ZSH_VERSION" ]; then
         # Trim out the coloring
         echo "$1" | perl -pe 's|\%\{.*?\%\}||g'
@@ -45,7 +45,7 @@ _jszakmeister_filter_ansi() {
     fi
 }
 
-_jszakmeister_prompt() {
+function _jszakmeister_prompt() {
     local separator="${fg_light_blue}::${ansi_reset}"
     local user_host vcs_status topline SRMT ERMT regex virtualenv_status
     local user_color="${fg_light_yellow}"

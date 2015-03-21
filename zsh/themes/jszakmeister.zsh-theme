@@ -16,7 +16,7 @@ source ${ETC_HOME}/shell-common/jszakmeister-prompt.sh
 unsetopt promptsp
 
 # Attempt to set the terminal's title.
-precmd()
+function precmd()
 {
     _jszakmeister_prompt_title
 }

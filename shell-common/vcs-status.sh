@@ -1,6 +1,6 @@
 source "${ETC_HOME}/shell-common/colors.sh"
 
-_git_has_diverged()
+function _git_has_diverged()
 {
     local a="$1"
     local b="$2"
@@ -23,7 +23,7 @@ _git_has_diverged()
 
 # This is duplicated in git-missing.  Make sure to update both if you make
 # changes.
-_git_infer_publish_branch()
+function _git_infer_publish_branch()
 {
     local publish_branch
 
@@ -63,9 +63,9 @@ _git_infer_publish_branch()
     echo "$publish_branch"
 }
 
-_vcs_status()
+function _vcs_status()
 {
-    git_status()
+    function git_status()
     {
         local ref dirty count ahead behind divergent upstream g differ remote
         local nomaster=""
@@ -180,17 +180,17 @@ _vcs_status()
         return 0
     }
 
-    svn_status()
+    function svn_status()
     {
         return 1
     }
 
-    bzr_status()
+    function bzr_status()
     {
         return 1
     }
 
-    hg_status()
+    function hg_status()
     {
         return 1
     }

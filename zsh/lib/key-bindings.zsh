@@ -24,7 +24,7 @@ key[CRight]=${terminfo[kRIT5]}
 key[PageUp]=${terminfo[kpp]}
 key[PageDown]=${terminfo[knp]}
 
-_bindkey()
+function _bindkey()
 {
     [[ -z "$1" ]] &&
         return
@@ -83,12 +83,12 @@ bindkey "^[m" copy-earlier-word
 
 if echoti smkx > /dev/null 2>&1
 then
-    zle-line-init()
+    function zle-line-init()
     {
         echoti smkx
     }
 
-    zle-line-finish()
+    function zle-line-finish()
     {
         echoti rmkx
     }

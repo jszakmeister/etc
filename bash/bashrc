@@ -24,7 +24,8 @@ _end_ansi="\]"
 # Taken from here:
 #   http://blog.caioromao.com/2010/10/10/Custom-directory-completion.html
 # Tweaked to work with more than just 'cd'
-_make_dir_complete() {
+function _make_dir_complete()
+{
     local aliasname=$1
     local prgname="__s_${aliasname}__"
 
@@ -33,7 +34,7 @@ _make_dir_complete() {
     local realpath=$(pwd -P)
     cd - >/dev/null 2>&1
 
-    FUNC="$prgname()
+    FUNC="function $prgname()
     {
         local cur len wrkdir;
         local IFS=\$'\\n'
@@ -49,7 +50,8 @@ _make_dir_complete() {
     complete -o nospace -F $prgname $aliasname
 }
 
-_find_executable() {
+function _find_executable()
+{
     type -P "$@"
 }
 

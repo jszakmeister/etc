@@ -16,7 +16,8 @@ setopt pushd_silent         # don't print stack after push/pop
 # completion for them.
 # Taken from here:
 #   https://github.com/caio/oh-my-zsh/blob/master/plugins/make-dir-complete/make-dir-complete.plugin.zsh
-_make_dir_complete() {
+function _make_dir_complete()
+{
     if [ ${#} -ne 3 ]; then
         echo "usage: make_dir_complete <new-alias-name> <command> <path>" 1>&2
         return 1
@@ -44,7 +45,8 @@ _make_dir_complete() {
     compctl -/ -W "$realpath" $aliasname
 }
 
-_find_executable() {
+function _find_executable()
+{
     whence -p "$@"
 }
 

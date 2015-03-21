@@ -16,7 +16,7 @@ elif [ "$platform" = "linux" ]; then
     alias clear-arp="sudo ip -s -s neighbor flush all"
     alias ll='ls -l --time-style=long-iso'
 
-    disassemble_func()
+    function disassemble_func()
     {
         i=$(nm -S --size-sort "$2" | grep "\<$1\>"  |
             awk '{print toupper($1),toupper($2)}')
@@ -63,12 +63,12 @@ if [ "$platform" = "darwin" ]; then
 fi
 
 # Use Vim as a front-end to man.
-# man()
+# function man()
 # {
 #     $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
 # }
 
-man()
+function man()
 {
     env LESS_TERMCAP_mb=$'\E[01;31m' \
     LESS_TERMCAP_md=$'\E[01;38;5;74m' \
@@ -104,7 +104,7 @@ if [ -f "/Applications/VMware Fusion.app/Contents/Library/vmrun" ]; then
     }
 fi
 
-sudo-xauth()
+function sudo-xauth()
 {
     [ -z "$SUDO_USER" ] && return
 
@@ -116,7 +116,7 @@ sudo-xauth()
 }
 
 if _has_executable ag; then
-    function ag
+    function ag()
     {
         local _ag_path="$(_find_executable ag)"
         local _pager_options
