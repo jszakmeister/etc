@@ -35,7 +35,7 @@ fetch() {
     $cmd || die "Could not fetch all the pull requests."
 }
 
-while [[ $# > 0 ]]
+while [ "$#" -gt 0 ]
 do
     key="$1"
 
@@ -45,7 +45,7 @@ do
             shift
             ;;
         *)
-            if [[ "$key" == -* ]]
+            if [ "$key" = -* ]
             then
                 # unknown option
                 die "Unknown option '$key'"
