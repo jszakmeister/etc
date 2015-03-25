@@ -103,7 +103,7 @@ fi
 # Mac's bsd grep sucks... so there's no easy way to do this.
 # Also, suppress error messages.
 if [[ "$platform" == 'linux' ]]; then
-    _grep_extra="$_grep_color -s --exclude-dir=.svn --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.bzr"
+    _grep_extra="$_grep_color -s --exclude-dir=.svn --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.bzr --exclude=tags"
 else
     _grep_extra="$_grep_color -s"
 fi
