@@ -21,6 +21,9 @@ case "$(basename $1)" in
             ${PYGMENTIZE} "$1" 2>/dev/null | diff-highlight
         fi
         ;;
+    *.txt)
+        exit 1
+        ;;
     *.*)
         ${PYGMENTIZE} "$1" 2>/dev/null
         ;;
