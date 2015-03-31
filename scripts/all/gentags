@@ -66,6 +66,7 @@ ctags -R --exclude=build \
          --exclude='*.bz2' \
          --exclude='*.xz' \
          --exclude='*.snippets' \
+         --exclude='*.min.js' \
          --langmap="vim:+(vimrc)" \
          --c-kinds=+px \
          --c++-kinds=+px \
