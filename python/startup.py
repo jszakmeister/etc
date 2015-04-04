@@ -42,7 +42,13 @@ def setup_readline():
                 readline.write_history_file(historypath)
 
         if os.path.exists(historypath):
-            readline.read_history_file(historypath)
+            try:
+                readline.read_history_file(historypath)
+            except IOError:
+                # If something went awry and left an empty file for the history,
+                # editline complains that it cannot find the file.  Silence this
+                # error.
+                pass
 
         atexit.register(save_history)
 
