@@ -7,7 +7,7 @@ trim()
     echo -n "$var"
 }
 
-if test -t 1 ; then
+if test -t 1 && type -P tput 2>&1 > /dev/null; then
     color_bold_yellow=$(tput bold;tput setaf 3)
     color_reset=$(tput sgr0)
 else
