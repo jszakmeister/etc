@@ -151,7 +151,7 @@ export TTFPATH=/usr/X11/lib/X11/fonts/truetype
 export EDITOR=$(_find_executable vim)
 
 # Add a default LS_COLORS
-if [ "$TERM" != "dumb" ]; then
+if [ "$TERM" != "dumb" -a "$TERM" != "cygwin" ]; then
   if [ -x /usr/bin/dircolors ]; then
       eval "$(dircolors -b)"
   else
