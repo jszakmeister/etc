@@ -19,7 +19,7 @@ _has_executable vs && alias vs='vs -new'
 # Always use shasum in binary mode.
 _has_executable shasum && alias shasum="shasum -b"
 
-if [[ "$platform" == 'freebsd' ]]; then
+if [ "$platform" = 'freebsd' ]; then
     alias du='du -h -d1'
     alias ps='ps aux'
     alias ls='ls -hFGA'
@@ -27,7 +27,7 @@ if [[ "$platform" == 'freebsd' ]]; then
     alias top='top -o cpu -i 1'
 fi
 
-if [[ "$platform" == 'darwin' ]]; then
+if [ "$platform" = 'darwin' ]; then
     alias twistd="/System/Library/Frameworks/Python.framework/Versions/Current/Extras/bin/twistd"
 
     alias du='du -h -d1'
@@ -59,7 +59,7 @@ if [[ "$platform" == 'darwin' ]]; then
     alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport'
 fi
 
-if [[ "$platform" == 'linux' ]]; then
+if [ "$platform" = 'linux' -o "$platform" == 'mingw' ]; then
     alias du='du -bh --max-depth=1'
     alias ps='ps -ef'
     alias ls='ls -hFA --color=auto'
