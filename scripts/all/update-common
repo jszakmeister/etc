@@ -22,19 +22,19 @@ say()
 
 update_repo()
 {
-	local repo_path=$(echo -n "$1" | sed -e "s|~|$HOME|")
-	if test ! -d "$repo_path" ; then
-		return 0
-	fi
+    local repo_path=$(echo -n "$1" | sed -e "s|~|$HOME|")
+    if test ! -d "$repo_path" ; then
+        return 0
+    fi
 
-	if test ! -d "$repo_path/.git" ; then
-		return 0
-	fi
+    if test ! -d "$repo_path/.git" ; then
+        return 0
+    fi
 
-	say "Updating $repo_path..."
-	local curDir=$(pwd)
-	cd "$repo_path" && git ffwd ${FFWD_OPTIONS}
-	cd "$curDir"
+    say "Updating $repo_path..."
+    local curDir=$(pwd)
+    cd "$repo_path" && git ffwd ${FFWD_OPTIONS}
+    cd "$curDir"
 }
 
 if [[ "--no-remote" == "$1" ]]; then
