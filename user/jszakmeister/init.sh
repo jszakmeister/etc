@@ -46,13 +46,6 @@ _add_dir_shortcut s ~/sources true
 
 test -e ~/tmp && _make_dir_complete pdt pushd ~/tmp
 
-# In ZSH, we need to remove any completions associated with cdc, or this will
-# fail.
-if [ -n "$ZSH_VERSION" ]; then
-    compdef -d cdc
-fi
-_add_dir_shortcut c ~/projects/clojure
-
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
