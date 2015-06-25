@@ -1,0 +1,40 @@
+#!/bin/sh
+# Copyright (c) 2015, John Szakmeister <john@szakmeister.net>
+#
+# Generate a diff from the branch point to the tip of the branch.
+#
+# This may not be the most expedient mechanism, but it returns better results
+# than git merge-base branch1 branch2, when branch2 has been merged into
+# branch1.
+set -e
+
+USAGE="[BRANCH] [options]"
+LONG_USAGE="BRANCH defaults to HEAD, and compares against master.
+
+The script chooses whether the first argument is a branch based on whether
+it has a leading '-' or not.  If not, it's a branch.  If so, no branch is
+specified.
+"
+
+SUBDIRECTORY_OK=1 . "$(git --exec-path)/git-sh-setup" ||
+    die "Not a git repository."
+
+cmd_branch_diff()
+{
+    local base_branch="master"
+    local branch="$1"
+
+    shift
+
+    git diff $(git branch-point --raw "$branch" "$base_branch") "$branch" "$@"
+}
+
+if [ "${1#-*}" == "$1" ]
+then
+    branch="$1"
+    shift
+else
+    branch="HEAD"
+fi
+
+cmd_branch_diff "$branch" "$@"
