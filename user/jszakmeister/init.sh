@@ -126,6 +126,13 @@ if _has_executable ag; then
     }
 fi
 
+function clean-python()
+{
+    local dir="${1:-.}"
+
+    find "$dir" -name '*.pyc' -or -name __pycache__ -print0 | xargs -0 rm -r
+}
+
 # Disable slow keys...
 # Not sure if this persists or not.
 #
