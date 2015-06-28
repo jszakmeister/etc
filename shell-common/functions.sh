@@ -124,8 +124,9 @@ function ssh-add()
         ( eval $(ssh-agent -k) ) > /dev/null 2>&1
     }
 
-    if test -z "$SSH_AGENT_PID" ||
-        test -z "$(ps | grep ${SSH_AGENT_PID} | grep -v grep | grep ssh-agent)"
+    # Let's try to use SSH_AUTH_SOCK instead of PID to make this work correctly
+    # under Mac OS X.
+    if test -z "$SSH_AUTH_SOCK" || test ! -S "$SSH_AUTH_SOCK"
     then
         if [ "$ZSH_VERSION" ]
         then
