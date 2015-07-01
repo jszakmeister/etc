@@ -36,10 +36,17 @@ cmd_branch_point()
 
     first_commit="$(git rev-list "${base_branch}..${branch}" | tail -n 1)"
 
-    if [ "$RAW" != "" ]; then
-        git rev-parse "${first_commit}^"
+    # If no commits are listed, then assume the tip of base_branch.
+    if [ "$first_commit" == "" ]; then
+        first_commit="$(git rev-parse "${base_branch}")"
     else
-        git log -1 --oneline "${first_commit}^"
+        first_commit="${first_commit}^"
+    fi
+
+    if [ "$RAW" != "" ]; then
+        git rev-parse "${first_commit}"
+    else
+        git log -1 --oneline "${first_commit}"
     fi
 }
 
