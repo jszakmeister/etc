@@ -1,0 +1,4 @@
+pu minit
+pu mreset
+pu mhangup
+pu escape-key ^@
