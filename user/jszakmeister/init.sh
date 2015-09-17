@@ -130,7 +130,8 @@ function clean-python()
 {
     local dir="${1:-.}"
 
-    find "$dir" -name '*.pyc' -or -name __pycache__ -print0 | xargs -0 rm -r
+    find "$dir" \( -name '*.pyc' -or -name __pycache__ \) -print0 |
+        xargs -0 rm -r
 }
 
 # Disable slow keys...
