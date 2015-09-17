@@ -139,6 +139,10 @@
 	renames = true
 	renamelimit = 3000
 
+	# Use patience diff as the default.  The diffs produced are easier to
+	# read and have less conflicts--for the most part.
+	algorithm = patience
+
 [diff "cpp"]
 	# Use a funcname that copes better with return type being on a
 	# separate line than the function name.  This will match anything
