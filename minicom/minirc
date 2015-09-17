@@ -1,4 +1,9 @@
 pu minit
 pu mreset
 pu mhangup
+pu histlines        5000
+# pu localecho        Yes
+# pu addlinefeed      Yes
+# pu linewrap         Yes
+# pu addcarreturn     Yes
 pu escape-key ^@
