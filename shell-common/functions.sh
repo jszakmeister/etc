@@ -187,6 +187,19 @@ if _has_executable git; then
             __gitcomp_nl "$(__git_refs)"
         }
     fi
+
+    if _has_executable git-branch-diff; then
+        function _git_branch_diff()
+        {
+            case "$cur" in
+                --*)
+                    __gitcomp "--stat"
+                    return
+            esac
+
+            __gitcomp_nl "$(__git_refs)"
+        }
+    fi
 fi
 
 # For clang when running under pip and tox.  This is to help prevent errors from
