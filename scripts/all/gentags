@@ -72,5 +72,17 @@ ctags -R --exclude=build \
          --c++-kinds=+px \
          --fields=+iaS \
          --extra=+qf \
+         -I FUNC_ATTR_MALLOC \
+         -I FUNC_ATTR_ALLOC_SIZE+ \
+         -I FUNC_ATTR_ALLOC_SIZE_PROD+ \
+         -I FUNC_ATTR_ALLOC_ALIGN+ \
+         -I FUNC_ATTR_PURE \
+         -I FUNC_ATTR_CONST \
+         -I FUNC_ATTR_WARN_UNUSED_RESULT \
+         -I FUNC_ATTR_ALWAYS_INLINE \
+         -I FUNC_ATTR_UNUSED \
+         -I FUNC_ATTR_NONNULL_ALL \
+         -I FUNC_ATTR_NONNULL_ARG+ \
+         -I FUNC_ATTR_NONNULL_RET \
          -o "$output_path" \
          "$tag_dir/" || die "Error executing ctags"
