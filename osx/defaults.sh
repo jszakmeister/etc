@@ -265,6 +265,9 @@ defaults_write com.apple.finder FXEnableExtensionChangeWarning -bool false
 # Avoid creating .DS_Store files on network volumes
 defaults_write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
+# Avoid creating .DS_Store files on USB drives
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
 # Disable disk image verification
 # defaults_write com.apple.frameworks.diskimages skip-verify -bool true
 # defaults_write com.apple.frameworks.diskimages skip-verify-locked -bool true
