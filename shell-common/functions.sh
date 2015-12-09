@@ -210,14 +210,14 @@ fi
 [ $? -eq 0 ] && cc --version 2>&1 | grep clang > /dev/null 2>&1 && {
     function pip()
     {
-        CC=clang CFLAGS="$CFLAGS -Qunused-arguments" \
+        CC=clang CXX=clang++ CFLAGS="$CFLAGS -Qunused-arguments" \
             CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
             $(_find_executable pip) "$@"
     }
 
     function tox()
     {
-        CC=clang CFLAGS="$CFLAGS -Qunused-arguments" \
+        CC=clang CXX=clang++ CFLAGS="$CFLAGS -Qunused-arguments" \
             CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
             $(_find_executable tox) "$@"
     }
