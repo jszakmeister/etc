@@ -39,6 +39,8 @@ _add_dir_shortcut v ~/vimfiles true
 
 if test -d ~/.vimuser; then
     _add_dir_shortcut vu ~/.vimuser true
+elif test -d ~/_vimuser; then
+    _add_dir_shortcut vu ~/_vimuser true
 else
     _add_dir_shortcut vu ~/.vim/user/jszakmeister true
 fi
