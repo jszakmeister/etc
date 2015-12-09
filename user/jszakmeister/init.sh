@@ -35,6 +35,7 @@ _add_dir_shortcut i ~/projects/intelesys true
 _add_dir_shortcut j ~/projects/jszakmeister true
 _add_dir_shortcut p ~/projects true
 _add_dir_shortcut v ~/.vim true
+_add_dir_shortcut v ~/vimfiles true
 
 if test -d ~/.vimuser; then
     _add_dir_shortcut vu ~/.vimuser true
