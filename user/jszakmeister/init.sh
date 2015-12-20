@@ -143,3 +143,8 @@ function clean-python()
 # if _has_executable xkbset; then
 #     xkbset -sl
 # fi
+
+aws-public-ip()
+{
+    aws --output text ec2 describe-instances --query 'Reservations[0].Instances[0].PublicIpAddress' --instance-ids "$@"
+}
