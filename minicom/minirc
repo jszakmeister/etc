@@ -6,4 +6,5 @@ pu histlines        5000
 # pu addlinefeed      Yes
 # pu linewrap         Yes
 # pu addcarreturn     Yes
+# pu rtscts           Yes
 pu escape-key ^@
