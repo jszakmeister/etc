@@ -31,9 +31,10 @@ update_repo()
         return 0
     fi
 
-    say "Updating $repo_path..."
     local curDir=$(pwd)
-    cd "$repo_path" && git ffwd ${FFWD_OPTIONS}
+    say "Updating $repo_path..." &&
+        cd "$repo_path" &&
+        git ffwd ${FFWD_OPTIONS}
     cd "$curDir"
 }
 
