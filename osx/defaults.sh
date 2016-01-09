@@ -44,7 +44,7 @@ defaults_write()
     /usr/bin/defaults write "$domain" "$@"
 
     if [ -z "$userOnly" ] ; then
-        sudo /usr/bin/defaults write "/System/Library/User Template/Non_localized/Library/Preferences/$1" "$@"
+        sudo /usr/bin/defaults write "/System/Library/User Template/Non_localized/Library/Preferences/$domain" "$@"
     fi
 }
 
