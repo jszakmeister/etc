@@ -68,7 +68,7 @@ SERVER_NAME="$GR_NAME"
 
 if [[ -n "$SSH_TTY" ]]; then
     if [[ -z "$SERVER_NAME" ]]; then
-        SERVER_NAME="GVIM1"
+        SERVER_NAME="GVIM_${SSH_CLIENT%% *}"
     else
         SERVER_NAME="ssh-$SERVER_NAME"
     fi
