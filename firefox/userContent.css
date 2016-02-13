@@ -17,6 +17,7 @@
 {
     textarea[name="comment[body]"], textarea[name="issue[body]"],
     textarea[name="issue_comment[body]"],
+    textarea[name="pull_request[body]"],
     textarea[name="pull_request_review_comment[body]"],
     textarea[name="commit_comment[body]"] {
         font-family: "DejaVu Sans Mono" !important;
