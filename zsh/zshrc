@@ -19,7 +19,11 @@ test -d /usr/local/share/zsh/site-functions &&
 # again.  That's especially true for exports.sh, since
 # it'll modify the path variables again.
 if [[ -z "$ETC_ZSHENV_SOURCED" ]]; then
-	. "$ETC_HOME/zsh/zshenv"
+    . "$ETC_HOME/zsh/zshenv"
+else
+    # We'll need to re-setup paths, since zprofile may have user
+    # path_helper and messed up the path setup in zshenv.
+    . "$ETC_HOME/shell-common/exports.sh"
 fi
 
 . "$ETC_HOME/shell-common/interactive.sh"

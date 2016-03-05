@@ -3,6 +3,11 @@ PATHS_TO_APPEND=
 
 test -n "$TMUX" && export TERM="screen-256color"
 
+if [ -x /usr/libexec/path_helper ]; then
+    PATH=""
+    eval $(/usr/libexec/path_helper -s)
+fi
+
 test -d "$HOME/bin" &&
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/bin")
 
@@ -11,6 +16,28 @@ test -d "$HOME/.local/bin" &&
 
 test -d "$HOME/local/bin" &&
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/local/bin")
+
+# Put user script directories on the path.
+test -d "$ETC_HOME/user/$ETC_USER/scripts/all" &&
+    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/all")
+
+test -d "$ETC_HOME/user/$ETC_USER/scripts/$platform" &&
+    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/$platform")
+
+if [ -d "$ETC_HOME/git-addons" ]; then
+    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/git-addons")
+fi
+
+if [ -d "$ETC_HOME/scripts" ]; then
+    # Add a platform-specific area too.
+    etc_scripts_platform="$ETC_HOME/scripts/$platform"
+    if [ -d "$etc_scripts_platform" ]; then
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$etc_scripts_platform")
+    fi
+    unset etc_scripts_platform
+
+    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts/all")
+fi
 
 if [[ "$platform" == 'darwin' ]]; then
     # We compute the path to the standard framework area in the user's area
@@ -58,28 +85,6 @@ if [[ "$platform" == 'linux' ]]; then
         PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/.local/slickedit/bin")
     fi
 fi
-
-if [ -d "$ETC_HOME/git-addons" ]; then
-    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/git-addons")
-fi
-
-if [ -d "$ETC_HOME/scripts" ]; then
-    PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts/all")
-
-    # Add a platform-specific area too.
-    etc_scripts_platform="$ETC_HOME/scripts/$platform"
-    if [ -d "$etc_scripts_platform" ]; then
-        PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$etc_scripts_platform")
-    fi
-    unset etc_scripts_platform
-fi
-
-# Put user script directories on the path.
-test -d "$ETC_HOME/user/$ETC_USER/scripts/all" &&
-    PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/all")
-
-test -d "$ETC_HOME/user/$ETC_USER/scripts/$platform" &&
-    PATHS_TO_PREPEND=$(prepend_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/$platform")
 
 # Put ccache links on the path, if they're available.
 test -d /usr/local/opt/ccache/libexec &&
