@@ -12,8 +12,6 @@ fpath=("$ETC_HOME/zsh/functions" "$ETC_HOME/zsh/completions" $fpath)
 test -d /usr/local/share/zsh/site-functions &&
     fpath=(/usr/local/share/zsh/site-functions $fpath)
 
-. "$ETC_HOME/zsh/shell-options.zsh"
-
 # If the user setup ~/.zshenv, and sourced our zshenv,
 # then we want to avoid sourcing a couple of scripts
 # again.  That's especially true for exports.sh, since
@@ -25,6 +23,8 @@ else
     # path_helper and messed up the path setup in zshenv.
     . "$ETC_HOME/shell-common/exports.sh"
 fi
+
+. "$ETC_HOME/zsh/shell-options.zsh"
 
 . "$ETC_HOME/shell-common/interactive.sh"
 
