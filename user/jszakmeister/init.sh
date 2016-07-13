@@ -133,8 +133,12 @@ function clean-python()
 {
     local dir="${1:-.}"
 
+    # OS X doesn't have --no-run-if-empty for xargs, so we work around that
+    # limitation by looping through the results.
     find "$dir" \( -name '*.pyc' -or -name __pycache__ \) -print0 |
-        xargs -0 rm -r
+    while IFS= read -r -d '' file; do
+        rm -r "$file"
+    done
 }
 
 # Disable slow keys...
