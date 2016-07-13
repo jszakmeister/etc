@@ -129,6 +129,13 @@ if _has_executable ag; then
     }
 fi
 
+function clean-dirs()
+{
+    local dir="${1:-.}"
+
+    find "$dir" -type d -empty -delete
+}
+
 function clean-python()
 {
     local dir="${1:-.}"
@@ -139,6 +146,19 @@ function clean-python()
     while IFS= read -r -d '' file; do
         rm -r "$file"
     done
+
+    clean-dirs "$dir"
+}
+
+function clean-vim()
+{
+    find . \( -name '.*.sw?' -or -name '.sw?' \) -delete
+}
+
+function clean-cruft()
+{
+    clean-python
+    clean-vim
 }
 
 # Disable slow keys...
