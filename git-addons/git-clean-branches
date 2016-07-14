@@ -1,0 +1,19 @@
+#!/bin/bash
+SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
+    die "Not a git repository."
+
+if [ "$(git symbolic-ref --short HEAD)" != "master" ]
+then
+    echo 1>&2 "ERROR: Not on master."
+else
+    # Need to find a way to handle "git branch -d" with it's safety
+    # mechanism.  At the moment, it'll complain if a branch is not merged
+    # to whatever branch we have checked out, which is why we require master
+    # right now.
+    git branch -a --merged master |
+        egrep -v '^(\* |[ \t]*|.*/remotes)([0-9]+\.[0-9]+\.x|master|HEAD|integrate|remotes/.*)$' |
+        while read -r branch
+    do
+        git branch -d "$branch"
+    done
+fi

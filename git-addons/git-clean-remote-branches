@@ -1,0 +1,15 @@
+#!/bin/bash
+SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
+    die "Not a git repository."
+
+if [ "$(git symbolic-ref --short HEAD)" != "master" ]
+then
+    echo 1>&2 "ERROR: Not on master."
+else
+    git branch -r --merged master |
+        egrep -v '^(\* |[ \t]*)[^/]*/([0-9]+\.[0-9]+\.x|master|HEAD( -> .*)|integrate)$' |
+        while read -r line
+    do
+        echo "$line" | sed -e 's|/| :|' | xargs -n 2 git push
+    done
+fi
