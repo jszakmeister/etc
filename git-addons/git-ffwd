@@ -3,6 +3,56 @@ SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
     die "Not a git repository."
 
 
+# Color handling taken from test-lib.sh in git.
+[ "x$TERM" != "xdumb" ] && (
+        [ -t 1 ] &&
+        tput bold >/dev/null 2>&1 &&
+        tput setaf 1 >/dev/null 2>&1 &&
+        tput sgr0 >/dev/null 2>&1
+    ) &&
+    color=t
+
+
+if test -n "$color"
+then
+    say_color () {
+        (
+        case "$1" in
+        error)
+            tput bold; tput setaf 1;; # bold red
+        skip)
+            tput setaf 4;; # blue
+        warn)
+            tput setaf 3;; # brown/yellow
+        pass)
+            tput setaf 2;; # green
+        info)
+            tput bold; tput setaf 6;; # bold cyan
+        *)
+            test -n "$quiet" && return;;
+        esac
+        shift
+        printf "%s" "$*"
+        tput sgr0
+        echo
+        )
+    }
+else
+    say_color() {
+        test -z "$1" && test -n "$quiet" && return
+        shift
+        printf "%s\n" "$*"
+    }
+fi
+
+
+die()
+{
+    say_color >&2 error "ERROR: $1"
+    exit 1
+}
+
+
 has_matching_push() {
     # push.default is setup for 'simple', 'current', or 'matching'.
     case "$(git config --get push.default || echo "matching")" in
@@ -90,12 +140,12 @@ main() {
 
         if [ "$NBEHIND" -gt 0 ]; then
             if [ "$NAHEAD" -gt 0 ]; then
-                echo " branch $LB is $NBEHIND commit(s) behind and $NAHEAD commit(s) ahead of $RB. could not be fast-forwarded"
+                say_color warn " branch $LB is $NBEHIND commit(s) behind and $NAHEAD commit(s) ahead of $RB. could not be fast-forwarded"
             elif [ "$LB" = "$CLB" ]; then
-                echo " branch $LB was $NBEHIND commit(s) behind $RB. fast-forward merge";
+                say_color pass " branch $LB was $NBEHIND commit(s) behind $RB. fast-forward merge";
                 git merge --ff --ff-only -q $RB
             else
-                echo " branch $LB was $NBEHIND commit(s) behind $RB. resetting local branch to remote"
+                say_color pass " branch $LB was $NBEHIND commit(s) behind $RB. resetting local branch to remote"
                 git branch -l -f $LB -t $RB >/dev/null
             fi
         fi
