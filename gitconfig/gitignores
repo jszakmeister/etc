@@ -110,3 +110,7 @@ tramp
 # Chef
 .chef/
 !.chef/knife.rb
+
+# IntelliJ
+.idea
+*.iml
