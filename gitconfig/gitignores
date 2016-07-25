@@ -29,7 +29,6 @@
 
 .*
 !.git[a-z]*
-*.sw[a-p]
 tags
 TAGS
 tar-me.sh
@@ -89,6 +88,10 @@ junitvmwatcher*.properties
 .elc
 auto-save-list
 tramp
+
+# Vim
+.*.sw?
+.sw?
 
 # Object files
 *.o
