@@ -29,7 +29,6 @@
 
 .*
 !.git[a-z]*
-*~
 *.sw[a-p]
 tags
 TAGS
