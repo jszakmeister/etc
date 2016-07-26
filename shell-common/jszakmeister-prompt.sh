@@ -83,8 +83,14 @@ function _jszakmeister_prompt() {
     virtualenv_status=$(_jszakmeister_prompt_virtualenv)
 
     # Take the current working directory, and replace the leading path
-    # with ~ if it's under the home directory.
-    current_dir="${PWD/#$HOME/~}"
+    # with ~ if it's under the home directory.  The goofiness surrounding the
+    # tilde is because newer bash versions started expanding tilde in the
+    # parameter expansion, negating the shortening effect we were looking for.
+    # Escaping with a backslash doesn't work because the backslash is visible in
+    # zsh.  So we do this trick with quoting to make sure that both bash and zsh
+    # see a tilde that should not be expanded.  Note: bash's setting of
+    # expand-tilde off did not prevent expansion within a parameter.
+    current_dir="${PWD/#$HOME/""~""}"
 
     if [ -n "$BASH" -a "$ret_code" -ne 0 ]; then
         last_status="  ${fg_red}$ret_code ↵${ansi_reset} "
