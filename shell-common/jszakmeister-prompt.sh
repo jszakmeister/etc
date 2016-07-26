@@ -109,7 +109,7 @@ function _jszakmeister_prompt() {
 
     if [[ "$ETC_TRIM_PWD" != "0" ]]; then
         if (( $length < ${#current_dir} )); then
-            if [[ $PWD == ~/* ]]; then
+            if [[ $current_dir == "~"/* ]]; then
                 # 6 comes from the ~/.../ in the output
                 let "length = $length - 6"
                 regex="s|^~/.*?(/.{1,$length})$|~/...\1|"
