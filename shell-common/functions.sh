@@ -3,8 +3,8 @@
 
 function find-project-root()
 {
-    local last_found=$(pwd)
-    local tmp_path=$(dirname "$last_found")
+    local last_found="$(pwd)"
+    local tmp_path="$(dirname "$last_found")"
     while [[ "$tmp_path" != "/" ]];
     do
         if [ -e "$tmp_path/.git" -o -d "$tmp_path/.hg" -o -d "$tmp_path/.bzr" -o -f "$tmp_path/.cdt-stop" ]; then
@@ -13,7 +13,7 @@ function find-project-root()
         elif [ -d "$tmp_path/.svn" ]; then
             last_found="$tmp_path"
         fi
-        tmp_path=$(dirname "$tmp_path")
+        tmp_path="$(dirname "$tmp_path")"
     done
     echo "$last_found"
 }
@@ -37,7 +37,7 @@ function search-up-tree()
 
 function cdt()
 {
-    local project_root=$(find-project-root)
+    local project_root="$(find-project-root)"
     if [ -n "$1" ]; then
         cd "$project_root/$1"
     else
