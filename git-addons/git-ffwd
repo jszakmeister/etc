@@ -125,7 +125,7 @@ main() {
         fi
         REMOTES="$(echo "$REMOTES" | xargs -n1 echo)"
 
-        git remote update -p $REMOTE
+        git remote update -p $REMOTES
     fi
 
     git show-ref --heads | cut -d ' ' -f 2 | while read ALB; do
