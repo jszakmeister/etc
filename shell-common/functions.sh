@@ -205,20 +205,22 @@ fi
 # For clang when running under pip and tox.  This is to help prevent errors from
 # unused arguments, and to prevent accidentally selecting gcc when ccache is
 # installed, but gcc is not.
-[ "$platform" != 'darwin' ] && true || xcode-select -p > /dev/null 2>&1
-
-[ $? -eq 0 ] && cc --version 2>&1 | grep clang > /dev/null 2>&1 && {
-    function pip()
+[ "$platform" = 'darwin' ] &&
+    xcode-select -p > /dev/null 2>&1 &&
+    _has_executable cc &&
+    command cc --version 2>&1 | grep clang > /dev/null 2>&1 &&
     {
-        CC=clang CXX=clang++ CFLAGS="$CFLAGS -Qunused-arguments" \
-            CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
-            $(_find_executable pip) "$@"
-    }
+        function pip()
+        {
+            CC=clang CXX=clang++ CFLAGS="$CFLAGS -Qunused-arguments" \
+                CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
+                $(_find_executable pip) "$@"
+        }
 
-    function tox()
-    {
-        CC=clang CXX=clang++ CFLAGS="$CFLAGS -Qunused-arguments" \
-            CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
-            $(_find_executable tox) "$@"
+        function tox()
+        {
+            CC=clang CXX=clang++ CFLAGS="$CFLAGS -Qunused-arguments" \
+                CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
+                $(_find_executable tox) "$@"
+        }
     }
-}
