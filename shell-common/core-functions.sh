@@ -3,6 +3,17 @@ function _has_executable()
     _find_executable "$@" > /dev/null 2>&1
 }
 
+function _run_helper()
+{
+    # Disables command not found helpers when probing for features, such as
+    # the PackageKit command not found helper installed in Fedora environments
+    # by default.
+    ({
+        unset -f command_not_found_handler
+        "$@"
+    })
+}
+
 function prepend_path()
 {
     if [[ "$1" == '' ]]; then

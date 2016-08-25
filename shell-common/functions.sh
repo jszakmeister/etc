@@ -208,7 +208,7 @@ fi
 [ "$platform" = 'darwin' ] &&
     xcode-select -p > /dev/null 2>&1 &&
     _has_executable cc &&
-    command cc --version 2>&1 | grep clang > /dev/null 2>&1 &&
+    _run_helper cc --version 2>&1 | grep clang > /dev/null 2>&1 &&
     {
         function pip()
         {
