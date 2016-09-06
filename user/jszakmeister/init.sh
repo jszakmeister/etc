@@ -11,6 +11,10 @@ if [ "$platform" = "darwin" ]; then
     alias clear-arp="sudo arp -a -d"
     alias ps="ps aux -ww"
 
+    if test -d "/Applications/VMware Fusion.app"
+    then
+        export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
+    fi
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
