@@ -136,7 +136,7 @@
 
 [diff]
 	# Does rename detection during diff operation
-	renames = true
+	renames = copies
 	renamelimit = 3000
 
 	# Use patience diff as the default.  The diffs produced are easier to
