@@ -143,6 +143,10 @@
 	# read and have less conflicts--for the most part.
 	algorithm = patience
 
+	# Use mnemonic prefixes (i, w, c, and o for index, worktree, commit and
+	# object) instead of a/ and b/.
+	mnemonicprefix = true
+
 [diff "cpp"]
 	# Use a funcname that copes better with return type being on a
 	# separate line than the function name.  This will match anything
