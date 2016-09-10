@@ -145,6 +145,13 @@ function find-domain-controllers()
     dig $DNS_SERVER -t SRV _ldap._tcp.$1
 }
 
+# Runs a command and detaches it from the terminal.  It also silences stdout and
+# stderr, getting rid of debugging from many GTK related projects.
+function run_detached()
+{
+    nohup "$@" </dev/null >/dev/null 2>&1 &
+}
+
 # Some git-related setup for completion.
 
 if _has_executable git; then
