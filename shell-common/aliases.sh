@@ -151,58 +151,6 @@ if [ -d "$HOME/.local/erlang" ]; then
     alias erlc="'$HOME/.local/erlang/bin/erlc'"
 fi
 
-# Hunt down the installed clojure files
-search_paths=$(echo $JAVA_LOCALLIB | tr ":" "\n")
-clojure_jar=
-clojure_contrib_jar=
-jline_jar=
-
-for search_path in $search_paths
-do
-    if [ -f "$search_path/clojure.jar" ]; then
-        clojure_jar="$search_path/clojure.jar"
-        clojure_contrib_jar="$search_path/clojure-contrib.jar"
-        break
-    fi
-done
-
-for search_path in $search_paths
-do
-    if [ -f "$search_path/jline.jar" ]; then
-        jline_jar="$search_path/jline.jar"
-        break
-    fi
-done
-
-if [[ "$clojure_jar" != '' ]]; then
-    classpath=$(append_path "$clojure_contrib_jar" "$clojure_jar")
-    jline_runner=
-    if [[ "$jline_jar" != '' ]]; then
-        classpath=$(append_path "$classpath" "$jline_jar")
-        jline_runner="jline.ConsoleRunner"
-    fi
-
-    alias clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $classpath $jline_runner clojure.main"
-fi
-
-if [ -d "$HOME/projects/clojure" ]; then
-    classpath=$(append_path "$jline_jar" "$HOME/projects/clojure/clojure.jar:$(find_clj_contrib)")
-    jline_runner=
-    if [[ "$jline_jar" != '' ]]; then
-        jline_runner="jline.ConsoleRunner"
-    fi
-
-    alias dev-clj="java -XX:+CMSClassUnloadingEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -cp $classpath $jline_runner clojure.main"
-fi
-
-unset search_path
-unset search_paths
-unset clojure_jar
-unset clojure_contrib_jar
-unset jline_jar
-unset jline_runner
-unset classpath
-
 alias wget="wget --no-check-certificate"
 alias wget-ff='wget --user-agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:11.0) Gecko/20100101 Firefox/11.0"'
 
