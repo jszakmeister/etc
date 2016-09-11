@@ -2,9 +2,23 @@
 SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
     die "Not a git repository."
 
+while [ "$#" -gt 0 ]
+do
+    key="$1"
+
+    case $key in
+        --color=always)
+            color=t
+            shift
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
 
 # Color handling taken from test-lib.sh in git.
-[ "x$TERM" != "xdumb" ] && (
+[ "$color" == "" ] && [ "x$TERM" != "xdumb" ] && (
         [ -t 1 ] &&
         tput bold >/dev/null 2>&1 &&
         tput setaf 1 >/dev/null 2>&1 &&
