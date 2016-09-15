@@ -133,6 +133,17 @@ if _has_executable ag; then
     }
 fi
 
+function delete-unused()
+{
+    for filename in "$@"
+    do
+        if ! lsof -wt "$filename" 2>&1 >/dev/null
+        then
+            rm -r "$filename"
+        fi
+    done
+}
+
 function clean-dirs()
 {
     local dir="${1:-.}"
@@ -156,7 +167,10 @@ function clean-python()
 
 function clean-vim()
 {
-    find . \( -name '.*.sw?' -or -name '.sw?' \) -delete
+    find . \( -name '.*.sw?' -or -name '.sw?' \) -print0 |
+    while IFS= read -r -d '' file; do
+        delete-unused "$file"
+    done
 }
 
 function clean-cruft()
