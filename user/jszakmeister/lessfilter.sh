@@ -11,6 +11,9 @@ case "$(basename $1)" in
     *.zsh*)
         ${PYGMENTIZE} -l sh "$1" 2>/dev/null
         ;;
+    *.mk|Makefile.*|Makefile)
+        ${PYGMENTIZE} -l make "$1" 2>/dev/null
+        ;;
     Vagrantfile)
         ${PYGMENTIZE} -l ruby "$1" 2>/dev/null
         ;;
