@@ -1,0 +1,4 @@
+# Many environments aren't actually using GSSAPI, and this can hang
+# for a while looking up host names in environments where a DNS is
+# unavailable.  Selectively enable it, if you need it.
+GSSAPIAuthenication no
