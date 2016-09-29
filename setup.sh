@@ -62,6 +62,7 @@ _installLink() {
 
 # Set up links to configuration bits
 
+_installLink "$HOME/.agignore" ag/agignore
 _installLink "$HOME/.inputrc" inputrc/inputrc
 _installLink "$HOME/.tmux.conf" tmux/tmux.conf
 _installLink "$HOME/.quiltrc" quilt/quiltrc

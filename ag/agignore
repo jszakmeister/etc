@@ -1,0 +1,11 @@
+build
+dist
+venv
+_build
+__pycache__
+classes
+*.min.*
+*.min
+*.graffle
+tags
+local-homepage
