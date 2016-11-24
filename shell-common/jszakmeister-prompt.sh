@@ -90,7 +90,12 @@ function _jszakmeister_prompt() {
     # zsh.  So we do this trick with quoting to make sure that both bash and zsh
     # see a tilde that should not be expanded.  Note: bash's setting of
     # expand-tilde off did not prevent expansion within a parameter.
-    current_dir="${PWD/#$HOME/""~""}"
+    if [ "${HOME/#$HOME/""~""}" == '""~""' ]
+    then
+        current_dir="${PWD/#$HOME/~}"
+    else
+        current_dir="${PWD/#$HOME/""~""}"
+    fi
 
     if [ -n "$BASH" -a "$ret_code" -ne 0 ]; then
         last_status="  ${fg_red}$ret_code ↵${ansi_reset} "
