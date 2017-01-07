@@ -33,6 +33,8 @@ elif [ "$platform" = "linux" ]; then
     }
 fi
 
+alias df="df -hi"
+
 _add_dir_shortcut e ~/.etc true
 _add_dir_shortcut e ~/projects/etc true
 _add_dir_shortcut i ~/projects/intelesys true
