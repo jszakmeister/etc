@@ -1,4 +1,10 @@
 #!/bin/bash
+die()
+{
+    echo 1>&2 "ERROR: $@"
+    exit 1
+}
+
 trim()
 {
     local var="$@"
@@ -17,7 +23,8 @@ fi
 
 say()
 {
-    echo "$color_bold_yellow${@/$HOME/~}$color_reset"
+    [ -z "$QUIET" ] && echo "$color_bold_yellow${@/$HOME/~}$color_reset"
+    return 0
 }
 
 update_repo()
@@ -38,9 +45,25 @@ update_repo()
     cd "$curDir"
 }
 
-if [[ "--no-remote" == "$1" ]]; then
-    FFWD_OPTIONS="--no-remote"
-fi
+while [[ $# > 0 ]]
+do
+    key="$1"
+    shift
+
+    case $key in
+        -q)
+            FFWD_OPTIONS="$FFWD_OPTIONS -q"
+            QUIET=t
+            ;;
+        --no-remote)
+            FFWD_OPTIONS="$FFWD_OPTIONS --no-remote"
+            ;;
+        *)
+            # unknown option
+            die "Unknown option '$key'"
+            ;;
+    esac
+done
 
 update_repo ~/.vim
 update_repo ~/.vimuser

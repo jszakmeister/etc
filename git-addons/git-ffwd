@@ -2,6 +2,8 @@
 SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
     die "Not a git repository."
 
+verbose=t
+
 while [ "$#" -gt 0 ]
 do
     key="$1"
@@ -9,6 +11,10 @@ do
     case $key in
         --color=always)
             color=t
+            shift
+            ;;
+        -q|--quiet)
+            verbose=
             shift
             ;;
         *)
@@ -58,6 +64,12 @@ else
         printf "%s\n" "$*"
     }
 fi
+
+
+say_verbose()
+{
+    [ -n "$verbose" ] && say_color "$@"
+}
 
 
 die()
@@ -139,7 +151,12 @@ main() {
         fi
         REMOTES="$(echo "$REMOTES" | xargs -n1 echo)"
 
-        git remote update -p $REMOTES
+        if [ -n "$verbose" ]
+        then
+            git remote update -p $REMOTES
+        else
+            git remote update -p $REMOTES 2>&1 >/dev/null
+        fi
     fi
 
     git show-ref --heads | cut -d ' ' -f 2 | while read ALB; do
@@ -154,13 +171,13 @@ main() {
 
         if [ "$NBEHIND" -gt 0 ]; then
             if [ "$NAHEAD" -gt 0 ]; then
-                say_color warn " branch $LB is $NBEHIND commit(s) behind and $NAHEAD commit(s) ahead of $RB. could not be fast-forwarded"
+                say_verbose warn " branch $LB is $NBEHIND commit(s) behind and $NAHEAD commit(s) ahead of $RB. could not be fast-forwarded"
             elif [ "$LB" = "$CLB" ]; then
-                say_color pass " branch $LB was $NBEHIND commit(s) behind $RB. fast-forward merge";
-                git merge --ff --ff-only -q $RB
+                say_verbose pass " branch $LB was $NBEHIND commit(s) behind $RB. fast-forward merge";
+                git merge ${verbose:+-q} --ff --ff-only -q $RB
             else
-                say_color pass " branch $LB was $NBEHIND commit(s) behind $RB. resetting local branch to remote"
-                git branch -l -f $LB -t $RB >/dev/null
+                say_verbose pass " branch $LB was $NBEHIND commit(s) behind $RB. resetting local branch to remote"
+                git branch ${verbose:+-q} --l -f $LB -t $RB >/dev/null
             fi
         fi
     done
