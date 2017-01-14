@@ -61,6 +61,9 @@ if [[ "$OS" == "darwin" && "$SKIP_GUI_CHECK" == "" ]]; then
         echo >&2 "No GUI available"
         exit 1
     fi
+elif [[ -n "$IS_X_BASED" && -z "$DISPLAY" ]]; then
+        echo >&2 "No GUI available"
+        exit 1
 fi
 
 GR_NAME=$(find-up-tree .gr-name)
