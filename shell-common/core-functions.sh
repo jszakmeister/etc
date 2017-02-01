@@ -3,6 +3,18 @@ function _has_executable()
     _find_executable "$@" > /dev/null 2>&1
 }
 
+function _has_devtool()
+{
+    if [ "$platform" = 'darwin' ]; then
+        xcode-select -p > /dev/null 2>&1
+        if [[ "$?" != "0" ]]; then
+            return 1
+        fi
+    fi
+
+    _find_executable "$@" > /dev/null 2>&1
+}
+
 function _run_helper()
 {
     # Disables command not found helpers when probing for features, such as

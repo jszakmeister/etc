@@ -70,6 +70,8 @@ function _vcs_status()
         local ref dirty count ahead behind divergent upstream g differ remote
         local nomaster=""
 
+        _has_devtool git || return 1
+
         g=$(git rev-parse --git-dir 2>/dev/null)
         if [[ -z "$g" ]]; then
                 return 1

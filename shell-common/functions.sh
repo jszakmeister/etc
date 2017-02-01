@@ -158,7 +158,7 @@ function run_detached()
 
 # Some git-related setup for completion.
 
-if _has_executable git; then
+if _has_devtool git; then
     if _has_executable git-ffwd; then
         function _git_ffwd()
         {
