@@ -21,7 +21,7 @@ _has_executable shasum && alias shasum="shasum -b"
 
 if [ "$platform" = 'freebsd' ]; then
     alias du='du -h -d1'
-    alias ps='ps aux'
+    alias ps='ps auxww'
     alias ls='ls -hFGA'
     alias ll='ls -l'
     alias top='top -o cpu -i 1'
@@ -31,7 +31,7 @@ if [ "$platform" = 'darwin' ]; then
     alias twistd="/System/Library/Frameworks/Python.framework/Versions/Current/Extras/bin/twistd"
 
     alias du='du -h -d1'
-    alias ps='ps aux'
+    alias ps='ps auxww'
     slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
     if [[ $slickedit_path != '' ]]; then
         alias vs='open -a $slickedit_path'

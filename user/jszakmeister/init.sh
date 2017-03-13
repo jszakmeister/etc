@@ -9,7 +9,6 @@ if [ "$platform" = "darwin" ]; then
         alias ll='gnu-ls -hFl --color=auto'
     fi
     alias clear-arp="sudo arp -a -d"
-    alias ps="ps aux -ww"
 
     if test -d "/Applications/VMware Fusion.app"
     then
