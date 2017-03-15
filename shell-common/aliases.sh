@@ -61,7 +61,7 @@ fi
 
 if [ "$platform" = 'linux' -o "$platform" == 'mingw' ]; then
     alias du='du -bh --max-depth=1'
-    alias ps='ps -ef'
+    alias ps='ps -efww'
     alias ls='ls -hFA --color=auto'
     alias ll='ls -l'
     alias top='top -d 1'
