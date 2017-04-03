@@ -191,3 +191,22 @@ aws-public-ip()
 {
     aws --output text ec2 describe-instances --query 'Reservations[0].Instances[0].PublicIpAddress' --instance-ids "$@"
 }
+
+if _has_executable openssl
+then
+    function dump-cert()
+    {
+        if [ -z "$@" ]
+        then
+            echo 1>&2 "ERROR: Specify a certificate to examine in PEM format."
+            return 1
+        fi
+
+        for cert in "$@"
+        do
+            openssl x509 -noout -text -in "$cert"
+        done
+
+        return 0
+    }
+fi
