@@ -127,7 +127,7 @@ if _has_executable ag; then
 
         if test -t 1
         then
-            "$_ag_path" "$@" --group --color | $PAGER $_pager_options
+            "$_ag_path" --group --color "$@" | $PAGER $_pager_options
         else
             "$_ag_path" "$@"
         fi
