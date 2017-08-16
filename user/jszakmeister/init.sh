@@ -51,6 +51,8 @@ else
 fi
 
 _add_dir_shortcut s ~/sources true
+_add_dir_shortcut gc ~/projects/gradle-clojure
+_add_dir_shortcut w ~/Documents/Work true
 
 test -e ~/tmp && _make_dir_complete pdt pushd ~/tmp
 
