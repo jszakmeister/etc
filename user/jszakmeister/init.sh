@@ -141,6 +141,11 @@ if _has_executable ag; then
     }
 fi
 
+if _has_executable curl
+then
+    alias curl-json="curl -H 'Accept: application/json'"
+fi
+
 function delete-unused()
 {
     for filename in "$@"
