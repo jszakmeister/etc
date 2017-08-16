@@ -56,6 +56,11 @@ _add_dir_shortcut w ~/Documents/Work true
 
 test -e ~/tmp && _make_dir_complete pdt pushd ~/tmp
 
+# Make netcat a little more friendly to use.
+_has_executable rlwrap &&
+    _has_executable nc &&
+    alias nc="rlwrap '$(_find_executable nc)'"
+
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
