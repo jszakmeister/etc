@@ -61,6 +61,9 @@ _has_executable rlwrap &&
     _has_executable nc &&
     alias nc="rlwrap '$(_find_executable nc)'"
 
+test -e /System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc &&
+    alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
+
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
