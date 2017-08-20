@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012, John Szakmeister <john@szakmeister.net>
+# Copyright (c) 2012-2017, John Szakmeister <john@szakmeister.net>
 #
 # Idea was taken from here, but extended:
 #    <https://community.jboss.org/blogs/stuartdouglas/2011/09/06/merging-github-pull-requests>
@@ -27,11 +27,18 @@ fetch() {
     local upstream=$(find_upstream)
     local failed=
 
-    cmd="git fetch -v $upstream"
+    cur_head="$(git symbolic-ref --short HEAD 2>/dev/null)"
     for var in "$@"
     do
-        cmd="$cmd ${REFSPEC_PREFIX}pull/$var/head:pr-$var"
-        $cmd || failed=true
+        branch_name="pr-$var"
+        if [ "$cur_head" = "$branch_name" ]
+        then
+            git fetch -v "$upstream" "pull/$var/head" &&
+                git reset --hard FETCH_HEAD || failed=true
+        else
+            git fetch -v $upstream "+pull/$var/head:$branch_name" ||
+                failed=true
+        fi
     done
 
     test -z "$failed" || die "Could not fetch all the pull requests."
@@ -42,10 +49,6 @@ do
     key="$1"
 
     case $key in
-        -f|--force)
-            REFSPEC_PREFIX="+"
-            shift
-            ;;
         *)
             if [ "$key" = -* ]
             then
