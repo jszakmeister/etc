@@ -463,6 +463,9 @@ defaults_write com.googlecode.iterm2 NSAppSleepDisabled -bool YES
 test -z "$userOnly" && sudo nvram "SystemAudioVolume=%00"
 test -z "$userOnly" && sudo nvram boot-args="-v"
 
+# Disable gamed
+# defaults_write com.apple.gamed Disabled -bool true
+
 echo "You need to logout and back in for some preferences to take effect."
 
 echo "Run 'sudo scutil --set HostName <hostname>' to set the host name for the machine"
