@@ -461,6 +461,8 @@ defaults_write com.googlecode.iterm2 NSAppSleepDisabled -bool YES
 
 # Disable startup chime
 test -z "$userOnly" && sudo nvram "SystemAudioVolume=%00"
+
+# Verbose start up
 test -z "$userOnly" && sudo nvram boot-args="-v"
 
 # Disable gamed
