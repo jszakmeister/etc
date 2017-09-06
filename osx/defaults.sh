@@ -468,6 +468,16 @@ test -z "$userOnly" && sudo nvram boot-args="-v"
 # Disable gamed
 # defaults_write com.apple.gamed Disabled -bool true
 
+# Hide virtual machines from Spotlight
+# Should only fail if the directory already exists, and Documents should exist.
+sudo mkdir "/System/Library/User Template/Non_localized/Documents/Virtual Machines.localized" || true
+sudo touch "/System/Library/User Template/Non_localized/Documents/Virtual Machines.localized/.metadata_never_index"
+killall Finder
+
+# Alternative strategy for hiding VMs from Spotlight, but it's not tested
+# sudo defaults write /.Spotlight-V100/VolumeConfiguration.plist Exclusions -array-add "$HOME/Documents/Virtual Machines.localized"
+# sudo launchctl stop com.apple.metadata.mds && sudo launchctl start com.apple.metadata.mds
+
 echo "You need to logout and back in for some preferences to take effect."
 
 echo "Run 'sudo scutil --set HostName <hostname>' to set the host name for the machine"
