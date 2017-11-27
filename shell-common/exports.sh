@@ -40,6 +40,12 @@ if [ -d "$ETC_HOME/scripts" ]; then
 fi
 
 if [[ "$platform" == 'darwin' ]]; then
+    # To get features of a newer unzip executable, if Homebrew is installed.
+    if test -d "/usr/local/opt/unzip/bin"
+    then
+        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "/usr/local/opt/unzip/bin")
+    fi
+
     # We compute the path to the standard framework area in the user's area
     # because site.USER_SITE lies in Python 2.6 and less (it points to the posix
     # user's location, which should be picked up by adding ~/.local/bin to the
