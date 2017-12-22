@@ -225,3 +225,16 @@ then
         return 0
     }
 fi
+
+if _has_executable gem
+then
+    GEM_HOME="$HOME/.gem"
+
+    # Make sure the user-install/bin folder is on the path.
+    gem env gempath | while IFS=: read -r dir rest
+    do
+        test -d "$dir/bin" && export "PATH=$dir/bin:$PATH"
+    done
+    unset rest
+    unset dir
+fi
