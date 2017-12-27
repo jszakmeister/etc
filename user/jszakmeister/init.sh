@@ -2,7 +2,33 @@ export WORKON_HOME=$HOME/.virtualenvs
 export CCACHE_CPP2=1
 export HOMEBREW_NO_EMOJI=1
 
+
+function source_docker_completion()
+{
+    if [ -n "$BASH_VERSION" ]; then
+        local compfile="$1.bash-completion"
+        if test -f $compfile; then
+            . "$compfile"
+        fi
+    elif [ -n "$ZSH_VERSION" ]; then
+        local compfile="$1.zsh-completion"
+        shift
+        if test -f $compfile; then
+            . "$compfile"
+            for def in "$@"
+            do
+                compdef "_$def" "$def"
+            done
+        fi
+    fi
+}
+
+
 if [ "$platform" = "darwin" ]; then
+    source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker docker dockerd
+    source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker-compose docker-compose
+    source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker-machine docker-machine
+
     alias ostat="stat -f '%Mp%Lp %N'"
     if _has_executable gnu-ls; then
         alias ls='gnu-ls -hFA --color=auto'
