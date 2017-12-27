@@ -68,9 +68,13 @@ case $- in
         . "$ETC_HOME/bash/shell-options.sh"
         . "$ETC_HOME/bash/bash_completion.sh"
 
-        if test -f /usr/local/etc/bash_completion.d/git-completion.bash; then
-            . /usr/local/etc/bash_completion.d/git-completion.bash
-        else
+        if test -f /usr/local/etc/bash_completion.d; then
+            for bcfile in /usr/local/etc/bash_completion.d/* ; do
+                . "$bcfile"
+            done
+        fi
+
+        if ! test -f /usr/local/etc/bash_completion.d/git-completion.bash; then
             . "$ETC_HOME/bash/git-completion.bash"
         fi
 
