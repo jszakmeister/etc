@@ -149,12 +149,6 @@ export LESS=eFRX
 
 export GDKUSEXFT=1
 
-# For use by some of my aliases
-export JAVA_LOCALLIB=$HOME/.local/lib/java:$HOME/local/lib/java
-
-# Setup a default classpath so that I don't have to type it all the time
-export CLASSPATH=$JAVA_LOCALLIB:/usr/lib/java/lib
-
 # Point X at the truetype fonts... Mac's OS X seems to really want this,
 # but it doesn't hurt for Linux either, IIRC
 export TTFPATH=/usr/X11/lib/X11/fonts/truetype
