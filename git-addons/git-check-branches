@@ -1,6 +1,6 @@
 #!/bin/bash
 SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
-    die "Not a git repository."
+    die "ERROR: Not a git repository."
 
 if test -t 1 && type -P tput 2>&1 > /dev/null; then
     color_bold_yellow=$(tput bold;tput setaf 3)
