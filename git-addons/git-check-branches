@@ -1,0 +1,31 @@
+#!/bin/bash
+SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
+    die "Not a git repository."
+
+if test -t 1 && type -P tput 2>&1 > /dev/null; then
+    color_bold_yellow=$(tput bold;tput setaf 3)
+    color_bold_blue=$(tput bold;tput setaf 4)
+    color_reset=$(tput sgr0)
+else
+    color_bold_yellow=
+    color_bold_blue=
+    color_reset=
+fi
+
+say()
+{
+    echo "$color_bold_yellow$(printf "%25s:" "$1") $color_bold_blue$2 $(printf "\t") $color_reset$3"
+    return 0
+}
+
+
+for branch in $(git for-each-ref --format='%(refname)' refs/remotes/origin/ | grep -v HEAD | sort)
+do
+    short=${branch#refs/remotes/}
+    log=$(git log -1 --pretty="%s" "$branch")
+    if [ ${#log} -gt 55 ]
+    then
+        log="${log:0:55}..."
+    fi
+    say "$short" "$(git log -1 --pretty="format:%ci " "$branch")" "$log"
+done
