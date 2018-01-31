@@ -2,6 +2,13 @@
 SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
     die "Not a git repository."
 
+DRY_RUN=
+
+if [ "$1" = "-n" ]
+then
+    DRY_RUN=echo
+fi
+
 if [ "$(git symbolic-ref --short HEAD)" != "master" ]
 then
     echo 1>&2 "ERROR: Not on master."
@@ -10,6 +17,6 @@ else
         egrep -v '^(\* |[ \t]*)[^/]*/([0-9]+\.[0-9]+\.x|master|develop|development|HEAD( -> .*)|integrate)$' |
         while read -r line
     do
-        echo "$line" | sed -e 's|/| :|' | xargs -n 2 git push
+        echo "$line" | sed -e 's|/| :|' | xargs -n 2 ${DRY_RUN} git push
     done
 fi
