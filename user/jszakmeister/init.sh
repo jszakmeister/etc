@@ -40,6 +40,13 @@ if [ "$platform" = "darwin" ]; then
     then
         export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
     fi
+
+    function clear-dns-cache()
+    {
+        sudo killall -HUP mDNSResponder
+        sudo killall mDNSResponderHelper
+        sudo dscacheutil -flushcache
+    }
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
