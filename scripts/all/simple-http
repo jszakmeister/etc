@@ -16,8 +16,8 @@ class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 
 HandlerClass = MyHTTPRequestHandler
-ServerClass  = BaseHTTPServer.HTTPServer
-Protocol     = "HTTP/1.0"
+ServerClass = BaseHTTPServer.HTTPServer
+Protocol = "HTTP/1.1"
 
 if sys.argv[1:]:
     listenAddr = sys.argv[1]
