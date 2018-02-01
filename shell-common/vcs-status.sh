@@ -21,6 +21,51 @@ function _git_has_diverged()
     return 1
 }
 
+_git_has_matching_push() {
+    # push.default is setup for 'simple', 'current', or 'matching'.
+    case "$(git config --get push.default || echo "matching")" in
+        current | simple | matching)
+            return 0
+    esac
+
+    return 1
+}
+
+
+_git_determine_upstream_branch() {
+    local ref="${1#refs/heads/}"
+    local upstream="$(git for-each-ref --format='%(upstream:short)' "refs/heads/$ref")"
+    local publish_branch
+
+    if [[ -n "$upstream" ]]; then
+        echo "$upstream"
+        return 0
+    fi
+
+    if ! _git_has_matching_push; then
+        return 1
+    fi
+
+    # Use the push location as the upstream.
+    local remote=$(git config --get branch.${ref}.pushremote ||
+        git config --get remote.pushdefault ||
+        git config --get branch.${ref}.remote)
+    if [ -z "$remote" -a -n "$(git config --get remote.origin.url 2> /dev/null)" ]; then
+        remote="origin"
+    fi
+    if [[ -n "$remote" ]]; then
+        git rev-parse "$remote/$ref" > /dev/null 2>&1 &&
+            publish_branch="$remote/$ref"
+    fi
+
+    if [[ -n "$publish_branch" ]]; then
+        echo "$publish_branch"
+        return 0
+    fi
+
+    return 1
+}
+
 # This is duplicated in git-missing.  Make sure to update both if you make
 # changes.
 function _git_infer_publish_branch()
@@ -32,33 +77,7 @@ function _git_infer_publish_branch()
         return
     fi
 
-    ref="${ref#refs/heads/}"
-
-    case $(git config --get push.default || echo "matching") in
-        current | simple | matching)
-            remote=$(git config --get branch.${ref}.pushremote ||
-                git config --get remote.pushdefault ||
-                git config --get branch.${ref}.remote)
-            if [ -z "$remote" -a -n "$(git config --get remote.origin.url 2> /dev/null)" ]; then
-                remote="origin"
-            fi
-            if [[ -n "$remote" ]]; then
-                git rev-parse "$remote/$ref" > /dev/null 2>&1 &&
-                    publish_branch="$remote/$ref"
-            fi
-            ;;
-        upstream)
-            publish_branch=$(git rev-parse --symbolic-full-name @{upstream} 2> /dev/null)
-            if [ $? -eq 0 -a "$publish_branch" != "@{upstream}" ]; then
-                publish_branch=${publish_branch#refs/remotes/}
-            else
-                publish_branch=""
-            fi
-            ;;
-        *)
-            publish_branch=""
-            ;;
-    esac
+    publish_branch="$(_git_determine_upstream_branch "$ref")"
 
     echo "$publish_branch"
 }
