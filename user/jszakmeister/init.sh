@@ -182,6 +182,14 @@ then
     alias curl-json="curl -H 'Accept: application/json'"
 fi
 
+if _has_executable dig
+then
+    function get-soa()
+    {
+        dig +short NS "$*"
+    }
+fi
+
 function delete-unused()
 {
     for filename in "$@"
