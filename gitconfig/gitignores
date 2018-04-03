@@ -114,3 +114,6 @@ tramp
 # IntelliJ
 .idea
 *.iml
+
+# VSCode
+.vscode/
