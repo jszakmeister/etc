@@ -279,3 +279,11 @@ then
     unset rest
     unset dir
 fi
+
+if _has_executable docker
+then
+    function docker-ip()
+    {
+        docker container inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
+    }
+fi
