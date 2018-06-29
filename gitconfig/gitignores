@@ -104,8 +104,9 @@ tramp
 *.a
 
 # Python
-*.pyc
+*.py[cod]
 *.egg-info
+__pycache__
 
 # Chef
 .chef/
