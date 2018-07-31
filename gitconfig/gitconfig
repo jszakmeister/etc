@@ -161,10 +161,9 @@
 	chainreplyto = false
 
 [tig]
-	show-date = relative
-	show-rev-graph = yes
-	show-refs = yes
-	line-graphics = ascii
+	line-graphics = utf-8
+	main-view-date = relative
+	main-view-commit-title = graph:v2,refs:true
 
 [transfer]
 	fsckObjects = true
