@@ -30,7 +30,7 @@ function _make_dir_complete()
         return 1
     fi
     if [ ! -d $3 ]; then
-        echo "Error: \"$2\" doesn't point to a directory" 1>&2
+        echo "Error: \"$3\" doesn't point to a directory" 1>&2
         return 1
     fi
 
