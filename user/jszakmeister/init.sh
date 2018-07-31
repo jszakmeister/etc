@@ -66,6 +66,7 @@ elif [ "$platform" = "linux" ]; then
 fi
 
 alias df="df -hi"
+alias lsvirtualenv="lsvirtualenv -b"
 
 _add_dir_shortcut e ~/.etc true
 _add_dir_shortcut e ~/projects/etc true
