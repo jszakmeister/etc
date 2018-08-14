@@ -1,0 +1,6 @@
+[alias]
+	# Quick date and commit number.
+	dc = log -1 '--date=format:%Y-%m-%d' '--pretty=format:%cd (%h)'
+
+	# Fetch a pull request.
+	fpr = fetch-pull-request

@@ -86,6 +86,10 @@ test ! -e "$HOME/.gitconfig" &&
     echo 'Run the following to set the git user email:
     git config --global user.email "user@example.com"'
 
+echo "Checking .gituser..."
+test \( ! -e "$HOME/.gituser" \) -a -e "$ETC_HOME/user/$ETC_USER/gitconfig" &&
+    _installLink "$HOME/.gituser" "$ETC_HOME/user/$ETC_USER/gitconfig"
+
 echo "Checking svnwrap config..."
 test ! -e "$CONFIG_HOME/svnwrap/config.ini" &&
     mkdir -p "$CONFIG_HOME/svnwrap" &&
