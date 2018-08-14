@@ -34,12 +34,20 @@ case "$(basename $1)" in
         ${PYGMENTIZE} "$1" 2>/dev/null
         ;;
     *)
-        grep -E "#\!/bin/(bash|sh|zsh)" "$1" > /dev/null
-        if [ "$?" -eq "0" ]; then
-            ${PYGMENTIZE} -l sh "$1" 2>/dev/null
-        else
-            exit 1
-        fi
+        shebang=$(head -1 "$1")
+        shebang=${shebang/#*\/env /}
+        shebang=${shebang/#*\//}
+        case "$shebang" in
+            bash|zsh|sh)
+                ${PYGMENTIZE} -l sh "$1" 2>/dev/null
+                ;;
+            python3|python2|python)
+                ${PYGMENTIZE} -l python "$1" 2>/dev/null
+                ;;
+            *)
+                exit 1
+                ;;
+        esac
 esac
 
 exit 0
