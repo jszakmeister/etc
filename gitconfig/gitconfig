@@ -67,23 +67,8 @@
 	# diffstat output, without the pager
 	diffstat = !git --no-pager diff --stat -r
 
-	# Prune all stale remote branches from the local repository
-	prune-all = !git remote | xargs -n 1 git remote prune
-
 	# Provide ack-like output for git grep
 	ack = grep --break --heading -n
-
-	# Taken from man git-config... shows all new commits introduced
-	# since the last pull
-	new = !gitk --all --not ORIG_HEAD
-
-	# Handy alias to show all relevant tips.  Using this like:
-	#     git tips origin/pu ^origin/next | git oneline
-	#
-	# would show all branches in pu that are not in next.
-	# Thanks to Jon Seymour for posting this on the git list.
-	tips = "!_() { t=$(git rev-list --no-merges --max-count=1 \"$@\"); if test -n \"$t\"; then echo $t; _ \"$@\" ^$t; fi; }; _"
-	oneline = !xargs -L1 git log --decorate --max-count=1 --oneline
 
 	# Lists all the defined aliases
 	# Taken from https://git.wiki.kernel.org/index.php/Aliases#alias
