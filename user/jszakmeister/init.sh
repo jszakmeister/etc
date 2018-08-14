@@ -67,6 +67,7 @@ fi
 
 alias df="df -hi"
 alias lsvirtualenv="lsvirtualenv -b"
+alias helptags="vim '+Helptags|q'"
 
 _add_dir_shortcut e ~/.etc true
 _add_dir_shortcut e ~/projects/etc true
