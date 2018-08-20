@@ -18,6 +18,9 @@ bashcompinit
 if [ -f /usr/local/etc/bash_completion.d/git-completion.bash ]; then
     zstyle ':completion:*:*:git:*' script \
         /usr/local/etc/bash_completion.d/git-completion.bash
+elif [ -f /etc/bash_completion.d/git ]; then
+    zstyle ':completion:*:*:git:*' script \
+        /etc/bash_completion.d/git
 else
     zstyle ':completion:*:*:git:*' script "$ETC_HOME/bash/git-completion.bash"
 fi

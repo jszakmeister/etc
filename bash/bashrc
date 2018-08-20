@@ -74,7 +74,7 @@ case $- in
             done
         fi
 
-        if ! test -f /usr/local/etc/bash_completion.d/git-completion.bash; then
+        if ! test -f /usr/local/etc/bash_completion.d/git-completion.bash -o -f /etc/bash_completion.d/git; then
             . "$ETC_HOME/bash/git-completion.bash"
         fi
 
