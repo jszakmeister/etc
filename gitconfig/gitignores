@@ -118,3 +118,6 @@ __pycache__
 
 # VSCode
 .vscode/
+
+# Node.js/NPM
+package-lock.json
