@@ -29,6 +29,7 @@ if [ "$platform" = "darwin" ]; then
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker-compose docker-compose
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker-machine docker-machine
 
+    alias df="df -hi"
     alias ostat="stat -f '%Mp%Lp %N'"
     if _has_executable gnu-ls; then
         alias ls='gnu-ls -hFA --color=auto'
@@ -51,6 +52,7 @@ elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
     alias ll='ls -l --time-style=long-iso'
+    alias df='df -h --output=source,size,used,avail,pcent,iused,iavail,ipcent,target'
 
     function disassemble_func()
     {
@@ -65,7 +67,6 @@ elif [ "$platform" = "linux" ]; then
     }
 fi
 
-alias df="df -hi"
 alias lsvirtualenv="lsvirtualenv -b"
 alias helptags="vim '+Helptags|q'"
 
