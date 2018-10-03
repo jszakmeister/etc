@@ -1,10 +1,11 @@
 #!/bin/sh
-# Copyright (c) 2012-2013, John Szakmeister <john@szakmeister.net>
+# Copyright (c) 2012-2018, John Szakmeister <john@szakmeister.net>
 #
 # Output similar to 'bzr missing'.  It shows which revisions you have that the
 # other branch doesn't, as well as revision the other branch has that you don't.
 # Usage:
 #     git missing => compares to upstream
+#     git missing --dev => compares to the main development branch
 #     git missing <target> => compares HEAD to <target>
 #     git missing <source> <target> => compares <source> to <target>
 
@@ -59,17 +60,43 @@ _git_infer_publish_branch()
 }
 
 
+find_development_branch()
+{
+    BRANCHES="development develop dev master"
+
+    for branch in $BRANCHES
+    do
+        git rev-parse --verify "$branch" -q >/dev/null 2>&1 &&
+            echo $branch &&
+            return 0
+    done
+
+    echo "ERROR: main development branch not found." 1>&2
+    return 1
+}
+
+
 cmd_missing()
 {
     local firstbranch="$1"
     local secondbranch="$2"
 
     if test -z "$firstbranch"; then
-        # Compare against the publish branch...
-        publish_branch="$(_git_infer_publish_branch)"
-        test -z "$publish_branch" &&
-            die "Can't infer branch to compare to. At least one branch required"
-        firstbranch="$publish_branch"
+        if test -n "$FIND_DEV"; then
+            firstbranch="$(find_development_branch)"
+
+            if test -z "$firstbranch"; then
+                die "Can't determine main development branch."
+            fi
+        else
+            # Compare against the publish branch...
+            publish_branch="$(_git_infer_publish_branch)"
+            if test -z "$publish_branch"; then
+                die "Can't infer branch to compare to. At least one branch required"
+            else
+                firstbranch="$publish_branch"
+            fi
+        fi
     fi
 
     git rev-parse "$firstbranch" -- > /dev/null 2>&1 ||
@@ -113,5 +140,12 @@ cmd_missing()
         echo
     fi
 }
+
+FIND_DEV=
+
+if [ "$1" == "--dev" ]; then
+    FIND_DEV=t
+    shift
+fi
 
 cmd_missing "$@" | git_pager
