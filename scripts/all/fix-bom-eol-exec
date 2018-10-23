@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+import argparse
+import os
+import re
+import stat
+import sys
+
+
+bom_re = re.compile(rb'^\xEF\xBB\xBF')
+eol_re = re.compile(rb'\r?\n')
+exe_re = re.compile(rb'^(\xEF\xBB\xBF)?#!')
+
+
+ignore_dirs = [
+    r'.*\.egg-info',
+    r'\..*',
+    r'build',
+    r'dist',
+    r'node_modules',
+]
+
+extensions = [
+    'C',
+    'c',
+    'cc',
+    'clj',
+    'cpp',
+    'css',
+    'editorconfig',
+    'erb',
+    'gitattributes',
+    'gitignore',
+    'h',
+    'hpp',
+    'html',
+    'ini',
+    'java',
+    'js',
+    'json',
+    'md',
+    'pl',
+    'py',
+    'rb',
+    'rest',
+    'rst',
+    'sh',
+    'ts',
+    'txt',
+    'yml',
+]
+
+files_re = re.compile(r'.*\.(' + '|'.join(extensions) + r')$')
+ignore_re = re.compile(r'^(' + '|'.join(ignore_dirs) + r')$')
+
+
+def fix_eol_bom_exec(path, eol=True, bom=True, exe=True):
+    if not any([eol, bom, exe]):
+        return
+
+    has_shebang = False
+    with open(path, 'r+b') as f:
+        buf = f.read()
+
+        has_shebang = (exe_re.match(buf) and True) or False
+
+        if bom:
+            buf = bom_re.sub(rb'', buf)
+
+        if eol:
+            buf = eol_re.sub(rb'\n', buf)
+
+        f.seek(0)
+        f.write(buf)
+        f.truncate()
+
+    if exe:
+        mode = os.stat(path).st_mode
+        if has_shebang:
+            new_mode = mode | (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        else:
+            new_mode = mode & ~(stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        if new_mode != mode:
+            os.chmod(path, new_mode)
+
+
+def filter_dirs(dirs):
+    remove_dirs = []
+    for i, d in enumerate(dirs):
+        if ignore_re.match(d):
+            remove_dirs.append(i)
+
+    remove_dirs.reverse()
+    for i in remove_dirs:
+        del dirs[i]
+
+
+def collect_files(path):
+    for root, dirs, files in os.walk(path):
+        filter_dirs(dirs)
+
+        for filename in files:
+            if files_re.match(filename):
+                yield os.path.join(root, filename)
+
+    return files
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("files", nargs="+",
+                        help="The files to examine and fix.")
+
+    args = parser.parse_args()
+
+    for path in args.files:
+        if os.path.isdir(path):
+            for path in collect_files(path):
+                print("Fixing %s..." % (path,))
+                fix_eol_bom_exec(path)
+        else:
+            print("Fixing %s..." % (path,))
+            fix_eol_bom_exec(path)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception as e:
+        print("ERROR: %s" % (e,), file=sys.stderr)
+        raise
+        sys.exit(1)
+    except KeyboardInterrupt:
+        pass
