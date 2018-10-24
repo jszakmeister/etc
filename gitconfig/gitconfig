@@ -32,6 +32,7 @@
 
 	lm = log --decorate master..
 	mm = missing master
+	md = missing --dev
 
 	# Fast-forward pull
 	ff = !sh -c 'git merge --ff --ff-only ${1:-@\\{u\\}}' -
