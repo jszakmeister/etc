@@ -69,6 +69,7 @@ fi
 
 alias lsvirtualenv="lsvirtualenv -b"
 alias helptags="vim '+Helptags|q'"
+alias p8="ping 8.8.8.8"
 
 _add_dir_shortcut e ~/.etc true
 _add_dir_shortcut e ~/projects/etc true
