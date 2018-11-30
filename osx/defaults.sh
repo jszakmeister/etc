@@ -66,8 +66,11 @@ plist_buddy()
     fi
 }
 
-# Just suspend to RAM, rather than writing the image to disk.
+# Just suspend to RAM, rather than writing the image to disk.  Default is 3.
 # test -n "$isLaptop" -a -z "$userOnly" && sudo pmset -a hibernatemode 0
+
+# Hibernate after 20 minutes in standby.  Default is 10800.
+# test -n "$isLaptop" -a -z "$userOnly" && sudo pmset -a standbydelay 1200
 
 ###############################################################################
 # General UI/UX                                                               #
