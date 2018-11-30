@@ -9,6 +9,7 @@ import sys
 bom_re = re.compile(rb'^\xEF\xBB\xBF')
 eol_re = re.compile(rb'\r?\n')
 exe_re = re.compile(rb'^(\xEF\xBB\xBF)?#!')
+tab_re = re.compile(rb'^( *)(\t+)( *)', re.MULTILINE)
 
 
 ignore_dirs = [
@@ -49,13 +50,60 @@ extensions = [
     'yml',
 ]
 
+convert_tab_extensions = set([
+    'C',
+    'c',
+    'cc',
+    'clj',
+    'cpp',
+    'erb',
+    'h',
+    'hpp',
+    'java',
+    'js',
+    'json',
+    'md',
+    'pl',
+    'py',
+    'rb',
+    'rest',
+    'rst',
+    'sh',
+    'ts',
+    'txt',
+    'yml',
+])
+
+
 files_re = re.compile(r'.*\.(' + '|'.join(extensions) + r')$')
 ignore_re = re.compile(r'^(' + '|'.join(ignore_dirs) + r')$')
 
+def get_extension(path):
+    ext = os.path.splitext(path)[1]
+    if ext.startswith('.'):
+        ext = ext[1:]
 
-def fix_eol_bom_exec(path, eol=True, bom=True, exe=True):
-    if not any([eol, bom, exe]):
+    return ext
+
+
+def replace_tabs(m, tab_size=8):
+    if tab_size == 8:
+        tab_repl = b'        '
+    elif tab_size == 4:
+        tab_repl = b'    '
+    elif tab_size == 2:
+        tab_repl = b'  '
+    else:
+        tab_repl = tab_size * b' '
+
+    return m.group(1) + len(m.group(2)) * tab_repl + m.group(3)
+
+
+def fix_eol_bom_exec(path, eol=True, bom=True, exe=True, tabs=True):
+    if not any([eol, bom, exe, tabs]):
         return
+
+    ext = get_extension(path)
 
     has_shebang = False
     with open(path, 'r+b') as f:
@@ -68,6 +116,9 @@ def fix_eol_bom_exec(path, eol=True, bom=True, exe=True):
 
         if eol:
             buf = eol_re.sub(rb'\n', buf)
+
+        if tabs and (ext in convert_tab_extensions):
+            buf = tab_re.sub(lambda x: replace_tabs(x, 4), buf)
 
         f.seek(0)
         f.write(buf)
