@@ -177,7 +177,7 @@ main() {
                 git merge ${verbose:+-q} --ff --ff-only -q $RB
             else
                 say_verbose pass " branch $LB was $NBEHIND commit(s) behind $RB. resetting local branch to remote"
-                git branch ${verbose:+-q} -l -f $LB -t $RB >/dev/null
+                git branch ${verbose:+-q} --create-reflog -f $LB -t $RB >/dev/null
             fi
         fi
     done
