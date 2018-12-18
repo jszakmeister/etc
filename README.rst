@@ -38,6 +38,13 @@ useful place).  However, there is a tad more work you need to do.  Those steps
 will be explained below.
 
 
+Quick Start
+===========
+
+To opt into everything, the easiest thing to do is run the ``setup.sh`` file.
+It will create the necessary files and symlinks to all the appropriate content.
+
+
 Setting up Bash
 ===============
 
@@ -214,3 +221,47 @@ Python
 Only on the Mac, I set up the PYTHONSTARTUP variable to point at
 ``$ETC_HOME/python/startup.py``.  This simply sets up readline, so you get a
 decent interpreter command line interface.
+
+
+Nifty Features
+==============
+
+I'm highly productive, but I'm also lazy.  I don't like to type more than I need
+to, so I've set up shortcuts for many things.
+
+Some of my favorite are:
+
+* ``cdt`` - Stands for "change directory to top."  This command will look for
+  known directories, like .git or .svn, or for a file name ``.cdt-stop``
+  starting from the current directory and working its way up the tree.  If it
+  finds the required directory or file, it'll change to that folder.  This is an
+  excellent way to get to the top of git tree or a project folder.
+
+* ``cd<x>`` - where ``<x>`` is a character set of your choosing.  I have many,
+  such as ``cdp`` to change to ``~/projects``.  There are also ``pd<x>``
+  versions to push the current directory onto the stack and change to the
+  designated folder.  You can use ``_add_dir_shortcut`` to create these aliases::
+
+      _add_dir_shortcut p ~/projects true
+
+  Here the ``p`` is the character that should come after ``cd`` and ``pd``.  The
+  ``~/projects`` argument is the folder to change into.  And the ``true`` is
+  really for zsh users... it'll create a directory alias, ``~p`` in this case,
+  that you can use to reference that folder on the command line.
+
+* ``_has_executable`` is a safe way to detect whether an executable is on the
+  path.  There's not a good POSIX portable way of doing this (each shell has
+  it's own way), so ``_has_executable`` was developed to provide this since I
+  bounce between both zsh and bash environments.
+
+* ``md`` - Makes a directory and then changes into it.
+
+* ``ssh-add`` - Automatically starts an SSH agent, if one is not running.  Then
+  adds the requested key.
+
+* Command line completion for some included tools, such as git-ffwd.
+
+* Auto-sourcing of virtualenvwrapper.sh, if found.
+
+* And many, many, more features.  This is the accumulation of over 20 years
+  worth of configuration.
