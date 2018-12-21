@@ -42,7 +42,7 @@ function _make_dir_complete()
     FUNC="$aliasname () { $2 \"$dirname/\$@\" }"
 
     eval $FUNC
-    compctl -/ -W "$realpath" $aliasname
+    compdef "_path_files -/ -W \"$realpath\"" "$aliasname"
 }
 
 function _find_executable()
