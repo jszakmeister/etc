@@ -82,6 +82,54 @@ function _git_infer_publish_branch()
     echo "$publish_branch"
 }
 
+
+function _git_additional()
+{
+    local g=$(git rev-parse --git-dir 2>/dev/null)
+    local r;
+
+    if [ -d "$g/rebase-merge" ]
+    then
+        if [ -f "$g/rebase-merge/interactive" ]
+        then
+            r="rebase-i"
+        else
+            r="rebase-m"
+        fi
+    else
+        if [ -d "$g/rebase-apply" ]
+        then
+            if [ -f "$g/rebase-apply/rebasing" ]
+            then
+                r="rebase"
+            elif [ -f "$g/rebase-apply/applying" ]
+            then
+                r="AM"
+            else
+                r="rebase-am"
+            fi
+        elif [ -f "$g/MERGE_HEAD" ]
+        then
+            r="merging"
+        elif [ -f "$g/CHERRY_PICK_HEAD" ]
+        then
+            r="cherry-picking"
+        elif [ -f "$g/REVERT_HEAD" ]
+        then
+            r="reverting"
+        elif [ -f "$g/BISECT_LOG" ]
+        then
+            r="bisecting"
+        fi
+    fi
+
+    echo "$r"
+}
+
+
+# Also think about adding counts for the number of stashed changes.
+# This could be useful: https://github.com/magicmonty/bash-git-prompt/blob/master/gitstatus.sh
+
 function _vcs_status()
 {
     function git_status()
@@ -195,9 +243,14 @@ function _vcs_status()
             divergent="${differ:+ $differ}"
         fi
 
+        local additional=$(_git_additional)
+        if [ -n "$additional" ]
+        then
+            additional=" [$additional]"
+        fi
 
         ref="${fg_no_bold_yellow}${ref#refs/heads/}${ansi_reset}"
-        echo "on ${ref}${dirty}${upstream}${divergent}"
+        echo "on ${ref}${dirty}${upstream}${divergent}${additional}"
         return 0
     }
 
