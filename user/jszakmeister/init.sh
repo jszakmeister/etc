@@ -3,6 +3,115 @@ export CCACHE_CPP2=1
 export HOMEBREW_NO_EMOJI=1
 
 
+function _etc_iterate_path()
+{
+    (
+        IFS=:
+        set -f
+        for dir in $PATH
+        do
+            dir=${dir:-.}
+            [ -x "${dir%/}/$1" ] && printf "%s\n" "$dir"
+        done
+    )
+}
+
+
+function _etc_is_path_present()
+{
+    local path_to_find="$1"
+    local found=
+    _etc_iterate_path | while read dir
+    do
+        if [ "$path_to_find" = "$dir" ]
+        then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+
+function _etc_path_insert_before_after()
+{
+    local path_to_add="$1"
+    local dir_to_match="$2"
+    local before_after="$3"
+    local new_path=""
+
+    if [ -z "$path_to_add" -o -z "$dir_to_match" ]
+    then
+        echo "crap"
+        return 1
+    fi
+
+    if _etc_is_path_present "$path_to_add"
+    then
+        echo "already there"
+        return 0
+    fi
+
+    if ! _etc_is_path_present "$dir_to_match"
+    then
+        echo "uhhh"
+        return 1
+    fi
+
+    # Insert the new path.
+    _etc_iterate_path | while read dir
+    do
+        if [ -z "$before_after" -a "$dir_to_match" = "$dir" ]
+        then
+            new_path=$(append_path "$new_path" "$path_to_add")
+        fi
+
+        new_path=$(append_path "$new_path" "$dir")
+
+        if [ -n "$before_after" -a "$dir_to_match" = "$dir" ]
+        then
+            new_path=$(append_path "$new_path" "$path_to_add")
+        fi
+    done
+
+    PATH="$new_path"
+}
+
+
+function _etc_path_insert_before()
+{
+    _etc_path_insert_before_after "$1" "$2" ""
+}
+
+
+function _etc_path_insert_after()
+{
+    _etc_path_insert_before_after "$1" "$2" t
+}
+
+
+function _etc_path_remove()
+{
+    local path_to_remove="$1"
+    local new_path=
+
+    if [ -z "$path_to_remove" ]
+    then
+        return 1
+    fi
+
+    _etc_iterate_path | while read dir
+    do
+        if [ "$path_to_remove" != "$dir" ]
+        then
+            new_path=$(append_path "$new_path" "$dir")
+        fi
+    done
+
+    PATH="$new_path"
+}
+
+
 function source_docker_completion()
 {
     if [ -n "$BASH_VERSION" ]; then
@@ -65,6 +174,14 @@ elif [ "$platform" = "linux" ]; then
                 --stop-address="0x$end" "$2"
         done
     }
+fi
+
+if test -d ~/projects/jszakmeister/local-bin
+then
+    if ! _etc_path_insert_after ~/projects/jszakmeister/local-bin ~/.local/bin
+    then
+        PATH="$HOME/projects/jszakmeister/local-bin:$PATH"
+    fi
 fi
 
 alias lsvirtualenv="lsvirtualenv -b"
