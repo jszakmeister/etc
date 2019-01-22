@@ -110,8 +110,8 @@ cmd_missing()
             die "Invalid branch or rev: $secondbranch"
     fi
 
-    local extra=$(git rev-list --count --cherry-pick --right-only --no-merges "$secondbranch...$firstbranch")
-    local missing=$(git rev-list --count --cherry-pick --left-only --no-merges "$secondbranch...$firstbranch")
+    local extra=$(git rev-list --count --cherry-pick --right-only --no-merges "$secondbranch...$firstbranch" --)
+    local missing=$(git rev-list --count --cherry-pick --left-only --no-merges "$secondbranch...$firstbranch" --)
     local output=0
 
     if [ "$extra" != "0" ]; then
@@ -120,7 +120,7 @@ cmd_missing()
         line="You have $extra extra revisions"
         echo "$line"
         echo "$line" | sed -e 's/./-/g'
-        git log $log_options --cherry-pick --right-only --no-merges "$secondbranch...$firstbranch"
+        git log $log_options --cherry-pick --right-only --no-merges "$secondbranch...$firstbranch" --
     fi
 
     if [ "$missing" != "0" ]; then
@@ -133,7 +133,7 @@ cmd_missing()
         line="You have $missing missing revisions"
         echo "$line"
         echo "$line" | sed -e 's/./-/g'
-        git log $log_options --cherry-pick --left-only --no-merges "$secondbranch...$firstbranch"
+        git log $log_options --cherry-pick --left-only --no-merges "$secondbranch...$firstbranch" --
     fi
 
     if [ $output != "0" ]; then
