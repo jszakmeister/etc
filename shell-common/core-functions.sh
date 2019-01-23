@@ -1,13 +1,12 @@
-function _has_executable()
+_has_executable()
 {
     _find_executable "$@" > /dev/null 2>&1
 }
 
-function _has_devtool()
+_has_devtool()
 {
     if [ "$platform" = 'darwin' ]; then
-        xcode-select -p > /dev/null 2>&1
-        if [[ "$?" != "0" ]]; then
+        if ! xcode-select -p > /dev/null 2>&1 ; then
             return 1
         fi
     fi
@@ -15,7 +14,7 @@ function _has_devtool()
     _find_executable "$@" > /dev/null 2>&1
 }
 
-function _run_helper()
+_run_helper()
 {
     # Disables command not found helpers when probing for features, such as
     # the PackageKit command not found helper installed in Fedora environments
@@ -26,21 +25,21 @@ function _run_helper()
     })
 }
 
-function prepend_path()
+prepend_path()
 {
-    if [[ "$1" == '' ]]; then
-        echo $2
+    if [ "$1" = '' ]; then
+        echo "$2"
     else
-        echo $2:$1
+        echo "$2:$1"
     fi
 }
 
-function append_path()
+append_path()
 {
-    if [[ "$1" == '' ]]; then
-        echo $2
+    if [ "$1" = '' ]; then
+        echo "$2"
     else
-        echo $1:$2
+        echo "$1:$2"
     fi
 }
 
@@ -53,7 +52,7 @@ function append_path()
 # The last argument, if present an non-empty, says to create a zsh directory
 # alias, if you're running zsh.  In this example, you could then use ~p as a
 # shortcut to ~/projects.
-function _add_dir_shortcut()
+_add_dir_shortcut()
 {
     local shortcut="$1"
     local shortcut_path="$2"
@@ -61,5 +60,5 @@ function _add_dir_shortcut()
         _make_dir_complete "cd$shortcut" cd "$shortcut_path" &&
         _make_dir_complete "pd$shortcut" pushd "$shortcut_path" &&
         [ -n "$3" ] && [ -n "$ZSH_VERSION" ] &&
-        hash -d $shortcut="$shortcut_path"
+        hash -d "$shortcut=$shortcut_path"
 }
