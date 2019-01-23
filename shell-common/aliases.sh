@@ -32,10 +32,6 @@ if [ "$platform" = 'darwin' ]; then
 
     alias du='du -h -d1'
     alias ps='ps auxww'
-    slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
-    if [[ $slickedit_path != '' ]]; then
-        alias vs='open -a $slickedit_path'
-    fi
     if [ -d "$HOME/Applications/0xED.app" ]; then
         alias he='open -a ~/Applications/0xED.app'
     fi
