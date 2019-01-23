@@ -55,7 +55,7 @@ if [ "$platform" = 'darwin' ]; then
     alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport'
 fi
 
-if [ "$platform" = 'linux' -o "$platform" == 'mingw' ]; then
+if [ "$platform" = 'linux' ] || [ "$platform" = 'mingw' ]; then
     alias du='du -bh --max-depth=1'
     alias ps='ps -efww'
     alias ls='ls -hFA --color=auto'
@@ -70,9 +70,9 @@ if [ "$platform" = 'linux' -o "$platform" == 'mingw' ]; then
     fi
     if _has_executable xdg-open; then
         alias open="xdg-open"
-    elif [[ "$DESKTOP_SESSION" == "gnome" ]]; then
+    elif [ "$DESKTOP_SESSION" = "gnome" ]; then
         alias open="gnome-open"
-    elif [[ "$DESKTOP_SESSION" == "kde" ]]; then
+    elif [ "$DESKTOP_SESSION" = "kde" ]; then
         alias open="kde-open"
     else
         # Default to xdg open... it'll at least remind me to install
@@ -92,7 +92,7 @@ fi
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
 alias svnup='svn up $(find-project-root)'
 
-if [[ "$platform" == "mingw" ]]; then
+if [ "$platform" = "mingw" ]; then
     _grep_color=""
 else
     _grep_color="--color=auto"
@@ -101,7 +101,7 @@ fi
 # Don't descend into Subversion's admin area, or others like it.
 # Mac's bsd grep sucks... so there's no easy way to do this.
 # Also, suppress error messages.
-if [[ "$platform" == 'linux' ]]; then
+if [ "$platform" = 'linux' ]; then
     _grep_extra="$_grep_color -s --exclude-dir=.svn --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.bzr --exclude=tags"
 else
     _grep_extra="$_grep_color -s"
@@ -117,7 +117,7 @@ unset _grep_extra
 
 _has_executable colordiff &&
     {
-        function diff()
+        diff()
         {
             if test -t 1
             then
@@ -127,7 +127,7 @@ _has_executable colordiff &&
             fi
         }
 
-        function interdiff()
+        interdiff()
         {
             if test -t 1
             then
@@ -159,19 +159,19 @@ alias netcat=nc
 if _has_executable svnwrap; then
     alias svn=svnwrap
 
-    function svndiff()
+    svndiff()
     {
         svnwrap diff -x -p --color on "$@" | diff-highlight | $PAGER
     }
 else
-    function svndiff()
+    svndiff()
     {
         svn diff -x -p "$@" | colordiff | diff-highlight | $PAGER
     }
 fi
 
 # rvm-related
-if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+if [ -s "$HOME/.rvm/scripts/rvm" ]; then
     # yes, this essentially replaces the system gem... but I like to install
     # libraries for me, and not f-up my entire system.
     alias gem="rvm gem"
