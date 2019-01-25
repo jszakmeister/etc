@@ -263,5 +263,33 @@ Some of my favorite are:
 
 * Auto-sourcing of virtualenvwrapper.sh, if found.
 
+* ``update-common`` is a handy script for updating a series of repos that live
+  at ``~/.vim``, ``~/.vimuser``, ``~/.ssh``, ``~/.etc``, and several other
+  locations to help keep them up-to-date.  You can create a `~/.update-commonrc`
+  file with a list of paths to update and the ``update-common`` script will
+  update those paths too.  You can use ``~`` in the paths as the shell will
+  expand it.
+
+* ``simple-http`` is handy for when you need a quick webserver to serve up a
+  directory of files.  It currently requires Python 2.
+
+* ``gr`` - Used to open a file in an already running gvim instance (you have to
+  start the original instance with ``gr`` too).  If you create a ``.gr-name``
+  file with a name in it, it will use that name as the session to restore and
+  the window name of the instance.  This may require a special tool on some
+  systems to help bring the instance into the foreground.
+
+* ``chrome`` and ``firefox`` contain user stylesheets for making the browser
+  show monospaced fonts in places, like GitHub comments, where you might be
+  typing code or markdown.
+
+* ``ssh`` has some configuration files that give you an idea about some settings
+  to put in your own configuration to change port numbers, limit authentication,
+  and pass environment variables.
+
+* ``fonts`` contains some handy fonts that I like to have available on a system.
+  In particular, I like the Hack font.  The setup script will install these into
+  the right location for your OS (Linux or macOS).
+
 * And many, many, more features.  This is the accumulation of over 20 years
   worth of configuration.
