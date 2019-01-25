@@ -1,8 +1,9 @@
 # I use this for OSX when installing a new Python.  It makes the default site
-# area be ~/.local instead of in ~/Library, thereby letting me keep my sanity
-# when switching between Linux and Mac OS X.
+# area be ~/.local instead of in ~/Library (if ~/.local directories are
+# present), thereby letting me keep my sanity when switching between Linux and
+# Mac OS X.  This also makes sure that the user directories show up ahead of
+# the system and Homebrew directories.
 
-# Make sure ~/.local and /Library are ahead of everything else
 def adjust_paths():
     import sys
     import platform
