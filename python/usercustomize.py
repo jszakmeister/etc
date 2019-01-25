@@ -3,6 +3,13 @@
 # present), thereby letting me keep my sanity when switching between Linux and
 # Mac OS X.  This also makes sure that the user directories show up ahead of
 # the system and Homebrew directories.
+#
+# I typically symlink the file in place with something like:
+#     ln -s ~/.etc/python/usercustomize.py ~/Library/Python/X.Y/lib/python/site-packages/usercustomize.py
+#
+# where X.Y is the version of Python you want to install it for.
+#
+# Note: this is only necessary on macOS.
 
 def adjust_paths():
     import sys
