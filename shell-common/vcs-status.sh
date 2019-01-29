@@ -246,7 +246,7 @@ function _vcs_status()
         local additional=$(_git_additional)
         if [ -n "$additional" ]
         then
-            additional=" [$additional]"
+            additional=" {${fg_light_yellow}$additional${ansi_reset}}"
         fi
 
         ref="${fg_no_bold_yellow}${ref#refs/heads/}${ansi_reset}"
