@@ -157,6 +157,16 @@ if [ "$platform" = "darwin" ]; then
         sudo killall mDNSResponderHelper
         sudo dscacheutil -flushcache
     }
+
+    enable-screen-sharing()
+    {
+        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
+    }
+
+    disable-screen-sharing()
+    {
+        sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
+    }
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
