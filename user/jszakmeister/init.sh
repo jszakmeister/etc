@@ -3,7 +3,7 @@ export CCACHE_CPP2=1
 export HOMEBREW_NO_EMOJI=1
 
 
-function _etc_iterate_path()
+_etc_iterate_path()
 {
     (
         IFS=:
@@ -17,7 +17,7 @@ function _etc_iterate_path()
 }
 
 
-function _etc_is_path_present()
+_etc_is_path_present()
 {
     local path_to_find="$1"
     local found=
@@ -33,7 +33,7 @@ function _etc_is_path_present()
 }
 
 
-function _etc_path_insert_before_after()
+_etc_path_insert_before_after()
 {
     local path_to_add="$1"
     local dir_to_match="$2"
@@ -78,19 +78,19 @@ function _etc_path_insert_before_after()
 }
 
 
-function _etc_path_insert_before()
+_etc_path_insert_before()
 {
     _etc_path_insert_before_after "$1" "$2" ""
 }
 
 
-function _etc_path_insert_after()
+_etc_path_insert_after()
 {
     _etc_path_insert_before_after "$1" "$2" t
 }
 
 
-function _etc_path_remove()
+_etc_path_remove()
 {
     local path_to_remove="$1"
     local new_path=
@@ -112,7 +112,7 @@ function _etc_path_remove()
 }
 
 
-function source_docker_completion()
+source_docker_completion()
 {
     if [ -n "$BASH_VERSION" ]; then
         local compfile="$1.bash-completion"
@@ -151,7 +151,7 @@ if [ "$platform" = "darwin" ]; then
         export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
     fi
 
-    function clear-dns-cache()
+    clear-dns-cache()
     {
         sudo killall -HUP mDNSResponder
         sudo killall mDNSResponderHelper
@@ -163,7 +163,7 @@ elif [ "$platform" = "linux" ]; then
     alias ll='ls -l --time-style=long-iso'
     alias df='df -h --output=source,size,used,avail,pcent,iused,iavail,ipcent,target'
 
-    function disassemble_func()
+    disassemble_func()
     {
         i=$(nm -S --size-sort "$2" | grep "\<$1\>"  |
             awk '{print toupper($1),toupper($2)}')
@@ -228,12 +228,12 @@ if [ "$platform" = "darwin" ]; then
 fi
 
 # Use Vim as a front-end to man.
-# function man()
+# man()
 # {
 #     $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
 # }
 
-function man()
+man()
 {
     env LESS_TERMCAP_mb=$'\E[01;31m' \
     LESS_TERMCAP_md=$'\E[01;38;5;74m' \
@@ -269,7 +269,7 @@ if [ -f "/Applications/VMware Fusion.app/Contents/Library/vmrun" ]; then
     }
 fi
 
-function sudo-xauth()
+sudo-xauth()
 {
     [ -z "$SUDO_USER" ] && return
 
@@ -281,7 +281,7 @@ function sudo-xauth()
 }
 
 if _has_executable ag; then
-    function ag()
+    ag()
     {
         local _ag_path="$(_find_executable ag)"
         local _pager_options
@@ -305,13 +305,13 @@ fi
 
 if _has_executable dig
 then
-    function get-soa()
+    get-soa()
     {
         dig +short NS "$*"
     }
 fi
 
-function delete-unused()
+delete-unused()
 {
     for filename in "$@"
     do
@@ -322,14 +322,14 @@ function delete-unused()
     done
 }
 
-function clean-dirs()
+clean-dirs()
 {
     local dir="${1:-.}"
 
     find "$dir" -type d -empty -delete
 }
 
-function clean-python()
+clean-python()
 {
     local dir="${1:-.}"
 
@@ -343,7 +343,7 @@ function clean-python()
     clean-dirs "$dir"
 }
 
-function clean-vim()
+clean-vim()
 {
     find . \( -name '.*.sw?' -or -name '.sw?' \) -print0 |
     while IFS= read -r -d '' file; do
@@ -351,7 +351,7 @@ function clean-vim()
     done
 }
 
-function clean-cruft()
+clean-cruft()
 {
     clean-python
     clean-vim
@@ -371,7 +371,7 @@ aws-public-ip()
 
 if _has_executable openssl
 then
-    function dump-cert()
+    dump-cert()
     {
         if [ -z "$@" ]
         then
@@ -403,7 +403,7 @@ fi
 
 if _has_executable docker
 then
-    function docker-ip()
+    docker-ip()
     {
         docker container inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
     }
