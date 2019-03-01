@@ -131,6 +131,7 @@ function ssh-add()
 function find-domain-controllers()
 {
     local DNS_SERVER
+    local OPTIONS
 
     if [ -z "$1" ]
     then
@@ -146,7 +147,13 @@ function find-domain-controllers()
         DNS_SERVER=
     fi
 
-    dig $DNS_SERVER -t SRV _ldap._tcp.$1
+
+    if [ "$platform" = 'linux' ]
+    then
+        OPTIONS="+nocookie"
+    fi
+
+    dig $DNS_SERVER $OPTIONS -t SRV _ldap._tcp.$1
 }
 
 # Runs a command and detaches it from the terminal.  It also silences stdout and
