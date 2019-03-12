@@ -65,13 +65,18 @@ do
     esac
 done
 
-update_repo ~/.vim
-update_repo ~/.vimuser
-update_repo ~/.etc
-update_repo ~/.ssh
-update_repo ~/projects/etc
-update_repo ~/projects/jszakmeister/local-homepage
-update_repo ~/projects/local-homepage
+REPOS=(~/.vim \
+       ~/.vimuser \
+       ~/.etc \
+       ~/.ssh \
+       ~/projects/etc \
+       ~/projects/jszakmeister/local-homepage \
+       ~/projects/local-homepage)
+
+for repo in "${REPOS[@]}"
+do
+    update_repo $repo
+done
 
 if test -f ~/.update-commonrc ; then
     while read line
