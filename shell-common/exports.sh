@@ -39,7 +39,29 @@ if [ -d "$ETC_HOME/scripts" ]; then
     PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts/all")
 fi
 
-if [[ "$platform" == 'darwin' ]]; then
+if [ "$platform" = 'darwin' ]; then
+    _update_python_paths()
+    {
+        local python_bin="$1"
+        local python_version=$("$python_bin" -c "import sys; print '%d.%d' % sys.version_info[:2]" 2>/dev/null ||
+                               "$python_bin" -c "import sys; print('{}.{}'.format(*sys.version_info[:2]))" 2>/dev/null)
+        local library_path="/Library/Python/$python_version/bin"
+        local system_path="/System/Library/Frameworks/Python.framework/Versions/$python_version/bin"
+        local user_path="$("$python_bin" -m site --user-base)/bin"
+
+        if [ -d "$user_path" ]; then
+            PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$user_path")
+        fi
+
+        if [ -d "$library_path" ]; then
+            PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$library_path")
+        fi
+
+        if [ -d "$system_path" ]; then
+            PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$system_path")
+        fi
+    }
+
     # To get features of a newer unzip executable, if Homebrew is installed.
     if test -d "/usr/local/opt/unzip/bin"
     then
@@ -51,10 +73,12 @@ if [[ "$platform" == 'darwin' ]]; then
     # user's location, which should be picked up by adding ~/.local/bin to the
     # path).  So we compute it manually.  Also, we do a bit of a dance to cope
     # with Python 3 being the default python implementation.
-    python_version=$(python -c "import sys; print '%d.%d' % sys.version_info[:2]" 2>/dev/null ||
-                     python -c "import sys; print('{}.{}'.format(*sys.version_info[:2]))" 2>/dev/null)
-    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/Library/Python/$python_version/bin")
-    PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "/Library/Python/$python_version/bin:/System/Library/Frameworks/Python.framework/Versions/$python_version/bin")
+    if _has_executable python3; then
+        _update_python_paths python3
+    fi
+    if _has_executable python; then
+        _update_python_paths python
+    fi
 
     slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
     if [[ $slickedit_path != '' ]]; then
