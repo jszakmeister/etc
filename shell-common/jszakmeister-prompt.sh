@@ -70,6 +70,7 @@ function _jszakmeister_prompt() {
         if [ $(id -u) -eq 0 ]; then
             user_color="${fg_bold_red}"
         fi
+        [ -z "${USER}" ] && USER="$(id -nu)"
     else
         # If USER is empty, try USERNAME.  This happens on Windows.
         [ -z "${USER}" ] && USER="${USERNAME}"
