@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Drop this into /Library/LaunchDaemons and use:
+         sudo launchctl load /Library/LaunchDaemons/limit.maxfiles.plist
+
+     to load it.  Probably best to do this on a restart so that most everything
+     gets the value.
+-->
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>limit.maxfiles</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>launchctl</string>
+      <string>limit</string>
+      <string>maxfiles</string>
+      <string>524288</string>
+      <!-- Apparently Postfix is really unhappy with anything bigger than
+           0x7FFFFFFF, so don't exceed that value.
+      -->
+      <string>2147483647</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+  </dict>
+</plist>
