@@ -403,7 +403,7 @@ then
     GEM_HOME="$HOME/.gem"
 
     # Make sure the user-install/bin folder is on the path.
-    gem env gempath | while IFS=: read -r dir rest
+    gem env gempath 2>/dev/null | while IFS=: read -r dir rest
     do
         test -d "$dir/bin" && export "PATH=$dir/bin:$PATH"
     done
