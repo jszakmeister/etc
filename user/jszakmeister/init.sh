@@ -308,6 +308,24 @@ if _has_executable ag; then
     }
 fi
 
+if _has_executable rg; then
+    rg()
+    {
+        local _rg_path="$(_find_executable rg)"
+        local _pager_options
+
+        # Let ctrl-c pass kill less.
+        [ "$PAGER" = "less" ] && _pager_options="-K"
+
+        if test -t 1
+        then
+            "$_rg_path" --color always "$@" | $PAGER $_pager_options
+        else
+            "$_rg_path" "$@"
+        fi
+    }
+fi
+
 if _has_executable curl
 then
     alias curl-json="curl -H 'Accept: application/json'"
