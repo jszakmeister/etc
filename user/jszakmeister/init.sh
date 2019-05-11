@@ -405,7 +405,9 @@ then
     # Make sure the user-install/bin folder is on the path.
     gem env gempath 2>/dev/null | while IFS=: read -r dir rest
     do
-        test -d "$dir/bin" && export "PATH=$dir/bin:$PATH"
+        case $GEM_HOME in ${dir}*)
+            test -d "$dir/bin" && export "PATH=$dir/bin:$PATH"
+        esac
     done
     unset rest
     unset dir
