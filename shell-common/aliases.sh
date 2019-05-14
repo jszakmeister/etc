@@ -68,7 +68,9 @@ if [ "$platform" = 'linux' ] || [ "$platform" = 'mingw' ]; then
         alias pbcopy='xclip -selection clipboard'
         alias pbpaste='xclip -selection clipboard -o'
     fi
-    if _has_executable xdg-open; then
+    if _has_executable gio; then
+        alias open="gio open"
+    elif _has_executable xdg-open; then
         alias open="xdg-open"
     elif [ "$DESKTOP_SESSION" = "gnome" ]; then
         alias open="gnome-open"
