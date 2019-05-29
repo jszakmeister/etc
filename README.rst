@@ -291,5 +291,13 @@ Some of my favorite are:
   In particular, I like the Hack font.  The setup script will install these into
   the right location for your OS (Linux or macOS).
 
+* The configuration will automatically detect ``~/.etc-user`` and
+  ``~/.etc-local`` and use them to extend what is available in this
+  configuration.  This is good for user customization and for customizing things
+  on the local machine.  You can also do the latter by creating a ``~/.etcrc``.
+  ``~/.etc-user`` and ``~/.etc-local`` also support interactive vs.
+  non-interactive configuration through the use of ``interactive.sh`` and
+  ``noninteractive.sh``, respectively.
+
 * And many, many, more features.  This is the accumulation of over 20 years
   worth of configuration.

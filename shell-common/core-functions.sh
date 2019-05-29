@@ -43,6 +43,16 @@ append_path()
     fi
 }
 
+__etc_source_user_file()
+{
+    test -s "$ETC_LOCAL_DIR/$1" &&
+        . "$ETC_LOCAL_DIR/$1"
+    test -s "$ETC_USER_DIR/$1" &&
+        . "$ETC_USER_DIR/$1"
+    test -s "$ETC_HOME/user/$ETC_USER/$1" &&
+        . "$ETC_HOME/user/$ETC_USER/$1"
+}
+
 # Builds on _make_dir_complete to help make nifty shortcuts.  For instance:
 #   _add_dir_shortcut p ~/projects true
 #

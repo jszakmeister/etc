@@ -3,3 +3,5 @@
 . "$ETC_HOME/shell-common/core-functions.sh"
 . "$ETC_HOME/shell-common/exports.sh"
 . "$ETC_HOME/shell-common/functions.sh"
+
+__etc_source_user_file noninteractive.sh

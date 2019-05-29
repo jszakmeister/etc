@@ -1,4 +1,6 @@
 ETC_HOME=${ETC_HOME:-~/projects/etc}
+ETC_USER_DIR="${ETC_USER_DIR:-$HOME/.etc-user}"
+ETC_LOCAL_DIR="${ETC_LOCAL_DIR:-$HOME/.etc-local}"
 ETC_USER="${ETC_USER:-$(whoami)}"
 
 ETC_ZSHENV_SOURCED=1
@@ -51,6 +53,3 @@ function _find_executable()
 }
 
 . "$ETC_HOME/shell-common/noninteractive.sh"
-
-test -s "$ETC_HOME/user/$ETC_USER/env.sh" &&
-    . "$ETC_HOME/user/$ETC_USER/env.sh"

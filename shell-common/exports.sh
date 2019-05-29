@@ -27,6 +27,8 @@ __etc_prepend_path "$HOME/.local/bin"
 __etc_prepend_path "$HOME/local/bin"
 
 # Put user script directories on the path.
+__etc_prepend_search_paths "$ETC_LOCAL_DIR/scripts"
+__etc_prepend_search_paths "$ETC_USER_DIR/scripts"
 __etc_prepend_search_paths "$ETC_HOME/user/$ETC_USER/scripts"
 
 __etc_prepend_path "$ETC_HOME/git-addons"

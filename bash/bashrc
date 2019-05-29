@@ -3,6 +3,8 @@ if [ -f /etc/bashrc ]; then
 fi
 
 ETC_HOME="${ETC_HOME:-$HOME/projects/etc}"
+ETC_USER_DIR="${ETC_USER_DIR:-$HOME/.etc-user}"
+ETC_LOCAL_DIR="${ETC_LOCAL_DIR:-$HOME/.etc-local}"
 
 if [ -z "$ETC_USER" ]; then
     case "$(uname)" in
@@ -57,9 +59,6 @@ function _find_executable()
 
 . "$ETC_HOME/shell-common/noninteractive.sh"
 
-test -s "$ETC_HOME/user/$ETC_USER/env.sh" &&
-    . "$ETC_HOME/user/$ETC_USER/env.sh"
-
 case $- in
     *i*)
         # In an interactive shell
@@ -91,6 +90,8 @@ case $- in
 
         test -f "$ETC_HOME/user/$ETC_USER/init.sh" &&
             . "$ETC_HOME/user/$ETC_USER/init.sh"
+
+        __etc_source_user_file interactive.sh
 
         test -f "$HOME/.etcrc" && . "$HOME/.etcrc"
         ;;
