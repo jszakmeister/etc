@@ -1,43 +1,36 @@
 PATHS_TO_PREPEND=
 PATHS_TO_APPEND=
 
-test -n "$TMUX" && export TERM="screen-256color"
+__etc_prepend_path()
+{
+    test -d "$1" && PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$1")
+}
+
+__etc_append_path()
+{
+    test -d "$1" && PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$1")
+}
+
+__etc_prepend_search_paths()
+{
+    __etc_prepend_path "$1/$platform"
+    __etc_prepend_path "$1/all"
+}
 
 if [ -x /usr/libexec/path_helper ]; then
     PATH=""
     eval $(/usr/libexec/path_helper -s)
 fi
 
-test -d "$HOME/bin" &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/bin")
-
-test -d "$HOME/.local/bin" &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/.local/bin")
-
-test -d "$HOME/local/bin" &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/local/bin")
+__etc_prepend_path "$HOME/bin"
+__etc_prepend_path "$HOME/.local/bin"
+__etc_prepend_path "$HOME/local/bin"
 
 # Put user script directories on the path.
-test -d "$ETC_HOME/user/$ETC_USER/scripts/all" &&
-    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/all")
+__etc_prepend_search_paths "$ETC_HOME/user/$ETC_USER/scripts"
 
-test -d "$ETC_HOME/user/$ETC_USER/scripts/$platform" &&
-    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/user/$ETC_USER/scripts/$platform")
-
-if [ -d "$ETC_HOME/git-addons" ]; then
-    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/git-addons")
-fi
-
-if [ -d "$ETC_HOME/scripts" ]; then
-    # Add a platform-specific area too.
-    etc_scripts_platform="$ETC_HOME/scripts/$platform"
-    if [ -d "$etc_scripts_platform" ]; then
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$etc_scripts_platform")
-    fi
-    unset etc_scripts_platform
-
-    PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$ETC_HOME/scripts/all")
-fi
+__etc_prepend_path "$ETC_HOME/git-addons"
+__etc_prepend_search_paths "$ETC_HOME/scripts"
 
 if [ "$platform" = 'darwin' ]; then
     _update_python_paths()
@@ -49,24 +42,13 @@ if [ "$platform" = 'darwin' ]; then
         local system_path="/System/Library/Frameworks/Python.framework/Versions/$python_version/bin"
         local user_path="$("$python_bin" -m site --user-base)/bin"
 
-        if [ -d "$user_path" ]; then
-            PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$user_path")
-        fi
-
-        if [ -d "$library_path" ]; then
-            PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$library_path")
-        fi
-
-        if [ -d "$system_path" ]; then
-            PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$system_path")
-        fi
+        __etc_prepend_path "$user_path"
+        __etc_append_path "$library_path"
+        __etc_append_path "$system_path"
     }
 
     # To get features of a newer unzip executable, if Homebrew is installed.
-    if test -d "/usr/local/opt/unzip/bin"
-    then
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "/usr/local/opt/unzip/bin")
-    fi
+    __etc_prepend_path "/usr/local/opt/unzip/bin"
 
     # We compute the path to the standard framework area in the user's area
     # because site.USER_SITE lies in Python 2.6 and less (it points to the posix
@@ -81,69 +63,46 @@ if [ "$platform" = 'darwin' ]; then
     fi
 
     slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
-    if [[ $slickedit_path != '' ]]; then
-        if [ -f $slickedit_path/Contents/slickedit/bin/vs ]; then
-            PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$slickedit_path/Contents/slickedit/bin")
+    if [ "$slickedit_path" != '' ]; then
+        if [ -f "$slickedit_path/Contents/slickedit/bin/vs" ]; then
+            __etc_append_path "$slickedit_path/Contents/slickedit/bin"
         fi
-        if [ -f $slickedit_path/Contents/MacOS/vs ]; then
-            PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "$slickedit_path/Contents/MacOS")
+        if [ -f "$slickedit_path/Contents/MacOS/vs" ]; then
+            __etc_append_path "$slickedit_path/Contents/MacOS"
         fi
     fi
 
-    if [ -d /opt/local/bin ]; then
-        PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" /opt/local/bin)
-    fi
+    __etc_append_path /opt/local/bin
+    __etc_append_path "/usr/local/texlive/2009/bin/universal-darwin"
 
-    if [ -d /usr/local/texlive/2009/bin/universal-darwin ]; then
-        PATHS_TO_APPEND=$(append_path "$PATHS_TO_APPEND" "/usr/local/texlive/2009/bin/universal-darwin")
-    fi
-
-    if [ -d /usr/local/git/bin ]; then
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/git/bin)
-    fi
-
-    if [ -d "$HOME/Library/Haskell/bin" ]; then
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/Library/Haskell/bin")
-    fi
+    __etc_prepend_path /usr/local/git/bin
+    __etc_prepend_path "$HOME/Library/Haskell/bin"
 fi
 
-if [[ "$platform" == 'linux' ]]; then
-    if [ -d /opt/slickedit ]; then
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /opt/slickedit/bin)
-    fi
-    if [ -d $HOME/.local/slickedit ]; then
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" "$HOME/.local/slickedit/bin")
-    fi
+if [ "$platform" = 'linux' ]; then
+    __etc_prepend_path /opt/slickedit/bin
+    __etc_prepend_path "$HOME/.local/slickedit/bin"
 fi
 
 # Put ccache links on the path, if they're available.
-test -d /usr/local/opt/ccache/libexec &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/opt/ccache/libexec)
-test -d /usr/local/lib/ccache &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/lib/ccache)
-test -d /usr/lib/ccache &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/lib/ccache)
+__etc_prepend_path /usr/local/opt/ccache/libexec
+__etc_prepend_path /usr/local/lib/ccache
+__etc_prepend_path /usr/lib/ccache
 
 # It turns out there are some brain-dead apps out there that expect /usr/bin to
 # come before /usr/sbin, like mock.
-test -d /usr/local/bin &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/bin)
-test -d /usr/bin &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/bin)
-test -d /bin &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /bin)
-test -d /usr/local/sbin &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/local/sbin)
-test -d /usr/sbin &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /usr/sbin)
-test -d /sbin &&
-        PATHS_TO_PREPEND=$(append_path "$PATHS_TO_PREPEND" /sbin)
+__etc_prepend_path /usr/local/bin
+__etc_prepend_path /usr/bin
+__etc_prepend_path /bin
+__etc_prepend_path /usr/local/sbin
+__etc_prepend_path /usr/sbin
+__etc_prepend_path /sbin
 
-if [[ "$PATHS_TO_PREPEND" != '' ]]; then
+if [ "$PATHS_TO_PREPEND" != '' ]; then
     export PATH=$PATHS_TO_PREPEND:$PATH
 fi
 
-if [[ "$PATHS_TO_APPEND" != '' ]]; then
+if [ "$PATHS_TO_APPEND" != '' ]; then
     export PATH=$PATH:$PATHS_TO_APPEND
 fi
 
@@ -154,6 +113,9 @@ if _has_executable vs; then
         export VSLICKHELP_WEB_BROWSER=/usr/local/share/firefox/firefox
     fi
 fi
+
+# Set term if we're running under tmux.
+test -n "$TMUX" && export TERM="screen-256color"
 
 # A few times I've run into the locale not being set correctly...
 # So fix that.  This also fixes an issue with ZSH and RPS1 containing
