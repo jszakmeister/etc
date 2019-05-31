@@ -34,13 +34,13 @@ _etc_is_path_present()
     path_to_find="$1"
 
     # shellcheck disable=SC2119
-    _etc_iterate_path | while read -r dir
+    while read -r dir
     do
         if [ "$path_to_find" = "$dir" ]
         then
             return 0
         fi
-    done
+    done < <(_etc_iterate_path)
 
     return 1
 }
@@ -70,7 +70,7 @@ _etc_path_insert_before_after()
 
     # Insert the new path.
     # shellcheck disable=SC2119
-    _etc_iterate_path | while read -r dir
+    while read -r dir
     do
         if [ -z "$before_after" ] && [ "$dir_to_match" = "$dir" ]
         then
@@ -83,7 +83,7 @@ _etc_path_insert_before_after()
         then
             new_path="$(append_path "$new_path" "$path_to_add")"
         fi
-    done
+    done < <(_etc_iterate_path)
 
     PATH="$new_path"
 }
@@ -111,13 +111,14 @@ _etc_path_remove()
         return 1
     fi
 
-    _etc_iterate_path | while read dir
+    # shellcheck disable=SC2119
+    while read -r dir
     do
         if [ "$path_to_remove" != "$dir" ]
         then
             new_path=$(append_path "$new_path" "$dir")
         fi
-    done
+    done < <(_etc_iterate_path)
 
     PATH="$new_path"
 }
