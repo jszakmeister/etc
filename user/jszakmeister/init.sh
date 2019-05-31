@@ -5,13 +5,24 @@ export HOMEBREW_NO_EMOJI=1
 
 _etc_iterate_path()
 {
+    # If an argument is provided, only provide paths that have that filename
+    # in them.
+
+    local filename
+    if [ $# -eq 0 ]
+    then
+        filename=
+    else
+        filename="$1"
+    fi
+
     (
         IFS=:
         set -f
         for dir in $PATH
         do
             dir=${dir:-.}
-            [ -x "${dir%/}/$1" ] && printf "%s\n" "$dir"
+            [ -x "${dir%/}/$filename" ] && printf "%s\n" "$dir"
         done
     )
 }
@@ -19,9 +30,11 @@ _etc_iterate_path()
 
 _etc_is_path_present()
 {
-    local path_to_find="$1"
-    local found=
-    _etc_iterate_path | while read dir
+    local path_to_find
+    path_to_find="$1"
+
+    # shellcheck disable=SC2119
+    _etc_iterate_path | while read -r dir
     do
         if [ "$path_to_find" = "$dir" ]
         then
@@ -40,37 +53,35 @@ _etc_path_insert_before_after()
     local before_after="$3"
     local new_path=""
 
-    if [ -z "$path_to_add" -o -z "$dir_to_match" ]
+    if [ -z "$path_to_add" ] ||  [ -z "$dir_to_match" ]
     then
-        echo "crap"
         return 1
     fi
 
     if _etc_is_path_present "$path_to_add"
     then
-        echo "already there"
         return 0
     fi
 
     if ! _etc_is_path_present "$dir_to_match"
     then
-        echo "uhhh"
         return 1
     fi
 
     # Insert the new path.
-    _etc_iterate_path | while read dir
+    # shellcheck disable=SC2119
+    _etc_iterate_path | while read -r dir
     do
-        if [ -z "$before_after" -a "$dir_to_match" = "$dir" ]
+        if [ -z "$before_after" ] && [ "$dir_to_match" = "$dir" ]
         then
-            new_path=$(append_path "$new_path" "$path_to_add")
+            new_path="$(append_path "$new_path" "$path_to_add")"
         fi
 
-        new_path=$(append_path "$new_path" "$dir")
+        new_path="$(append_path "$new_path" "$dir")"
 
-        if [ -n "$before_after" -a "$dir_to_match" = "$dir" ]
+        if [ -n "$before_after" ] && [ "$dir_to_match" = "$dir" ]
         then
-            new_path=$(append_path "$new_path" "$path_to_add")
+            new_path="$(append_path "$new_path" "$path_to_add")"
         fi
     done
 
@@ -311,8 +322,10 @@ fi
 if _has_executable rg; then
     rg()
     {
-        local _rg_path="$(_find_executable rg)"
+        local _rg_path
         local _pager_options
+
+        _rg_path="$(_find_executable rg)"
 
         # Let ctrl-c pass kill less.
         [ "$PAGER" = "less" ] && _pager_options="-K"
@@ -401,7 +414,7 @@ if _has_executable openssl
 then
     dump-cert()
     {
-        if [ -z "$@" ]
+        if [ $# -eq 0 ]
         then
             echo 1>&2 "ERROR: Specify a certificate to examine in PEM format."
             return 1

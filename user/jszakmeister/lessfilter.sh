@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 if ! command -v pygmentize > /dev/null 2>&1; then
@@ -7,7 +7,7 @@ fi
 
 PYGMENTIZE="pygmentize -f 256 -O style=native,outencoding=utf-8"
 
-case "$(basename $1)" in
+case "$(basename "$1")" in
     *.zsh*)
         ${PYGMENTIZE} -l sh "$1" 2>/dev/null
         ;;
@@ -19,7 +19,7 @@ case "$(basename $1)" in
         ;;
     *.patch|*.diff)
         if command -v colordiff > /dev/null 2>&1; then
-            cat "$1" | colordiff | diff-highlight
+            colordiff < "$1" | diff-highlight
         else
             ${PYGMENTIZE} "$1" 2>/dev/null | diff-highlight
         fi
