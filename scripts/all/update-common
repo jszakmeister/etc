@@ -1,19 +1,19 @@
 #!/bin/bash
 die()
 {
-    echo 1>&2 "ERROR: $@"
+    echo 1>&2 "ERROR: $1"
     exit 1
 }
 
 trim()
 {
-    local var="$@"
+    local var="$1"
     var="${var#"${var%%[![:space:]]*}"}"
     var="${var%"${var##*[![:space:]]}"}"
     echo -n "$var"
 }
 
-if test -t 1 && type -P tput 2>&1 > /dev/null; then
+if test -t 1 && type -P tput > /dev/null 2>&1; then
     color_bold_yellow=$(tput bold;tput setaf 3)
     color_reset=$(tput sgr0)
 else
@@ -23,13 +23,17 @@ fi
 
 say()
 {
-    [ -z "$QUIET" ] && echo "$color_bold_yellow${@/$HOME/~}$color_reset"
+    [ -z "$QUIET" ] && echo "$color_bold_yellow${1/$HOME/~}$color_reset"
     return 0
 }
 
 update_repo()
 {
-    local repo_path=$(echo -n "$1" | sed -e "s|~|$HOME|")
+    local repo_path
+    local cur_dir
+
+    repo_path="$(echo -n "$1" | sed -e "s|~|$HOME|")"
+
     if test ! -d "$repo_path" ; then
         return 0
     fi
@@ -38,14 +42,13 @@ update_repo()
         return 0
     fi
 
-    local curDir=$(pwd)
+    # shellcheck disable=SC2086
     say "Updating $repo_path..." &&
-        cd "$repo_path" &&
-        git ffwd ${FFWD_OPTIONS}
-    cd "$curDir"
+        git "--git-dir=$repo_path/.git" "--work-tree=$repo_path" \
+            ffwd ${FFWD_OPTIONS}
 }
 
-while [[ $# > 0 ]]
+while [ $# -gt 0 ]
 do
     key="$1"
     shift
@@ -75,11 +78,11 @@ REPOS=(~/.vim \
 
 for repo in "${REPOS[@]}"
 do
-    update_repo $repo
+    update_repo "$repo"
 done
 
 if test -f ~/.update-commonrc ; then
-    while read line
+    while read -r line
     do
         line=$(trim "$line")
 

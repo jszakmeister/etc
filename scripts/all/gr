@@ -2,9 +2,13 @@
 
 find-up-tree()
 {
-    local last_found=$(pwd)
-    local tmp_path=$(dirname "$last_found")
-    local name="$1"
+    local last_found
+    local tmp_path
+    local name
+
+    last_found=$(pwd)
+    tmp_path=$(dirname "$last_found")
+    name="$1"
 
     while [[ "$tmp_path" != "/" ]];
     do
@@ -12,10 +16,10 @@ find-up-tree()
             last_found="$tmp_path"
             break
         fi
-        tmp_path=$(dirname "$tmp_path")
+        tmp_path="$(dirname "$tmp_path")"
     done
     if [ -e "$last_found/$name" ]; then
-        echo -n $(trim $(cat "$last_found/$name"))
+        echo -n "$(trim "$(cat "$last_found/$name")")"
     else
         echo -n
     fi
@@ -23,7 +27,9 @@ find-up-tree()
 
 trim()
 {
-    local var="$@"
+    local var
+
+    local var="$1"
 
     # Remove leading whitespace characters.
     var="${var#"${var%%[![:space:]]*}"}"
@@ -34,7 +40,7 @@ trim()
     echo -n "$var"
 }
 
-OS=$(uname | tr '[A-Z]' '[a-z]')
+OS=$(uname | tr '[:upper:]' '[:lower:]')
 
 IS_X_BASED=
 
@@ -104,9 +110,9 @@ if [[ -n "$GR_VERBOSE" ]]; then
     extra_opts="$extra_opts -V${GR_VERBOSE}"
 fi
 
-SERVER_NAME="$(echo -n "$SERVER_NAME" | tr A-Z a-z)"
+SERVER_NAME="$(echo -n "$SERVER_NAME" | tr '[:upper:]' '[:lower:]')"
 
-for name in $("$GVIM" --serverlist | tr A-Z a-z)
+for name in $("$GVIM" --serverlist | tr '[:upper:]' '[:lower:]')
 do
     if [ "$name" == "$SERVER_NAME" ]
     then
@@ -114,19 +120,22 @@ do
     fi
 done
 
-if [[ -n "$@" ]]; then
-    GR_NAME="$GR_NAME" "$GVIM" $extraopts --servername $SERVER_NAME $remote_opt "$@" > /dev/null 2>&1
-elif [[ -z "$running" ]]; then
-    GR_NAME="$GR_NAME" "$GVIM" $extraopts --servername $SERVER_NAME > /dev/null 2>&1
+if [ $# -gt 0 ]; then
+    # shellcheck disable=SC2086
+    GR_NAME="$GR_NAME" "$GVIM" $extraopts --servername "$SERVER_NAME" $remote_opt "$@" > /dev/null 2>&1
+elif [ -z "$running" ]; then
+    # shellcheck disable=SC2086
+    GR_NAME="$GR_NAME" "$GVIM" $extraopts --servername "$SERVER_NAME" > /dev/null 2>&1
 fi
 
+# shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
-    if [[ "$OS" == "darwin" ]]; then
-        if [[ -n "$running" ]]; then
+    if [ "$OS" == "darwin" ]; then
+        if [ -n "$running" ]; then
             echo 'tell application "System Events" to set frontmost of process "MacVim" to true' | osascript
         fi
     elif [ -n "$IS_X_BASED" ]; then
-        wmctrl -xa $SERVER_NAME.Gvim
+        wmctrl -xa "$SERVER_NAME.Gvim"
     fi
 else
     exit $?
