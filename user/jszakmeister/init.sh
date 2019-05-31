@@ -357,7 +357,7 @@ delete-unused()
 {
     for filename in "$@"
     do
-        if ! lsof -wt "$filename" 2>&1 >/dev/null
+        if ! lsof -wt "$filename" >/dev/null 2>&1
         then
             rm -r "$filename"
         fi
