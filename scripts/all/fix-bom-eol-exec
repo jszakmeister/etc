@@ -99,15 +99,18 @@ def replace_tabs(m, tab_size=8):
     return m.group(1) + len(m.group(2)) * tab_repl + m.group(3)
 
 
-def fix_eol_bom_exec(path, eol=True, bom=True, exe=True, tabs=True):
+def fix_eol_bom_exec(path, eol=True, bom=True, exe=True, tabs=True,
+                     dry_run=False):
     if not any([eol, bom, exe, tabs]):
-        return
+        return False
+
+    modified = False
 
     ext = get_extension(path)
 
     has_shebang = False
     with open(path, 'r+b') as f:
-        buf = f.read()
+        buf = orig_buf = f.read()
 
         has_shebang = (exe_re.match(buf) and True) or False
 
@@ -120,9 +123,12 @@ def fix_eol_bom_exec(path, eol=True, bom=True, exe=True, tabs=True):
         if tabs and (ext in convert_tab_extensions):
             buf = tab_re.sub(lambda x: replace_tabs(x, 4), buf)
 
-        f.seek(0)
-        f.write(buf)
-        f.truncate()
+        if buf != orig_buf:
+            modified = True
+            if not dry_run:
+                f.seek(0)
+                f.write(buf)
+                f.truncate()
 
     if exe:
         mode = os.stat(path).st_mode
@@ -131,7 +137,11 @@ def fix_eol_bom_exec(path, eol=True, bom=True, exe=True, tabs=True):
         else:
             new_mode = mode & ~(stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
         if new_mode != mode:
-            os.chmod(path, new_mode)
+            modified = True
+            if not dry_run:
+                os.chmod(path, new_mode)
+
+    return modified
 
 
 def filter_dirs(dirs):
@@ -158,6 +168,10 @@ def collect_files(path):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--dry-run", action='store_true', default=False,
+                        help="Don't actually modify the files.")
+    parser.add_argument("-v", "--verbose", action='store_true', default=False,
+                        help="Show more information.")
     parser.add_argument("files", nargs="+",
                         help="The files to examine and fix.")
 
@@ -166,11 +180,17 @@ def main():
     for path in args.files:
         if os.path.isdir(path):
             for path in collect_files(path):
-                print("Fixing %s..." % (path,))
-                fix_eol_bom_exec(path)
+                if args.verbose:
+                    print("Examining %s..." % (path,))
+                if fix_eol_bom_exec(path, dry_run=args.dry_run):
+                    print("Fixed %s..." % (path,))
+
         else:
-            print("Fixing %s..." % (path,))
-            fix_eol_bom_exec(path)
+            if args.verbose:
+                print("Examining %s..." % (path,))
+
+            if fix_eol_bom_exec(path, dry_run=args.dry_run):
+                print("Fixed %s..." % (path,))
 
 
 if __name__ == '__main__':
