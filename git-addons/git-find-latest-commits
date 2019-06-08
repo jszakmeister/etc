@@ -1,0 +1,294 @@
+#!/usr/bin/env python3
+import argparse
+import colorama
+import datetime
+import io
+import os
+import re
+import subprocess
+import sys
+
+from pprint import pprint
+
+
+try:
+    import colorama
+
+    EXPIRED_COLORS = {
+        'marker': colorama.Style.NORMAL + colorama.Fore.LIGHTRED_EX,
+        'ref': colorama.Style.NORMAL + colorama.Fore.YELLOW,
+        'name': colorama.Style.NORMAL + colorama.Fore.BLUE,
+        'email': colorama.Style.DIM + colorama.Fore.YELLOW,
+        'date': colorama.Style.NORMAL + colorama.Fore.LIGHTMAGENTA_EX,
+    }
+
+    NONEXPIRED_COLORS = {
+        'marker': colorama.Style.DIM + colorama.Fore.WHITE,
+        'ref': colorama.Style.DIM + colorama.Fore.WHITE,
+        'name': colorama.Style.DIM + colorama.Fore.WHITE,
+        'email': colorama.Style.DIM + colorama.Fore.WHITE,
+        'date': colorama.Style.DIM + colorama.Fore.WHITE,
+    }
+
+    RESET_ALL = colorama.Style.RESET_ALL
+    HEADING_COLOR = colorama.Fore.LIGHTYELLOW_EX
+except ImportError:
+    # If there is no colorama, then we default to no color.
+    ### Maybe try to use tput to grab color sequences?
+    EXPIRED_COLORS = {
+        'marker': '',
+        'ref': '',
+        'name': '',
+        'email': '',
+        'date': '',
+    }
+
+    NONEXPIRED_COLORS = {
+        'marker': '',
+        'ref': '',
+        'name': '',
+        'email': '',
+        'date': '',
+    }
+
+    RESET_ALL = ''
+    HEADING_COLOR = ''
+
+
+class ScriptError(Exception):
+    pass
+
+
+def run(*args, **kwargs):
+    show_cmd = kwargs.get('show_cmd', False)
+    shell = kwargs.get('shell', False)
+    encoding = kwargs.get('encoding', 'utf-8')
+
+    if shell:
+        command = ' '.join(['"' + x + '"' for x in args])
+    else:
+        command = args
+
+    if show_cmd:
+        print(' '.join(args))
+
+    check_ret = kwargs.get('check_ret', True)
+
+    p = subprocess.Popen(
+        command, shell=shell, encoding=encoding,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    output = p.communicate()
+    retcode = p.poll()
+    if check_ret and retcode:
+        raise ScriptError("Error executing: %r (%d, %s)" % (command, retcode, output))
+    return output[0]
+
+
+def run_git(*args, **kwargs):
+    path = kwargs.get('path', None)
+
+    if path is not None:
+        if path.endswith('.git'):
+            args = ['--git-dir=%s' % path] + list(args)
+        else:
+            args = ['--git-dir=%s/.git' % path, '--work-tree=%s' % path] + list(args)
+
+    command = ['git'] + list(args)
+    return run(*command, **kwargs).strip()
+
+
+def parse_repo_file(path):
+    repos = []
+    with open(path, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            repos.append(os.path.expanduser(line))
+    return repos
+
+
+ref_branch_re = re.compile(r'refs/(?:heads|remotes/[^/]+)/(.*)')
+ref_short_re = re.compile(r'refs/(?:heads|remotes)/(.*)')
+
+
+def get_short_name(ref):
+    m = ref_short_re.match(ref)
+    if not m:
+        raise ScriptError("Unrecognized ref ('%s')" % (ref,))
+
+    return m.group(1)
+
+
+def get_branch_name(ref):
+    m = ref_branch_re.match(ref)
+    if not m:
+        raise ScriptError("Unrecognized ref ('%s')" % (ref,))
+
+    return m.group(1)
+
+
+def get_refs(repo_path, prefix=None):
+    if prefix is None:
+        prefix = ''
+
+    raw_refs = run_git('ls-remote', '--refs', repo_path)
+
+    refs = []
+
+    for _, ref in (line.split() for line in raw_refs.splitlines()):
+        if ref.startswith('refs/tags/'):
+            continue
+
+        branch_name = get_branch_name(ref)
+
+        if branch_name == 'HEAD':
+            continue
+
+        if not branch_name.startswith(prefix):
+            continue
+
+        refs.append(get_short_name(ref))
+
+    return refs
+
+
+def get_latest_commit(repo_path, ref):
+    log = run_git('log', '-1', '--pretty=format:%cN^^%cE^^%ci', ref,
+                  path=repo_path)
+
+    name, email, date = log.split('^^')
+
+    date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S %z')
+
+    return name, email, date
+
+
+def is_expired(now, date, expirations):
+    if (now - date).days < expirations[0][0]:
+        return False
+    return True
+
+
+def get_marker(now, date, expirations):
+    diff = (now - date).days
+    for days, marker in expirations[::-1]:
+        if diff >= days:
+            return marker
+    return ''
+
+
+def find_latest_commits(repo_path, now, expirations, only_old=False,
+                        sort_oldest=False, heading=True):
+    # expirations is expected to be a list of (days, marker).  Sorted from
+    # smallest number of days to largest.
+
+    refs = get_refs(repo_path, None)
+
+    entries = []
+    for ref in refs:
+        name, email, date = get_latest_commit(repo_path, ref)
+        if only_old and not is_expired(now, date, expirations):
+            continue
+
+        marker = get_marker(now, date, expirations)
+        entries.append((ref, name, email, date, marker))
+
+    if not entries:
+        return
+
+    if sort_oldest:
+        entries = sorted(entries, key=lambda x: x[3])
+
+    field_widths = []
+    for i in range(3):
+        field_widths.append(max(len(entry[i]) for entry in entries))
+
+    marker_width = max(len(entry[-1]) for entry in entries)
+
+    if heading:
+        print("%s%s:%s" % (HEADING_COLOR, repo_path, RESET_ALL))
+
+    expired_fmt = '  %s%%-%ds %s%%-%ds %s%%%ds %s%%%ds %s%%s%s' % (
+            EXPIRED_COLORS['marker'], marker_width,
+            EXPIRED_COLORS['ref'], field_widths[0],
+            EXPIRED_COLORS['name'], field_widths[1],
+            EXPIRED_COLORS['email'], field_widths[2],
+            EXPIRED_COLORS['date'],
+            RESET_ALL)
+
+    nonexpired_fmt = '  %s%%-%ds %s%%-%ds %s%%%ds %s%%%ds %s%%s%s' % (
+            NONEXPIRED_COLORS['marker'], marker_width,
+            NONEXPIRED_COLORS['ref'], field_widths[0],
+            NONEXPIRED_COLORS['name'], field_widths[1],
+            NONEXPIRED_COLORS['email'], field_widths[2],
+            NONEXPIRED_COLORS['date'],
+            RESET_ALL)
+
+    for ref, name, email, date, marker in entries:
+        fmt = expired_fmt if marker else nonexpired_fmt
+        print(fmt % (marker, ref, name, email, date))
+
+
+def find_repo():
+    return run_git('rev-parse', '--show-toplevel')
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-r', '--repo-file', default=None,
+                        help='File with paths to repositories to check.')
+    parser.add_argument('repos', nargs='*',
+                        help="Repositories to check.")
+    parser.add_argument('--prefix', default=None,
+                        help='Only check branches that start with this prefix.')
+    parser.add_argument('--old', default=False, action='store_true',
+                        help='Only show old commits.')
+    parser.add_argument('--no-sort', action='store_false',
+                        dest='sort', default=True,
+                        help="Don't sort from oldest to newest.")
+    parser.add_argument('--traceback', default=False, action='store_true',
+                        help='Show a traceback on error.')
+
+    args = parser.parse_args()
+
+    colorama.init()
+
+    try:
+        if args.repo_file:
+            repos = parse_repo_file(args.repo_file)
+        else:
+            repos = []
+
+        repos.extend(args.repos)
+
+        now = datetime.datetime.now(datetime.timezone.utc)
+        expirations = [(7, '-'),
+                       (14, '--'),
+                       (21, '---'),
+                       (28, 'x'),
+                       (84, 'xx'),
+                       (180, 'xxx'),
+                       (365, 'xxxx')]
+
+        if not repos:
+            find_latest_commits(find_repo(), now, expirations,
+                                only_old=args.old, sort_oldest=args.sort,
+                                heading=False)
+        else:
+            for i, repo in enumerate(repos):
+                find_latest_commits(repo, now, expirations, only_old=args.old,
+                                    sort_oldest=args.sort)
+                if i != len(repos)-1:
+                    print()
+
+    except Exception as e:
+        if args.traceback:
+            raise
+
+        print("ERROR: %s" % (e,))
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
