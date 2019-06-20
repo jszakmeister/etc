@@ -2,6 +2,23 @@
 SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
     die "ERROR: Not a git repository."
 
+
+function determine_ref()
+{
+    local BRANCHES="development develop dev master"
+    for r in $BRANCHES
+    do
+        if git rev-parse -q --verify "$r" >/dev/null 2>&1
+        then
+            echo "$r"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+
 function check_ref()
 {
     local REF="$1"
@@ -17,13 +34,21 @@ function check_ref()
     return 1
 }
 
+
 if [ "$1" = "-n" ]
 then
     shift
     DRY_RUN=echo
 fi
 
-REF="$(git symbolic-ref --short HEAD)"
+if [ "$1" = "--auto" ]
+then
+    shift
+    REF="$(determine_ref)" || die "ERROR: Couldn't determine mainline branch."
+else
+    REF="$(git symbolic-ref --short HEAD)"
+fi
+
 
 if ! check_ref "$REF"
 then
