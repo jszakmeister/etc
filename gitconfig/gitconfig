@@ -96,6 +96,10 @@
 	# decide to fork it).
 	set-origin = !sh -c 'git remote rename origin upstream && git remote add origin $1 && git fetch origin && git config branch.master.pushremote origin' -
 
+	# Something a little easier to remember for seeing authors over a series
+	# of commits.
+	find-authors = shortlog -s -n -e
+
 [core]
 	# make central area for git ignores. copy gitignores and change this to
 	#   excludesfile = ~/.gitignores
