@@ -272,6 +272,11 @@ def find_latest_commits(repo_path, now, expirations, only_old=False,
         fmt = expired_fmt if marker or status == '^' else nonexpired_fmt
         print(fmt % (status, marker, ref, name, email, date))
 
+    if not entries:
+        return False
+
+    return True
+
 
 def find_repo():
     return run_git('rev-parse', '--show-toplevel')
@@ -323,9 +328,10 @@ def main():
                                 heading=False, prefix=args.prefix)
         else:
             for i, repo in enumerate(repos):
-                find_latest_commits(repo, now, expirations, only_old=args.old,
-                                    sort_oldest=args.sort, prefix=args.prefix)
-                if i != len(repos)-1:
+                emitted = find_latest_commits(
+                    repo, now, expirations, only_old=args.old,
+                    sort_oldest=args.sort, prefix=args.prefix)
+                if emitted and i != len(repos)-1:
                     print()
 
     except Exception as e:
