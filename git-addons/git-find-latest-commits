@@ -134,16 +134,17 @@ def get_branch_name(ref):
     return m.group(1)
 
 
-def determine_mainline(refs):
+def branch_exists(repo_path, ref):
+    output = run_git('rev-parse', '-q', '--verify', ref,
+                     path=repo_path, check_ret=False)
+    return bool(output)
+
+
+def determine_mainline(repo_path):
     mainline_branch_names = ('development', 'develop', 'dev', 'master')
 
-    candidates = set([])
-    for r in refs:
-        if r in mainline_branch_names:
-            candidates.add(r)
-
     for mainline in mainline_branch_names:
-        if mainline in candidates:
+        if branch_exists(repo_path, mainline):
             return mainline
 
     return None
@@ -208,13 +209,13 @@ def get_marker(now, date, expirations):
 
 
 def find_latest_commits(repo_path, now, expirations, only_old=False,
-                        sort_oldest=False, heading=True):
+                        sort_oldest=False, heading=True, prefix=None):
     # expirations is expected to be a list of (days, marker).  Sorted from
     # smallest number of days to largest.
 
-    refs = get_refs(repo_path, None)
+    refs = get_refs(repo_path, prefix=prefix)
 
-    mainline = determine_mainline([ref for _, ref in refs])
+    mainline = determine_mainline(repo_path)
 
     entries = []
     for branch_name, ref in refs:
@@ -319,11 +320,11 @@ def main():
         if not repos:
             find_latest_commits(find_repo(), now, expirations,
                                 only_old=args.old, sort_oldest=args.sort,
-                                heading=False)
+                                heading=False, prefix=args.prefix)
         else:
             for i, repo in enumerate(repos):
                 find_latest_commits(repo, now, expirations, only_old=args.old,
-                                    sort_oldest=args.sort)
+                                    sort_oldest=args.sort, prefix=args.prefix)
                 if i != len(repos)-1:
                     print()
 
