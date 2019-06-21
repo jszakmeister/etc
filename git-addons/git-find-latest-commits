@@ -8,52 +8,61 @@ import subprocess
 import sys
 
 
-try:
-    import colorama
+EXPIRED_COLORS = {
+    'marker': '',
+    'ref': '',
+    'name': '',
+    'email': '',
+    'date': '',
+}
 
-    EXPIRED_COLORS = {
-        'marker': colorama.Style.NORMAL + colorama.Fore.LIGHTRED_EX,
-        'ref': colorama.Style.NORMAL + colorama.Fore.YELLOW,
-        'name': colorama.Style.NORMAL + colorama.Fore.BLUE,
-        'email': colorama.Style.DIM + colorama.Fore.YELLOW,
-        'date': colorama.Style.NORMAL + colorama.Fore.LIGHTMAGENTA_EX,
-    }
+NONEXPIRED_COLORS = {
+    'marker': '',
+    'ref': '',
+    'name': '',
+    'email': '',
+    'date': '',
+}
 
-    NONEXPIRED_COLORS = {
-        'marker': colorama.Style.DIM + colorama.Fore.WHITE,
-        'ref': colorama.Style.DIM + colorama.Fore.WHITE,
-        'name': colorama.Style.DIM + colorama.Fore.WHITE,
-        'email': colorama.Style.DIM + colorama.Fore.WHITE,
-        'date': colorama.Style.DIM + colorama.Fore.WHITE,
-    }
-
-    RESET_ALL = colorama.Style.RESET_ALL
-    HEADING_COLOR = colorama.Fore.LIGHTYELLOW_EX
-except ImportError:
-    # If there is no colorama, then we default to no color.
-    ### Maybe try to use tput to grab color sequences?
-    EXPIRED_COLORS = {
-        'marker': '',
-        'ref': '',
-        'name': '',
-        'email': '',
-        'date': '',
-    }
-
-    NONEXPIRED_COLORS = {
-        'marker': '',
-        'ref': '',
-        'name': '',
-        'email': '',
-        'date': '',
-    }
-
-    RESET_ALL = ''
-    HEADING_COLOR = ''
+RESET_ALL = ''
+HEADING_COLOR = ''
 
 
 class ScriptError(Exception):
     pass
+
+
+def init_colors(option):
+    if option == 'none':
+        return
+
+    try:
+        import colorama
+        global EXPIRED_COLORS, NONEXPIRED_COLORS, RESET_ALL, HEADING_COLOR
+
+        EXPIRED_COLORS = {
+            'marker': colorama.Style.NORMAL + colorama.Fore.LIGHTRED_EX,
+            'ref': colorama.Style.NORMAL + colorama.Fore.YELLOW,
+            'name': colorama.Style.NORMAL + colorama.Fore.BLUE,
+            'email': colorama.Style.DIM + colorama.Fore.YELLOW,
+            'date': colorama.Style.NORMAL + colorama.Fore.LIGHTMAGENTA_EX,
+        }
+
+        NONEXPIRED_COLORS = {
+            'marker': colorama.Style.DIM + colorama.Fore.WHITE,
+            'ref': colorama.Style.DIM + colorama.Fore.WHITE,
+            'name': colorama.Style.DIM + colorama.Fore.WHITE,
+            'email': colorama.Style.DIM + colorama.Fore.WHITE,
+            'date': colorama.Style.DIM + colorama.Fore.WHITE,
+        }
+
+        RESET_ALL = colorama.Style.RESET_ALL
+        HEADING_COLOR = colorama.Fore.LIGHTYELLOW_EX
+
+        strip = False if option == 'always' else None
+        colorama.init(strip=strip)
+    except ImportError:
+        pass
 
 
 def run(*args, **kwargs):
@@ -273,6 +282,9 @@ def main():
                         help='File with paths to repositories to check.')
     parser.add_argument('repos', nargs='*',
                         help="Repositories to check.")
+    parser.add_argument('--color', default='auto',
+                        choices=['auto', 'none', 'always'],
+                        help='Only check branches that start with this prefix.')
     parser.add_argument('--prefix', default=None,
                         help='Only check branches that start with this prefix.')
     parser.add_argument('--old', default=False, action='store_true',
@@ -285,7 +297,7 @@ def main():
 
     args = parser.parse_args()
 
-    colorama.init()
+    init_colors(args.color)
 
     try:
         if args.repo_file:
