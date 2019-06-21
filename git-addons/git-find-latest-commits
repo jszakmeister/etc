@@ -126,6 +126,29 @@ def get_branch_name(ref):
     return m.group(1)
 
 
+def determine_mainline(refs):
+    mainline_branch_names = ('development', 'develop', 'dev', 'master')
+
+    candidates = set([])
+    for r in refs:
+        if r in mainline_branch_names:
+            candidates.add(r)
+
+    for mainline in mainline_branch_names:
+        if mainline in candidates:
+            return mainline
+
+    return None
+
+
+def branch_is_merged(repo_path, mainline, ref):
+    output = run_git('branch', '-q', '--contains', ref, mainline,
+                     path=repo_path)
+    if output:
+        return True
+    return False
+
+
 def get_refs(repo_path, prefix=None):
     if prefix is None:
         prefix = ''
@@ -146,7 +169,7 @@ def get_refs(repo_path, prefix=None):
         if not branch_name.startswith(prefix):
             continue
 
-        refs.append(get_short_name(ref))
+        refs.append((branch_name, get_short_name(ref)))
 
     return refs
 
@@ -183,14 +206,25 @@ def find_latest_commits(repo_path, now, expirations, only_old=False,
 
     refs = get_refs(repo_path, None)
 
+    mainline = determine_mainline([ref for _, ref in refs])
+
     entries = []
-    for ref in refs:
+    for branch_name, ref in refs:
         name, email, date = get_latest_commit(repo_path, ref)
         if only_old and not is_expired(now, date, expirations):
             continue
 
+        if ref == mainline:
+            status = '*'
+        elif branch_name == mainline:
+            status = ' '
+        elif mainline and branch_is_merged(repo_path, mainline, ref):
+            status = '^'
+        else:
+            status = ' '
+
         marker = get_marker(now, date, expirations)
-        entries.append((ref, name, email, date, marker))
+        entries.append((ref, name, email, date, status, marker))
 
     if not entries:
         return
@@ -207,7 +241,8 @@ def find_latest_commits(repo_path, now, expirations, only_old=False,
     if heading:
         print("%s%s:%s" % (HEADING_COLOR, repo_path, RESET_ALL))
 
-    expired_fmt = '  %s%%-%ds %s%%-%ds %s%%%ds %s%%%ds %s%%s%s' % (
+    expired_fmt = '  %s%%s%s%%-%ds %s%%-%ds %s%%%ds %s%%%ds %s%%s%s' % (
+            EXPIRED_COLORS['ref'],
             EXPIRED_COLORS['marker'], marker_width,
             EXPIRED_COLORS['ref'], field_widths[0],
             EXPIRED_COLORS['name'], field_widths[1],
@@ -215,7 +250,8 @@ def find_latest_commits(repo_path, now, expirations, only_old=False,
             EXPIRED_COLORS['date'],
             RESET_ALL)
 
-    nonexpired_fmt = '  %s%%-%ds %s%%-%ds %s%%%ds %s%%%ds %s%%s%s' % (
+    nonexpired_fmt = '  %s%%s%s%%-%ds %s%%-%ds %s%%%ds %s%%%ds %s%%s%s' % (
+            NONEXPIRED_COLORS['ref'],
             NONEXPIRED_COLORS['marker'], marker_width,
             NONEXPIRED_COLORS['ref'], field_widths[0],
             NONEXPIRED_COLORS['name'], field_widths[1],
@@ -223,9 +259,9 @@ def find_latest_commits(repo_path, now, expirations, only_old=False,
             NONEXPIRED_COLORS['date'],
             RESET_ALL)
 
-    for ref, name, email, date, marker in entries:
-        fmt = expired_fmt if marker else nonexpired_fmt
-        print(fmt % (marker, ref, name, email, date))
+    for ref, name, email, date, status, marker in entries:
+        fmt = expired_fmt if marker or status == '^' else nonexpired_fmt
+        print(fmt % (status, marker, ref, name, email, date))
 
 
 def find_repo():
