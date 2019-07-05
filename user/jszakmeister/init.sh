@@ -313,6 +313,12 @@ sudo-xauth()
         xargs -n 3 xauth add
 }
 
+td()
+{
+    mkdir -p "$(dirname "$1")"
+    touch "$1"
+}
+
 if _has_executable ag; then
     ag()
     {
