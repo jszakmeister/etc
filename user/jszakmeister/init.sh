@@ -179,6 +179,17 @@ if [ "$platform" = "darwin" ]; then
     {
         sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
     }
+
+    vm-get-ip-addr()
+    {
+        if [ -z "$1" ]
+        then
+            echo "Missing path to VMX." 1>&2
+            return 1
+        fi
+
+        vmrun -T fusion getGuestIPAddress "$1" -wait
+    }
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
