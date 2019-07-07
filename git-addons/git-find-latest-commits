@@ -226,6 +226,8 @@ def find_latest_commits(repo_path, now, expirations, only_old=False,
         if ref == mainline:
             status = '*'
         elif branch_name == mainline:
+            # set the remote version of mainline to be blank (we don't want it
+            # to show up as merged).
             status = ' '
         elif mainline and branch_is_merged(repo_path, mainline, ref):
             status = '^'
