@@ -1,4 +1,4 @@
-source "${ETC_HOME}/shell-common/colors.sh"
+. "${ETC_HOME}/shell-common/colors.sh"
 
 function _git_has_diverged()
 {

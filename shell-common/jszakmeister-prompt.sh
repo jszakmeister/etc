@@ -3,8 +3,8 @@
 # Make sure perl is available to help trim the path
 [ "$ETC_TRIM_PWD" != "0" ] && _has_executable perl && ETC_TRIM_PWD="1"
 
-source "${ETC_HOME}/shell-common/colors.sh"
-source "${ETC_HOME}/shell-common/vcs-status.sh"
+. "${ETC_HOME}/shell-common/colors.sh"
+. "${ETC_HOME}/shell-common/vcs-status.sh"
 
 function _jszakmeister_prompt_virtualenv() {
     if [ -n "$VIRTUAL_ENV" ]; then
