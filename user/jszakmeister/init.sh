@@ -248,6 +248,9 @@ _has_executable rlwrap &&
     _has_executable nc &&
     alias nc="rlwrap '$(_find_executable nc)'"
 
+_has_executable cninja &&
+    alias cn="cninja"
+
 test -e /System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc &&
     alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
 
