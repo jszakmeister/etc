@@ -4,6 +4,7 @@ import datetime
 import io
 import os
 import re
+import shlex
 import subprocess
 import sys
 
@@ -71,7 +72,7 @@ def run(*args, **kwargs):
     encoding = kwargs.get('encoding', 'utf-8')
 
     if shell:
-        command = ' '.join(['"' + x + '"' for x in args])
+        command = ' '.join([shlex.quote(x) for x in args])
     else:
         command = args
 
