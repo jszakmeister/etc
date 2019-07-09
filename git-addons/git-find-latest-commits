@@ -92,7 +92,7 @@ def run(*args, **kwargs):
 
 
 def run_git(*args, **kwargs):
-    path = kwargs.get('path', None)
+    path = kwargs.pop('path', None)
 
     if path is not None:
         if path.endswith('.git'):
