@@ -239,7 +239,7 @@ def find_latest_commits(repo_path, now, expirations, only_old=False,
         entries.append((ref, name, email, date, status, marker))
 
     if not entries:
-        return
+        return False
 
     if sort_oldest:
         entries = sorted(entries, key=lambda x: x[3])
@@ -274,9 +274,6 @@ def find_latest_commits(repo_path, now, expirations, only_old=False,
     for ref, name, email, date, status, marker in entries:
         fmt = expired_fmt if marker or status == '^' else nonexpired_fmt
         print(fmt % (status, marker, ref, name, email, date))
-
-    if not entries:
-        return False
 
     return True
 
