@@ -61,6 +61,9 @@ do
         --no-remote)
             FFWD_OPTIONS="$FFWD_OPTIONS --no-remote"
             ;;
+        -s|--status)
+            FFWD_OPTIONS="$FFWD_OPTIONS --status"
+            ;;
         *)
             # unknown option
             die "Unknown option '$key'"
