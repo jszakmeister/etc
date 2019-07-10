@@ -3,6 +3,7 @@ SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
     die "Not a git repository."
 
 verbose=t
+no_ff=
 
 while [ "$#" -gt 0 ]
 do
@@ -15,6 +16,10 @@ do
             ;;
         -q|--quiet)
             verbose=
+            shift
+            ;;
+        -s|--silent)
+            no_ff=t
             shift
             ;;
         *)
@@ -171,13 +176,28 @@ main() {
 
         if [ "$NBEHIND" -gt 0 ]; then
             if [ "$NAHEAD" -gt 0 ]; then
-                say_verbose warn " branch $LB is $NBEHIND commit(s) behind and $NAHEAD commit(s) ahead of $RB. could not be fast-forwarded"
+                if [ -n "$no_ff" ]
+                then
+                    say_verbose warn " branch $LB is $NBEHIND commit(s) behind and $NAHEAD commit(s) ahead of $RB. cannot be fast-forwarded"
+                else
+                    say_verbose warn " branch $LB is $NBEHIND commit(s) behind and $NAHEAD commit(s) ahead of $RB. could not be fast-forwarded"
+                fi
             elif [ "$LB" = "$CLB" ]; then
-                say_verbose pass " branch $LB was $NBEHIND commit(s) behind $RB. fast-forward merge";
-                git merge ${verbose:+-q} --ff --ff-only -q $RB
+                if [ -n "$no_ff" ]
+                then
+                    say_verbose pass " branch $LB is $NBEHIND commit(s) behind $RB.";
+                else
+                    say_verbose pass " branch $LB was $NBEHIND commit(s) behind $RB. fast-forward merge";
+                    git merge ${verbose:+-q} --ff --ff-only -q $RB
+                fi
             else
-                say_verbose pass " branch $LB was $NBEHIND commit(s) behind $RB. resetting local branch to remote"
-                git branch ${verbose:+-q} --create-reflog -f $LB -t $RB >/dev/null
+                if [ -n "$no_ff" ]
+                then
+                    say_verbose pass " branch $LB is $NBEHIND commit(s) behind $RB."
+                else
+                    say_verbose pass " branch $LB was $NBEHIND commit(s) behind $RB. resetting local branch to remote"
+                    git branch ${verbose:+-q} --create-reflog -f $LB -t $RB >/dev/null
+                fi
             fi
         fi
     done
