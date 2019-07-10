@@ -183,4 +183,4 @@ main() {
     done
 }
 
-main $@
+main "$@"
