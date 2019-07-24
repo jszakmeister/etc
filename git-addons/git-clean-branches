@@ -72,7 +72,7 @@ CURRENT_BRANCH="$(git symbolic-ref --short HEAD)"
 # mechanism.  At the moment, it'll complain if a branch is not merged
 # to whatever branch we have checked out, which is why we require master
 # right now.
-git branch -a --format="%(refname:short)" --merged "$REF" |
+git branch --format="%(refname:short)" --merged "$REF" |
     egrep -v '^(\* |[ \t]*|.*/remotes)([0-9]+\.[0-9]+\.x|master|develop|development|HEAD|integrate|.*(\b|_)test(\b|_).*|remotes/.*)$' |
     egrep -v "^$REF\$" |
     egrep -v "^$CURRENT_BRANCH\$" |
