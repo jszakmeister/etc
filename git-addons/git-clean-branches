@@ -53,7 +53,7 @@ done
 
 if [ -z "$REF" ]
 then
-    if [ -n "$1" ]
+    if [ -z "$1" ]
     then
         REF="$(git symbolic-ref --short HEAD)"
     else
