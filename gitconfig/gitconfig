@@ -143,6 +143,7 @@
 [push]
 	default = current
 	followTags = true
+	recurseSubmodules = check
 
 [rerere]
 	enabled = 1
