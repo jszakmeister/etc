@@ -20,6 +20,15 @@
 	ru = reset --hard @{u}
 	k = !gitk --date-order
 
+	# Clone without checking objects.  Occasionally I run across an
+	# old repo that has a timestamp issue (from an old git bug) and
+	# have to turn of fsckObjects to successfully clone the repo.
+	# This is my shortcut to make it a little less typing.
+	# Note: I deviate from the default config and have fsckObjects turned
+	# on by default, which is why this is necessary.  OTOH, with it on
+	# we can more easily detect corruption.
+	clone-wo = -c transfer.fsckObjects=false clone
+
 	# Tell me the first tag that contains this commit.
 	contains = describe --contains
 
