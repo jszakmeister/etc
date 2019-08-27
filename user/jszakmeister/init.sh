@@ -190,6 +190,12 @@ if [ "$platform" = "darwin" ]; then
 
         vmrun -T fusion getGuestIPAddress "$1" -wait
     }
+
+    lldb()
+    {
+        PATH=/usr/bin /usr/bin/lldb "$@"
+    }
+
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
