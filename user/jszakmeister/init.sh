@@ -480,3 +480,15 @@ then
         docker container inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
     }
 fi
+
+if [ -n "$VIRTUALENVWRAPPER_PYTHON" ]
+then
+    rebuild-sphinx-env()
+    {
+        (command -v deactivate && deactivate || : ) &&
+        rmvirtualenv sphinx &&
+        mkvirtualenv --python=$(which python3) sphinx &&
+        pip install -U Sphinx recommonmark hieroglyph sphinx_rtd_theme \
+           sphinxcontrib-websupport
+    }
+fi
