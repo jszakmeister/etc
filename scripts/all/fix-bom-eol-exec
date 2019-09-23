@@ -8,8 +8,9 @@ import sys
 
 bom_re = re.compile(rb'^\xEF\xBB\xBF')
 eol_re = re.compile(rb'\r?\n')
-exe_re = re.compile(rb'^(\xEF\xBB\xBF)?#!')
+exec_re = re.compile(rb'^(\xEF\xBB\xBF)?#!')
 tab_re = re.compile(rb'^( *)(\t+)( *)', re.MULTILINE)
+trailing_re = re.compile(rb'(\s+)$', re.MULTILINE)
 
 
 ignore_dirs = [
@@ -75,8 +76,14 @@ convert_tab_extensions = set([
 ])
 
 
+# Borrow from converting tabs and drop off Markdown files, since there
+# are occasions where it's necessary to have trailing whitespace.
+trailing_whitespace_extensions = convert_tab_extensions - set(['md'])
+
+
 files_re = re.compile(r'.*\.(' + '|'.join(extensions) + r')$')
 ignore_re = re.compile(r'^(' + '|'.join(ignore_dirs) + r')$')
+
 
 def get_extension(path):
     ext = os.path.splitext(path)[1]
@@ -99,9 +106,9 @@ def replace_tabs(m, tab_size=8):
     return m.group(1) + len(m.group(2)) * tab_repl + m.group(3)
 
 
-def fix_eol_bom_exec(path, eol=True, bom=True, exe=True, tabs=True,
-                     dry_run=False):
-    if not any([eol, bom, exe, tabs]):
+def fix_eol_bom_exec(path, eol=True, bom=True, exec=True, tabs=4,
+                     trailing=True, dry_run=False):
+    if not any([eol, bom, exec, tabs]):
         return False
 
     modified = False
@@ -112,7 +119,7 @@ def fix_eol_bom_exec(path, eol=True, bom=True, exe=True, tabs=True,
     with open(path, 'r+b') as f:
         buf = orig_buf = f.read()
 
-        has_shebang = (exe_re.match(buf) and True) or False
+        has_shebang = (exec_re.match(buf) and True) or False
 
         if bom:
             buf = bom_re.sub(rb'', buf)
@@ -121,7 +128,10 @@ def fix_eol_bom_exec(path, eol=True, bom=True, exe=True, tabs=True,
             buf = eol_re.sub(rb'\n', buf)
 
         if tabs and (ext in convert_tab_extensions):
-            buf = tab_re.sub(lambda x: replace_tabs(x, 4), buf)
+            buf = tab_re.sub(lambda x: replace_tabs(x, tabs), buf)
+
+        if trailing and (ext in trailing_whitespace_extensions):
+            buf = trailing_re.sub(rb'', buf)
 
         if buf != orig_buf:
             modified = True
@@ -130,7 +140,7 @@ def fix_eol_bom_exec(path, eol=True, bom=True, exe=True, tabs=True,
                 f.write(buf)
                 f.truncate()
 
-    if exe:
+    if exec:
         mode = os.stat(path).st_mode
         if has_shebang:
             new_mode = mode | (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
@@ -172,6 +182,21 @@ def main():
                         help="Don't actually modify the files.")
     parser.add_argument("-v", "--verbose", action='store_true', default=False,
                         help="Show more information.")
+    parser.add_argument("-t", "--tabs", default=4,
+                        help="The number of spaces to convert tabs to.  "
+                             "Default is 4.")
+    parser.add_argument("--no-bom", action='store_false',
+                        dest='bom', default=True,
+                        help="Disable BOM removal.")
+    parser.add_argument("--no-tabs", action='store_false',
+                        dest='tabs',
+                        help="Disable tab expansion.")
+    parser.add_argument("--no-trailing", action='store_false',
+                        dest='trailing', default=True,
+                        help="Disables stripping of trailing whitespace.")
+    parser.add_argument("--no-exec", action='store_false',
+                        dest='exec', default=True,
+                        help="Disables fixing of the executable bit.")
     parser.add_argument("files", nargs="+",
                         help="The files to examine and fix.")
 
@@ -182,14 +207,18 @@ def main():
             for path in collect_files(path):
                 if args.verbose:
                     print("Examining %s..." % (path,))
-                if fix_eol_bom_exec(path, dry_run=args.dry_run):
+                if fix_eol_bom_exec(path, exec=args.exec, tabs=args.tabs,
+                                    trailing=args.trailing, bom=args.bom,
+                                    dry_run=args.dry_run):
                     print("Fixed %s..." % (path,))
 
         else:
             if args.verbose:
                 print("Examining %s..." % (path,))
 
-            if fix_eol_bom_exec(path, dry_run=args.dry_run):
+            if fix_eol_bom_exec(path, exec=args.exec, tabs=args.tabs,
+                                trailing=args.trailing, bom=args.bom,
+                                dry_run=args.dry_run):
                 print("Fixed %s..." % (path,))
 
 
