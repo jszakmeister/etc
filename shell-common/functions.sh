@@ -51,7 +51,6 @@ function md()
     cd "$1"
 }
 
-
 if _has_executable gdb
 then
     function gdb()
@@ -81,6 +80,25 @@ function grep()
         "$_grep_path" "$@" $_grep_options | $PAGER $_pager_options
     else
         "$_grep_path" "$@"
+    fi
+}
+
+function egrep()
+{
+    local _egrep_path="$(_find_executable egrep)"
+    local _pager_options
+    local _egrep_options
+
+    # Let ctrl-c pass kill less.
+    [ "$PAGER" = "less" ] && _pager_options="-K"
+
+    test -n "$_grep_color" && _egrep_options="--color=always"
+
+    if test -t 1
+    then
+        "$_egrep_path" "$@" $_egrep_options | $PAGER $_pager_options
+    else
+        "$_egrep_path" "$@"
     fi
 }
 
