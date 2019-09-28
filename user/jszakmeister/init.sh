@@ -403,7 +403,7 @@ clean-python()
 
     # OS X doesn't have --no-run-if-empty for xargs, so we work around that
     # limitation by looping through the results.
-    find -d "$dir" \( -name '*.pyc' -or -name __pycache__ \) -print0 |
+    find "$dir" -depth \( -name '*.pyc' -or -name __pycache__ \) -print0 |
     while IFS= read -r -d '' file
     do
         rm -r "$file"
