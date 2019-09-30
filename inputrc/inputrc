@@ -28,6 +28,10 @@ set expand-tilde off
 # There's no /etc/inputrc on the Mac
 "\C-x\C-r": re-read-init-file
 
+# This is generally already configured by default, but make
+# C-x, C-e edit the current command line in your editor
+"\C-x\C-e": edit-and-execute-command
+
 $if Bash
 	"\C-o\C-o": "\C-e | less\n"
 $endif
