@@ -107,7 +107,7 @@ def replace_tabs(m, tab_size=8):
 
 
 def fix_eol_bom_exec(path, eol=True, bom=True, exec=True, tabs=4,
-                     trailing=True, dry_run=False):
+                     trailing=True, eof=True, dry_run=False):
     if not any([eol, bom, exec, tabs]):
         return False
 
@@ -132,6 +132,10 @@ def fix_eol_bom_exec(path, eol=True, bom=True, exec=True, tabs=4,
 
         if trailing and (ext in trailing_whitespace_extensions):
             buf = trailing_re.sub(rb'', buf)
+
+        if eof:
+            buf.rstrip()
+            buf += b'\n'
 
         if buf != orig_buf:
             modified = True
@@ -197,6 +201,10 @@ def main():
     parser.add_argument("--no-exec", action='store_false',
                         dest='exec', default=True,
                         help="Disables fixing of the executable bit.")
+    parser.add_argument("--no-eof", action='store_false',
+                        dest='eof', default=True,
+                        help="Disables fixing of the end-of-file.  Strips "
+                             "whitespace and ensures file ends with a newline.")
     parser.add_argument("files", nargs="+",
                         help="The files to examine and fix.")
 
@@ -209,7 +217,7 @@ def main():
                     print("Examining %s..." % (path,))
                 if fix_eol_bom_exec(path, exec=args.exec, tabs=args.tabs,
                                     trailing=args.trailing, bom=args.bom,
-                                    dry_run=args.dry_run):
+                                    eof=args.eof, dry_run=args.dry_run):
                     print("Fixed %s..." % (path,))
 
         else:
