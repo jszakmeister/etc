@@ -10,7 +10,7 @@ bom_re = re.compile(rb'^\xEF\xBB\xBF')
 eol_re = re.compile(rb'\r?\n')
 exec_re = re.compile(rb'^(\xEF\xBB\xBF)?#!')
 tab_re = re.compile(rb'^( *)(\t+)( *)', re.MULTILINE)
-trailing_re = re.compile(rb'(\s+)$', re.MULTILINE)
+trailing_re = re.compile(rb'([ \t]+)(?=\r?\n|$)')
 
 
 ignore_dirs = [
