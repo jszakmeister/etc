@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012-2017, John Szakmeister <john@szakmeister.net>
+# Copyright (c) 2012-2019, John Szakmeister <john@szakmeister.net>
 #
 # Idea was taken from here, but extended:
 #    <https://community.jboss.org/blogs/stuartdouglas/2011/09/06/merging-github-pull-requests>
@@ -26,17 +26,36 @@ find_upstream() {
 fetch() {
     local upstream=$(find_upstream)
     local failed=
+    local pull_request_type=
+    local pull_request_branch=
+
+    if git ls-remote --exit-code "$upstream" 'refs/pull/*' > /dev/null 2>&1
+    then
+        pull_request_type="github"
+    elif git ls-remote --exit-code "$upstream" 'refs/merge-requests/*' > /dev/null 2>&1
+    then
+        pull_request_type="gitlab"
+    else
+        die "Can't find pull request branch for $var"
+    fi
 
     cur_head="$(git symbolic-ref --short HEAD 2>/dev/null)"
     for var in "$@"
     do
+        if [ "$pull_request_type" = "github" ]
+        then
+            pull_request_branch="pull/$var/head"
+        else
+            pull_request_branch="merge-requests/$var/head"
+        fi
+
         branch_name="pr-$var"
         if [ "$cur_head" = "$branch_name" ]
         then
-            git fetch -v "$upstream" "pull/$var/head" &&
+            git fetch -v "$upstream" "$pull_request_branch" &&
                 git reset --hard FETCH_HEAD || failed=true
         else
-            git fetch -v $upstream "+pull/$var/head:$branch_name" ||
+            git fetch -v $upstream "+$pull_request_branch:$branch_name" ||
                 failed=true
         fi
     done
