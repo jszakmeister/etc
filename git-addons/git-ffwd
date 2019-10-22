@@ -18,7 +18,7 @@ do
             verbose=
             shift
             ;;
-        -s|--silent)
+        -s|--status)
             no_ff=t
             shift
             ;;
