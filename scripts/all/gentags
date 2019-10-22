@@ -34,8 +34,12 @@ then
                 output_path="$2"
                 shift
                 ;;
-            *)
+            -*)
                 die "Unknown option: $1"
+                ;;
+            *)
+                # The rest should be paths.
+                break
                 ;;
         esac
         shift
@@ -88,4 +92,4 @@ ctags -R --exclude=build \
          -I FUNC_ATTR_NONNULL_ARG+ \
          -I FUNC_ATTR_NONNULL_RET \
          -o "$output_path" \
-         "$tag_dir/" || die "Error executing ctags"
+         "$tag_dir/" "$@" || die "Error executing ctags"
