@@ -59,6 +59,7 @@ ctags -R --exclude=build \
          --exclude=venv \
          --exclude=_build \
          --exclude=__pycache__ \
+         --exclude=static \
          --exclude=node_modules \
          --exclude='.[a-z]*' \
          --exclude=classes \
