@@ -1,0 +1,328 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Term::ANSIColor;
+use IO::Pty;
+
+my $ninja = "ninja";
+my @ninjaArgs = ();
+
+my $reset = color("reset");
+my %colors = (
+    status     => "",
+    generating => color("bold blue"),
+    building   => color("green"),
+    linking    => color("bold red"),
+    failed     => "",
+    path       => color("bold"),
+    location   => color("bold"),
+    warning    => color("bold yellow"),
+    error      => color("bold red"),
+    code       => color("bold cyan")
+);
+
+sub loadPreferences
+{
+    my $filename = shift;
+
+    open( my $file, "<", $filename ) || return;
+
+    while( <$file> )
+    {
+        # Ignore comments
+        next if ( /^\s*#/ );
+
+        # Ignore empty lines
+        next if ( /^\s*$/ );
+
+        # It's of the form "foo : bar".
+        if ( /^\s*(\w+)\s*:\s*((\s*\w+){0,3})/ )
+        {
+            my $value = "";
+            $value = color($2) if ( $2 );
+            $colors{$1} = $value;
+        }
+        else
+        {
+            print "error parsing: $_\n";
+        }
+    }
+
+    close( $file ) || die "$file: $!";
+}
+
+sub printMessage
+{
+    my $message = shift;
+    my $on = $colors{code};
+    $message =~ s/((‘|`).*?(’|'))/$on$1$reset/g;
+    print $message;
+}
+
+sub printGccLine
+{
+    my $line = shift;
+
+    if ( $line =~ /^(.*?:\ )(.*):$/ )
+    {
+        print $colors{path}, $1, $reset;
+        printMessage( $2 );
+        print( ":\n" );
+    }
+    elsif ( $line =~ /^(.*?:)(\d+(?::\d+)?:\ )(error:)(\ .*)$/ )
+    {
+        print( $colors{path}, $1, $reset );
+        print( $colors{location}, $2, $reset );
+        print( $colors{error}, $3, $reset );
+        printMessage( $4 );
+        print( "\n" );
+    }
+    elsif ( $line =~ /^(.*?:)(\d+(?::\d+)?:\ )(warning:|note:)(\ .*)$/ )
+    {
+        print( $colors{path}, $1, $reset );
+        print( $colors{location}, $2, $reset );
+        print( $colors{warning}, $3, $reset );
+        printMessage( $4 );
+        print( "\n" );
+    }
+    elsif ( $line =~ /^(.*?:)(\d+(?::\d+)?:\ )(.*)$/ )
+    {
+        print( $colors{path}, $1, $reset );
+        print( $colors{location}, $2, $reset );
+        printMessage( $3 );
+        print( "\n" );
+    }
+    elsif ( $line =~ /^((?:In\ file\ included|\ {16})\ from\ )(.*?:)(\d+)(,|:.*)$/ )
+    {
+        print( $1 );
+        print( $colors{path}, $2, $reset );
+        print( $colors{location}, $3, $reset );
+        print( "$4\n" );
+    }
+    elsif ( $line =~ /^(.*?:)(\ +instantiated from here.*)$/ )
+    {
+        print( $colors{path}, $1, $reset );
+        print( "$2\n" );
+    }
+    else
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
+sub getNinjaStatus
+{
+    my $ns = $ENV{"NINJA_STATUS"} || '[%s/%t] ';
+
+    # escape regex meta-characters
+    $ns =~ s/([\{\}\[\]\(\)\^\$\.\|\*\+\?\\\ \/])/\\$1/g;
+
+    # translate NINJA_STATUS placeholders to a regex
+    $ns =~ s/%[struf]/\\d\+/g;
+    $ns =~ s/%p/(?:\\d|\\ ){2}\\d%/g;
+    $ns =~ s/%%/%/g;
+
+    return $ns;
+}
+
+
+#### main ####
+
+# parse args
+Getopt::Long::Configure( "no_auto_abbrev", "pass_through" );
+my $useColor = "auto";
+my $tee = undef;
+my $noGcc = 0;
+my $help = 0;
+my $result = GetOptions(
+   "color:s" => \$useColor,
+   "tee=s"   => \$tee,
+   "nogcc"   => \$noGcc,
+   "help|h"  => \$help
+);
+
+if ( $help || ! $result )
+{
+    print <<"__EOF__";
+This is a ninja wrapper script. All unhandled options are passed to ninja.
+usage: $0 [options] [NinjaArgs...]
+
+options:
+  -h,--help        Show this help message.
+  --color[=WHEN]   Colorize the output. WHEN can be 'always', 'never', or 'auto'.
+  --nogcc          Don't colorize gcc error messages. Usefull when using clang.
+  --tee=<file>     Copy all output to file ala tee.
+
+Here is the ninja usage.
+
+__EOF__
+
+    exec( $ninja, "-h" ) || die "failed to exec";
+}
+
+if ( $useColor eq "" )
+{
+    $useColor = "always";
+}
+
+push( @ninjaArgs, @ARGV );
+
+
+# call ninja as normal if we dont want color output
+if ( ( $useColor eq "never" ) || ( $useColor eq "auto" && ! -t STDOUT ) )
+{
+    exec( $ninja, @ninjaArgs ) || die "Couldn't exec";
+}
+
+# Read the configuration file, if there is one.
+my $configFile = $ENV{"HOME"} . "/.cninjarc";
+if ( -f $configFile )
+{
+    loadPreferences( $configFile );
+}
+
+my $teefile;
+if ( $tee )
+{
+    open( $teefile, ">", $tee ) || die "Error opening $tee: $!";
+}
+
+my $ninjaStatus = getNinjaStatus();
+
+my $pty = new IO::Pty;
+my $pid = fork;
+if ( $pid == 0 )
+{
+    # child
+    $pty->make_slave_controlling_terminal();
+    my $slave = $pty->slave();
+    close $pty;
+    $slave->clone_winsize_from( \*STDIN );
+    $slave->set_raw();
+    open( STDOUT, ">&" . $slave->fileno );
+    open( STDERR, ">&" . $slave->fileno );
+    close( $slave );
+    exec( $ninja, @ninjaArgs ) || die "exec failed";
+}
+
+# parent
+
+my $signaled = 0;
+$SIG{INT} = sub {
+    #print "got SIGINT. sending SIGINT to $pid\n";
+    $signaled = 1;
+    kill( "SIGINT", $pid );
+};
+
+$pty->set_raw();
+$pty->close_slave();
+
+autoflush STDOUT 1;
+autoflush $teefile 1 if ( $tee );
+
+my $buf;
+my $nbuf;
+while ( sysread( $pty, $nbuf, 4096 ) || $signaled )
+{
+    if ( $signaled )
+    {
+        $signaled = 0;
+        next;
+    }
+
+    $buf .= $nbuf;
+
+    my $foundMatch = 1;
+    while ( $foundMatch )
+    {
+        $foundMatch = 0;
+
+        ### ninja status lines ###
+        if ( $buf =~ /^(\r)?($ninjaStatus)(.*?)(\n|\x1B\[K)/ )
+        {
+            $foundMatch = 1;
+            my $prefix      = $1 || '';
+            my $status      = $2;
+            my $description = $3;
+            my $suffix       = $4;
+            $buf = substr( $buf, $+[0] );
+
+            print "$prefix";
+            print "$colors{status}$status$reset";
+
+            if ( $description =~ /^Generating/ )
+            {
+                print "$colors{generating}$description$reset";
+            }
+            elsif ( $description =~ /^Building/ )
+            {
+                print "$colors{building}$description$reset";
+            }
+            elsif ( $description =~ /^Linking$/ )
+            {
+                print "$colors{linking}$description$reset";
+            }
+            else
+            {
+                print "$colors{building}$description$reset";
+            }
+
+            print "$suffix";
+
+            print $teefile "$status$description\n" if ( $tee );
+        }
+
+        ### regular lines ###
+        elsif ( $buf =~ /^(\n*)(.*)\n/ )
+        {
+            $foundMatch = 1;
+
+            my $prefix = $1;
+            my $line   = $2;
+            $buf = substr( $buf, $+[0] );
+
+            print $prefix;
+
+            ### ninja lines
+            if ( $line =~ /^FAILED:\ / )
+            {
+                print "$colors{failed}$line$reset\n";
+            }
+
+            elsif ( $line =~ /^ninja: build stopped:\ / )
+            {
+                print "$colors{failed}$line$reset\n";
+            }
+
+            ### gcc lines
+            elsif ( ! $noGcc && printGccLine( $line ) )
+            {
+                # all the work was done in the printGccLine() call
+            }
+
+            ### do nothing ###
+            else
+            {
+                print "$line\n";
+            }
+
+            if ( $tee )
+            {
+                $line =~ s/\e\[?.*?[\@-~]//g; # all ANSI escape codes
+                print $teefile "$line\n";
+            }
+        }
+
+    } # while ( $foundMatch )
+}
+
+# Get the return code of ninja and exit with that.
+waitpid( $pid, 0 );
+my $ret = $?;
+close $pty;
+exit( $ret >> 8 );
+
