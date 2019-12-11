@@ -1,22 +1,32 @@
 #!/usr/bin/env python
 import logging
 import sys
-import BaseHTTPServer
-import SimpleHTTPServer
+
+try:
+    import BaseHTTPServer
+    import SimpleHTTPServer
+
+    SimpleHTTPRequestHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
+    ServerClass = BaseHTTPServer.HTTPServer
+
+except ImportError:
+    import http.server
+
+    SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
+    ServerClass = http.server.HTTPServer
 
 
-class MyHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
         pass
 
     def end_headers(self):
         self.send_header("Access-Control-Allow-Origin", "*")
 
-        SimpleHTTPServer.SimpleHTTPRequestHandler.end_headers(self)
+        SimpleHTTPRequestHandler.end_headers(self)
 
 
 HandlerClass = MyHTTPRequestHandler
-ServerClass = BaseHTTPServer.HTTPServer
 Protocol = "HTTP/1.1"
 
 if sys.argv[1:]:
@@ -37,7 +47,7 @@ HandlerClass.protocol_version = Protocol
 httpd = ServerClass(server_address, HandlerClass)
 
 sa = httpd.socket.getsockname()
-print "Serving HTTP on", sa[0], "port", sa[1], "..."
+print("Serving HTTP on %s port %s..." % (sa[0], sa[1]))
 logging.disable(logging.CRITICAL)
 try:
     httpd.serve_forever()
