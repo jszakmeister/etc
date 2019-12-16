@@ -213,7 +213,8 @@ defaults_write com.apple.screensaver askForPassword -int 1
 defaults_write com.apple.screensaver askForPasswordDelay -int 5
 
 # Save screenshots to the desktop
-defaults_write com.apple.screencapture location -string "$HOME/Desktop"
+# No longer necessary... screencapture now defaults to the desktop.
+# defaults_write com.apple.screencapture location -string "$HOME/Desktop"
 
 # Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
 defaults_write com.apple.screencapture type -string "png"
