@@ -2,11 +2,23 @@
 
 use strict;
 use warnings;
+use File::Which;
 use Getopt::Long;
 use Term::ANSIColor;
 use IO::Pty;
 
-my $ninja = "ninja";
+my $ninja = which "ninja-build";
+if (! defined($ninja))
+{
+    $ninja = which "ninja";
+}
+
+if (! defined($ninja))
+{
+    print "ERROR: No suitable ninja binary found.";
+    exit(1);
+}
+
 my @ninjaArgs = ();
 
 my $reset = color("reset");
@@ -323,6 +335,8 @@ while ( sysread( $pty, $nbuf, 4096 ) || $signaled )
 # Get the return code of ninja and exit with that.
 waitpid( $pid, 0 );
 my $ret = $?;
+
 close $pty;
+
 exit( $ret >> 8 );
 
