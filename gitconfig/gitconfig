@@ -124,6 +124,9 @@
 	# git on network drives or Windows.
 	preloadindex = true
 
+	# Prevent unicode names from being mangled on HFS.
+	precomposeUnicode = true
+
 [include]
 	path = ~/.gituser
 
