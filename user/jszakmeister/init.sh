@@ -427,6 +427,11 @@ clean-cruft()
     clean-vim
 }
 
+hash-dir()
+{
+    find "${1:-.}" -type f -print0 | sort -z | xargs -0 sha1sum | sha1sum
+}
+
 # Disable slow keys...
 # Not sure if this persists or not.
 #
