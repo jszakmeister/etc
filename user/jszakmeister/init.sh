@@ -257,6 +257,9 @@ _has_executable rlwrap &&
 _has_executable cninja &&
     alias cn="cninja"
 
+_has_executable hexdump &&
+    alias hhexdump="\\hexdump -v -e '\"%10_ax:  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \"' -e'\"  \" 16/1 \"%_p\" \"\n\"'"
+
 test -e /System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc &&
     alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
 
