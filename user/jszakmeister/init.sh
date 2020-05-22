@@ -245,10 +245,6 @@ else
     _add_dir_shortcut vu ~/.vim/user/jszakmeister true
 fi
 
-_add_dir_shortcut s ~/sources true
-_add_dir_shortcut gc ~/projects/gradle-clojure
-_add_dir_shortcut w ~/Documents/Work true
-
 test -e ~/tmp && _make_dir_complete pdt pushd ~/tmp
 
 # Make netcat a little more friendly to use.
@@ -311,10 +307,6 @@ if [ -f "/Applications/VMware Fusion.app/Contents/Library/vmrun" ]; then
     [ -f ~/Documents/Virtual\ Machines.localized/dev-ubuntu.vmwarevm/dev-ubuntu.vmx ] && {
         alias start-dev-ubuntu="vmrun -T fusion start ~/Documents/Virtual\ Machines.localized/dev-ubuntu.vmwarevm/dev-ubuntu.vmx nogui"
         alias stop-dev-ubuntu="vmrun -T fusion stop ~/Documents/Virtual\ Machines.localized/dev-ubuntu.vmwarevm/dev-ubuntu.vmx"
-    }
-    [ -f /Volumes/parents/John/VMs/freebsd-10.vmwarevm/freebsd-10.vmx ] && {
-        alias start-freebsd-10="vmrun -T fusion start /Volumes/parents/John/VMs/freebsd-10.vmwarevm/freebsd-10.vmx nogui"
-        alias stop-freebsd-10="vmrun -T fusion stop /Volumes/parents/John/VMs/freebsd-10.vmwarevm/freebsd-10.vmx"
     }
 fi
 
