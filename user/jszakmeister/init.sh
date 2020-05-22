@@ -494,6 +494,6 @@ then
         rmvirtualenv sphinx &&
         mkvirtualenv --python=$(which python3) sphinx &&
         pip install -U Sphinx recommonmark hieroglyph sphinx_rtd_theme \
-           sphinxcontrib-websupport
+           sphinxcontrib-websupport guzzle_sphinx_theme
     }
 fi
