@@ -6,14 +6,20 @@ try:
     import BaseHTTPServer
     import SimpleHTTPServer
 
+    from SocketServer import ThreadingMixIn
+
     SimpleHTTPRequestHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
-    ServerClass = BaseHTTPServer.HTTPServer
+
+    class ThreadingHTTPServer(ThreadingMixIn, BaseHTTPServer.HTTPServer):
+        daemon_threads = True
+
+    ServerClass = ThreadingHTTPServer
 
 except ImportError:
     import http.server
 
     SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
-    ServerClass = http.server.HTTPServer
+    ServerClass = http.server.ThreadingHTTPServer
 
 
 class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
@@ -53,3 +59,4 @@ try:
     httpd.serve_forever()
 except KeyboardInterrupt:
     pass
+httpd.server_close()
