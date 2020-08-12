@@ -1,6 +1,12 @@
 #!/usr/bin/env python
+import argparse
+import distutils.spawn
 import logging
+import os
+import socket
+import subprocess
 import sys
+import tempfile
 
 try:
     import BaseHTTPServer
@@ -22,6 +28,9 @@ except ImportError:
     ServerClass = http.server.ThreadingHTTPServer
 
 
+BUILTIN = "<builtin>"
+
+
 class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
         pass
@@ -32,31 +41,250 @@ class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
         SimpleHTTPRequestHandler.end_headers(self)
 
 
-HandlerClass = MyHTTPRequestHandler
-Protocol = "HTTP/1.1"
+def launch_builtin(addr, port):
+    HandlerClass = MyHTTPRequestHandler
+    Protocol = "HTTP/1.1"
 
-if sys.argv[1:]:
-    listenAddr = sys.argv[1]
-    if ':' in listenAddr:
-        addr, port = listenAddr.split(':', 1)
-        port = int(port)
-    else:
-        addr = '127.0.0.1'
-        port = int(listenAddr)
-else:
-    addr = '127.0.0.1'
+    server_address = (addr, port)
+
+    HandlerClass.protocol_version = Protocol
+    httpd = ServerClass(server_address, HandlerClass)
+
+    sa = httpd.socket.getsockname()
+    print("Serving HTTP on %s port %s (via built-in server)..." % (sa[0], sa[1]))
+    logging.disable(logging.CRITICAL)
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    httpd.server_close()
+
+
+def launch_caddy(addr, port):
+    print("Serving HTTP on %s port %s (via caddy)..." % (addr, port))
+    try:
+        subprocess.call(["caddy", "file-server",
+                         "--listen",  addr + ":" + str(port),
+                         "--browse"])
+    except KeyboardInterrupt:
+        pass
+
+
+NGINX_CONF_TEMPLATE = """\
+worker_processes  1;
+daemon off;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    types {
+        text/html                                        html htm shtml;
+        text/css                                         css;
+        text/xml                                         xml;
+        image/gif                                        gif;
+        image/jpeg                                       jpeg jpg;
+        application/javascript                           js;
+        application/atom+xml                             atom;
+        application/rss+xml                              rss;
+
+        text/mathml                                      mml;
+        text/plain                                       txt;
+        text/vnd.sun.j2me.app-descriptor                 jad;
+        text/vnd.wap.wml                                 wml;
+        text/x-component                                 htc;
+
+        image/png                                        png;
+        image/svg+xml                                    svg svgz;
+        image/tiff                                       tif tiff;
+        image/vnd.wap.wbmp                               wbmp;
+        image/webp                                       webp;
+        image/x-icon                                     ico;
+        image/x-jng                                      jng;
+        image/x-ms-bmp                                   bmp;
+
+        font/woff                                        woff;
+        font/woff2                                       woff2;
+
+        application/java-archive                         jar war ear;
+        application/json                                 json;
+        application/mac-binhex40                         hqx;
+        application/msword                               doc;
+        application/pdf                                  pdf;
+        application/postscript                           ps eps ai;
+        application/rtf                                  rtf;
+        application/vnd.apple.mpegurl                    m3u8;
+        application/vnd.google-earth.kml+xml             kml;
+        application/vnd.google-earth.kmz                 kmz;
+        application/vnd.ms-excel                         xls;
+        application/vnd.ms-fontobject                    eot;
+        application/vnd.ms-powerpoint                    ppt;
+        application/vnd.oasis.opendocument.graphics      odg;
+        application/vnd.oasis.opendocument.presentation  odp;
+        application/vnd.oasis.opendocument.spreadsheet   ods;
+        application/vnd.oasis.opendocument.text          odt;
+        application/vnd.openxmlformats-officedocument.presentationml.presentation
+                                                         pptx;
+        application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                                                         xlsx;
+        application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                                                         docx;
+        application/vnd.wap.wmlc                         wmlc;
+        application/x-7z-compressed                      7z;
+        application/x-cocoa                              cco;
+        application/x-java-archive-diff                  jardiff;
+        application/x-java-jnlp-file                     jnlp;
+        application/x-makeself                           run;
+        application/x-perl                               pl pm;
+        application/x-pilot                              prc pdb;
+        application/x-rar-compressed                     rar;
+        application/x-redhat-package-manager             rpm;
+        application/x-sea                                sea;
+        application/x-shockwave-flash                    swf;
+        application/x-stuffit                            sit;
+        application/x-tcl                                tcl tk;
+        application/x-x509-ca-cert                       der pem crt;
+        application/x-xpinstall                          xpi;
+        application/xhtml+xml                            xhtml;
+        application/xspf+xml                             xspf;
+        application/zip                                  zip;
+
+        application/octet-stream                         bin exe dll;
+        application/octet-stream                         deb;
+        application/octet-stream                         dmg;
+        application/octet-stream                         iso img;
+        application/octet-stream                         msi msp msm;
+
+        audio/midi                                       mid midi kar;
+        audio/mpeg                                       mp3;
+        audio/ogg                                        ogg;
+        audio/x-m4a                                      m4a;
+        audio/x-realaudio                                ra;
+
+        video/3gpp                                       3gpp 3gp;
+        video/mp2t                                       ts;
+        video/mp4                                        mp4;
+        video/mpeg                                       mpeg mpg;
+        video/quicktime                                  mov;
+        video/webm                                       webm;
+        video/x-flv                                      flv;
+        video/x-m4v                                      m4v;
+        video/x-mng                                      mng;
+        video/x-ms-asf                                   asx asf;
+        video/x-ms-wmv                                   wmv;
+        video/x-msvideo                                  avi;
+    }
+
+    default_type  application/octet-stream;
+
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent';
+    error_log     /dev/stderr;
+    access_log    /dev/stdout main;
+
+    sendfile      on;
+
+    keepalive_timeout  65;
+
+    gzip  on;
+
+    server {
+        listen       %(port)d;
+        server_name  %(addr)s;
+
+        location / {
+            root   %(root)s;
+            index  index.html index.htm;
+        }
+    }
+}
+"""
+
+
+def launch_nginx(addr, port):
+    print("Serving HTTP on %s port %s (via nginx)..." % (addr, port))
+    conf_contents = NGINX_CONF_TEMPLATE % {"root": os.getcwd(),
+                                           "addr": addr,
+                                           "port": port}
+
+    fd, conf_path = tempfile.mkstemp(prefix="nginx-", suffix=".conf")
+    try:
+        with os.fdopen(fd, 'w') as tmp:
+            # do stuff with temp file
+            tmp.write(conf_contents)
+
+        subprocess.call(["nginx", "-c", conf_path])
+    except KeyboardInterrupt:
+        pass
+    finally:
+        os.remove(conf_path)
+
+
+def parse_address_port(address_port):
+    addr = "127.0.0.1"
     port = 8081
 
-server_address = (addr, port)
+    if not address_port:
+        return addr, port
 
-HandlerClass.protocol_version = Protocol
-httpd = ServerClass(server_address, HandlerClass)
+    if ':' in address_port:
+        addr, port = address_port.split(':', 1)
+        port = int(port)
+    else:
+        port = int(address_port)
 
-sa = httpd.socket.getsockname()
-print("Serving HTTP on %s port %s..." % (sa[0], sa[1]))
-logging.disable(logging.CRITICAL)
-try:
-    httpd.serve_forever()
-except KeyboardInterrupt:
-    pass
-httpd.server_close()
+    return addr, port
+
+
+def find_executable(name):
+    return distutils.spawn.find_executable(name)
+
+
+def find_webserver():
+    path = None
+    for webserver in ["caddy", "ngnix"]:
+        path = distutils.spawn.find_executable(webserver)
+        if path:
+            return webserver, path
+
+    return BUILTIN, None
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "address_port",
+        help="Can take the form of PORT or ADDRESS:PORT. Defaults to 127.0.0.1:8081",
+        default="",
+        nargs="?")
+    parser.add_argument(
+        "--server",
+        help="Choose backend server.",
+        choices=["caddy", "nginx", "builtin"],
+        default=None
+    )
+    args = parser.parse_args()
+
+    addr, port = parse_address_port(args.address_port)
+
+    if args.server:
+        if args.server == "builtin":
+            webserver, path = BUILTIN, None
+        else:
+            webserver, path = args.server, find_executable(args.server)
+            if not path:
+                print("Cannot find %s" % (webserver,))
+                sys.exit(1)
+    else:
+        webserver, path = find_webserver()
+
+    if webserver == "caddy":
+        launch_caddy(addr, port)
+    elif webserver == "nginx":
+        launch_nginx(addr, port)
+    else:
+        launch_builtin(addr, port)
+
+
+if __name__ == '__main__':
+    main()
