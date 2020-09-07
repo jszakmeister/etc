@@ -1,4 +1,4 @@
-AcceptEnv LANG LC_* TERM_PROGRAM COLORFGBG
+AcceptEnv LANG LC_* TERM TERM_PROGRAM TERM_PROGRAM_VERSION COLORFGBG COLORTERM VTE_*
 
 # Disable password-based logins.
 PermitRootLogin no

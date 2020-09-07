@@ -2,3 +2,7 @@
 # for a while looking up host names in environments where a DNS is
 # unavailable.  Selectively enable it, if you need it.
 GSSAPIAuthenication no
+
+# Send some environment variables to the remote environment.  This
+# helps my Vim config work the way that I want.
+SendEnv LANG LC_* TERM TERM_PROGRAM TERM_PROGRAM_VERSION COLORFGBG COLORTERM VTE_*
