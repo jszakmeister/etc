@@ -265,10 +265,10 @@ test -e /System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc &&
 
 if _has_executable wget
 then
-    alias web-cat="wget -qO-"
+    alias webcat="wget -qO-"
 elif _has_executable curl
 then
-    alias web-cat="curl"
+    alias webcat="curl"
 fi
 
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
