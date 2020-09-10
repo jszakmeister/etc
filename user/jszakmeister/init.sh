@@ -263,6 +263,14 @@ _has_executable hexdump &&
 test -e /System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc &&
     alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
 
+if _has_executable wget
+then
+    alias web-cat="wget -qO-"
+elif _has_executable curl
+then
+    alias web-cat="curl"
+fi
+
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
