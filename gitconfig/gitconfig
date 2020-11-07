@@ -76,9 +76,6 @@
 	# diffstat output, without the pager
 	diffstat = !git --no-pager diff --stat -r
 
-	# Provide ack-like output for git grep
-	ack = grep --break --heading -n
-
 	# Lists all the defined aliases
 	# Taken from https://git.wiki.kernel.org/index.php/Aliases#alias
 	aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
