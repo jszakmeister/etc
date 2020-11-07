@@ -64,26 +64,11 @@ if [ "$platform" = 'darwin' ]; then
         _update_python_paths python
     fi
 
-    slickedit_path=$(\ls -d /Applications/SlickEdit* ~/Applications/SlickEdit* 2>/dev/null | sort -rn | head -n 1)
-    if [ "$slickedit_path" != '' ]; then
-        if [ -f "$slickedit_path/Contents/slickedit/bin/vs" ]; then
-            __etc_append_path "$slickedit_path/Contents/slickedit/bin"
-        fi
-        if [ -f "$slickedit_path/Contents/MacOS/vs" ]; then
-            __etc_append_path "$slickedit_path/Contents/MacOS"
-        fi
-    fi
-
     __etc_append_path /opt/local/bin
     __etc_append_path "/usr/local/texlive/2009/bin/universal-darwin"
 
     __etc_prepend_path /usr/local/git/bin
     __etc_prepend_path "$HOME/Library/Haskell/bin"
-fi
-
-if [ "$platform" = 'linux' ]; then
-    __etc_prepend_path /opt/slickedit/bin
-    __etc_prepend_path "$HOME/.local/slickedit/bin"
 fi
 
 # Put ccache links on the path, if they're available.
@@ -106,14 +91,6 @@ fi
 
 if [ "$PATHS_TO_APPEND" != '' ]; then
     export PATH=$PATH:$PATHS_TO_APPEND
-fi
-
-if _has_executable vs; then
-    export VSLICKXNOPLUSNEWMSG=1
-
-    if [ -f /usr/local/share/firefox/firefox ]; then
-        export VSLICKHELP_WEB_BROWSER=/usr/local/share/firefox/firefox
-    fi
 fi
 
 # Set term if we're running under tmux.
