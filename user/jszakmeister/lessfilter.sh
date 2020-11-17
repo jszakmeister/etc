@@ -30,6 +30,13 @@ case "$(basename "$1")" in
     *.txt)
         exit 1
         ;;
+    *.xml)
+        if command -v xmllint > /dev/null 2>&1; then
+            xmllint --format - < "$1" | ${PYGMENTIZE} -l xml 2>/dev/null
+        else
+            ${PYGMENTIZE} "$1" 2>/dev/null
+        fi
+        ;;
     *.*)
         ${PYGMENTIZE} "$1" 2>/dev/null
         ;;
