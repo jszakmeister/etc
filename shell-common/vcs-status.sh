@@ -1,6 +1,6 @@
 . "${ETC_HOME}/shell-common/colors.sh"
 
-function _git_has_diverged()
+_git_has_diverged()
 {
     local a="$1"
     local b="$2"
@@ -68,7 +68,7 @@ _git_determine_upstream_branch() {
 
 # This is duplicated in git-missing.  Make sure to update both if you make
 # changes.
-function _git_infer_publish_branch()
+_git_infer_publish_branch()
 {
     local publish_branch
 
@@ -83,7 +83,7 @@ function _git_infer_publish_branch()
 }
 
 
-function _git_additional()
+_git_additional()
 {
     local g=$(git rev-parse --git-dir 2>/dev/null)
     local r;
@@ -127,10 +127,80 @@ function _git_additional()
 }
 
 
+# To detect rebase...
+# local r=""
+# local b=""
+# local step=""
+# local total=""
+# if [ -d "$g/rebase-merge" ]; then
+#     __git_eread "$g/rebase-merge/head-name" b
+#     __git_eread "$g/rebase-merge/msgnum" step
+#     __git_eread "$g/rebase-merge/end" total
+#     if [ -f "$g/rebase-merge/interactive" ]; then
+#         r="|REBASE-i"
+#     else
+#         r="|REBASE-m"
+#     fi
+# else
+#     if [ -d "$g/rebase-apply" ]; then
+#         __git_eread "$g/rebase-apply/next" step
+#         __git_eread "$g/rebase-apply/last" total
+#         if [ -f "$g/rebase-apply/rebasing" ]; then
+#             __git_eread "$g/rebase-apply/head-name" b
+#             r="|REBASE"
+#         elif [ -f "$g/rebase-apply/applying" ]; then
+#             r="|AM"
+#         else
+#             r="|AM/REBASE"
+#         fi
+#     elif [ -f "$g/MERGE_HEAD" ]; then
+#         r="|MERGING"
+#     elif [ -f "$g/CHERRY_PICK_HEAD" ]; then
+#         r="|CHERRY-PICKING"
+#     elif [ -f "$g/REVERT_HEAD" ]; then
+#         r="|REVERTING"
+#     elif [ -f "$g/BISECT_LOG" ]; then
+#         r="|BISECTING"
+#     fi
+
+#     if [ -n "$b" ]; then
+#         :
+#     elif [ -h "$g/HEAD" ]; then
+#         # symlink symbolic ref
+#         b="$(git symbolic-ref HEAD 2>/dev/null)"
+#     else
+#         local head=""
+#         if ! __git_eread "$g/HEAD" head; then
+#             return $exit
+#         fi
+#         # is it a symbolic ref?
+#         b="${head#ref: }"
+#         if [ "$head" = "$b" ]; then
+#             detached=yes
+#             b="$(
+#             case "${GIT_PS1_DESCRIBE_STYLE-}" in
+#                 (contains)
+#                     git describe --contains HEAD ;;
+#                 (branch)
+#                     git describe --contains --all HEAD ;;
+#                 (tag)
+#                     git describe --tags HEAD ;;
+#                 (describe)
+#                     git describe HEAD ;;
+#                 (* | default)
+#                     git describe --tags --exact-match HEAD ;;
+#             esac 2>/dev/null)" ||
+
+#                 b="$short_sha..."
+#             b="($b)"
+#         fi
+#     fi
+# fi
+
 # Also think about adding counts for the number of stashed changes.
 # This could be useful: https://github.com/magicmonty/bash-git-prompt/blob/master/gitstatus.sh
 
-function _vcs_status()
+_vcs_status()
 {
     function git_status()
     {

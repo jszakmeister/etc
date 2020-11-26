@@ -1,7 +1,7 @@
 # Use the 'function funcname()' form to avoid collisions with aliases in
 # Bash.  Zsh seems smart enough to deal with it, but Bash errors.
 
-function find-project-root()
+find-project-root()
 {
     local last_found="$(pwd)"
     local tmp_path="$(dirname "$last_found")"
@@ -18,7 +18,7 @@ function find-project-root()
     echo "$last_found"
 }
 
-function search-up-tree()
+search-up-tree()
 {
     local tmp_path="$(pwd)"
     while [[ "$tmp_path" != "/" ]];
@@ -35,7 +35,7 @@ function search-up-tree()
     done
 }
 
-function cdt()
+cdt()
 {
     local project_root="$(find-project-root)"
     if [ -n "$1" ]; then
@@ -45,7 +45,7 @@ function cdt()
     fi
 }
 
-function md()
+md()
 {
     mkdir -p "$1"
     cd "$1"
@@ -64,7 +64,7 @@ then
     }
 fi
 
-function grep()
+grep()
 {
     local _grep_path="$(_find_executable grep)"
     local _pager_options
@@ -83,7 +83,7 @@ function grep()
     fi
 }
 
-function egrep()
+egrep()
 {
     local _egrep_path="$(_find_executable egrep)"
     local _pager_options
@@ -102,7 +102,7 @@ function egrep()
     fi
 }
 
-function buildall()
+buildall()
 {
     local buildall_exec="$(search-up-tree buildall buildall.sh)"
 
@@ -120,7 +120,7 @@ function buildall()
     return $result
 }
 
-function ssh-add()
+ssh-add()
 {
     function kill-ssh-agent()
     {
@@ -146,7 +146,7 @@ function ssh-add()
     command ssh-add "$@"
 }
 
-function find-domain-controllers()
+find-domain-controllers()
 {
     local DNS_SERVER
     local OPTIONS
