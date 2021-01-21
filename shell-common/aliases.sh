@@ -13,7 +13,7 @@ _has_executable cninja && {
 }
 
 if _has_executable tree; then
-    alias tree='tree --charset=ASCII -F -v'
+    alias tree='tree --charset=ASCII -F -v -I __pycache__'
 elif _has_executable gio; then
     alias tree='gio tree'
 fi
