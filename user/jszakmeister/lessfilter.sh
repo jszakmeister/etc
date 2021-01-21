@@ -37,6 +37,9 @@ case "$(basename "$1")" in
             ${PYGMENTIZE} "$1" 2>/dev/null
         fi
         ;;
+    .etcrc*)
+        ${PYGMENTIZE} -l sh "$1" 2>/dev/null
+        ;;
     *.*)
         ${PYGMENTIZE} "$1" 2>/dev/null
         ;;
