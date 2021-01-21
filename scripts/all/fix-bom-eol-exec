@@ -16,9 +16,10 @@ trailing_re = re.compile(rb'([ \t]+)(?=\r?\n|$)')
 ignore_dirs = [
     r'.*\.egg-info',
     r'\..*',
-    r'build',
+    r'build*',
     r'dist',
     r'node_modules',
+    r'tmp*',
 ]
 
 extensions = [
