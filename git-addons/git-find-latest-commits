@@ -143,7 +143,7 @@ def branch_exists(repo_path, ref):
 
 
 def determine_mainline(repo_path):
-    mainline_branch_names = ('development', 'develop', 'dev', 'master')
+    mainline_branch_names = ('development', 'develop', 'dev', 'main', 'master')
 
     for mainline in mainline_branch_names:
         if branch_exists(repo_path, mainline):

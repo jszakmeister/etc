@@ -24,7 +24,7 @@ case "$REF" in
 esac
 
 git branch -r --merged "$REF" |
-    egrep -v '^(\* |[ \t]*)[^/]*/([0-9]+\.[0-9]+\.x|master|develop|development|HEAD( -> .*)|integrate)$' |
+    egrep -v '^(\* |[ \t]*)[^/]*/([0-9]+\.[0-9]+\.x|master|main|develop|development|HEAD( -> .*)|integrate)$' |
     egrep -v "$REF" |
     while read -r line
     do

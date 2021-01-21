@@ -62,7 +62,7 @@ _git_infer_publish_branch()
 
 find_development_branch()
 {
-    BRANCHES="development develop dev master"
+    BRANCHES="development develop dev main master"
 
     for branch in $BRANCHES
     do
