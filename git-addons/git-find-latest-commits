@@ -117,6 +117,7 @@ def parse_repo_file(path):
 
 ref_branch_re = re.compile(r'refs/(?:heads|remotes/[^/]+)/(.*)')
 ref_short_re = re.compile(r'refs/(?:heads|remotes)/(.*)')
+ref_interested_re = re.compile(r'\A(?:refs/(?:heads|remotes)/.*|HEAD)\Z')
 
 
 def get_short_name(ref):
@@ -168,7 +169,7 @@ def get_refs(repo_path, prefix=None):
     refs = []
 
     for _, ref in (line.split() for line in raw_refs.splitlines()):
-        if ref.startswith('refs/tags/'):
+        if not ref_interested_re.match(ref):
             continue
 
         branch_name = get_branch_name(ref)
