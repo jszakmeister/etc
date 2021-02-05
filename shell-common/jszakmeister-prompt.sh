@@ -21,7 +21,7 @@ _jszakmeister_prompt_title() {
     local host="${HOSTNAME}"
     host="${host:=${HOST}}"
 
-    print -nP "${(l:$((COLUMNS-1)):::):-}\r"
+    printf "%$((COLUMNS-1))s\r" ""
 
     case "$TERM" in
     xterm*|rxvt*)
