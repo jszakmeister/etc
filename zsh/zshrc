@@ -20,9 +20,16 @@ if [[ -z "$ETC_ZSHENV_SOURCED" ]]; then
     . "$ETC_HOME/zsh/zshenv"
 else
     # We'll need to re-setup paths, since zprofile may have user
-    # path_helper and messed up the path setup in zshenv.
-    . "$ETC_HOME/shell-common/exports.sh"
+    # path_helper and messed up the path setup in zshenv.  So we
+    # restore the path from zshenv here.  It may be someone wants
+    # legitimately modify the path in zprofile, but I suspect not.
+    if [ -n "$_ETC_SAVED_PATH" ]
+    then
+        PATH="$_ETC_SAVED_PATH"
+    fi
 fi
+
+unset _ETC_SAVED_PATH
 
 . "$ETC_HOME/zsh/shell-options.zsh"
 
