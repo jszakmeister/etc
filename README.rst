@@ -57,19 +57,19 @@ down the road, I'll make it more severable.
 To get started, all you really need to do is add a line to your ``~/.bashrc``
 file::
 
-  source $HOME/projects/etc/bash/bashrc
+  . $HOME/projects/etc/bash/bashrc
 
 That will bring in the entire environment.  If you checkout out ``etc.git`` to a
 different location, then you need something like this::
 
   ETC_HOME=/path/to/location
-  source $ETC_HOME/bash/bashrc
+  . $ETC_HOME/bash/bashrc
 
 So if you checkout out ``etc.git`` to ``~/.etc``, your ``~/.bashrc`` should
 contain::
 
   ETC_HOME=$HOME/.etc
-  source $ETC_HOME/bash/bashrc
+  . $ETC_HOME/bash/bashrc
 
 You'll need to exit your shell, and create a new one.  That should let the new
 settings take affect.
@@ -103,19 +103,19 @@ Both are great shells, and both have strengths and weaknesses.
 To get started, do is add a line to your ``~/.zshrc`` file (create the file if
 it doesn't exist)::
 
-  source $HOME/projects/etc/zsh/zshrc
+  . $HOME/projects/etc/zsh/zshrc
 
 As with Bash, it will bring in the entire environment.  If you checkout out
 ``etc.git`` a different location, then you need something like this::
 
   ETC_HOME=/path/to/location
-  source $ETC_HOME/zsh/zshrc
+  . $ETC_HOME/zsh/zshrc
 
 So if you checkout out ``etc.git`` to ``~/.etc``, your ``~/.zshrc`` should
 contain::
 
   ETC_HOME=$HOME/.etc
-  source $ETC_HOME/zsh/zshrc
+  . $ETC_HOME/zsh/zshrc
 
 You'll need to exit your shell, and create a new one.  That should let the new
 settings take affect.
@@ -140,12 +140,12 @@ that, you need to have a ``~/.zshenv``.  If you anticipate the need to do such
 a thing, they you'll want to create a ``~/.zshenv`` file that has the
 following::
 
-  source $HOME/projects/etc/zsh/zshenv
+  . $HOME/projects/etc/zsh/zshenv
 
 Or, if you have ``etc.git`` checked out elsewhere::
 
   ETC_HOME=/path/to/location
-  source $ETC_HOME/zsh/zshenv
+  . $ETC_HOME/zsh/zshenv
 
 
 Prompt Configuration
