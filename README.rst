@@ -147,6 +147,31 @@ Or, if you have ``etc.git`` checked out elsewhere::
   ETC_HOME=/path/to/location
   . $ETC_HOME/zsh/zshenv
 
+Using ZSH even when you can't change the default shell
+------------------------------------------------------
+
+I find that systems that authenticate via LDAP, often don't allow customizing
+the login shell per user--there's only a global knob to do it.  I work around
+this by putting the following into my ``~/.bashrc``::
+
+  # Fix the path to point to your etc working tree.
+  ETC_HOME="$HOME/.etc"
+
+  case $- in
+      *i*)
+          if [ -e /usr/bin/zsh ]
+          then
+              exec /usr/bin/zsh
+          else
+              . "$ETC_HOME/bash/bashrc"
+              echo "Running in BASH shell."
+          fi
+          ;;
+  esac
+
+Then, when you login and start an interactive shell, it'll turn around and exec
+zsh, giving me the shell I really want, but not affecting scripts.
+
 
 Prompt Configuration
 ====================
