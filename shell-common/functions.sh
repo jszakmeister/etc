@@ -64,7 +64,9 @@ then
     }
 fi
 
-grep()
+# Function needed here for Bash, as we also alias grep.  See comment at top of
+# file.
+function grep()
 {
     local _grep_path="$(_find_executable grep)"
     local _pager_options
@@ -83,7 +85,9 @@ grep()
     fi
 }
 
-egrep()
+# Function needed here for Bash, as we also alias egrep.  See comment at top of
+# file.
+function egrep()
 {
     local _egrep_path="$(_find_executable egrep)"
     local _pager_options
