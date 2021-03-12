@@ -5,7 +5,7 @@ SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
 
 function determine_ref()
 {
-    local BRANCHES="development develop dev master"
+    local BRANCHES="development develop dev main master"
     for r in $BRANCHES
     do
         if git rev-parse -q --verify "$r" >/dev/null 2>&1
@@ -22,7 +22,7 @@ function determine_ref()
 function check_ref()
 {
     local REF="$1"
-    local BRANCHES="development develop dev master"
+    local BRANCHES="development develop dev main master"
     for r in $BRANCHES
     do
         if [ "$r" == "$REF" ]
@@ -63,7 +63,7 @@ fi
 
 if ! check_ref "$REF"
 then
-    die "ERROR: Not on an acceptable branch (master, dev, develop, development)"
+    die "ERROR: Not on an acceptable branch (master, main, dev, develop, development)"
 fi
 
 CURRENT_BRANCH="$(git symbolic-ref --short HEAD)"
