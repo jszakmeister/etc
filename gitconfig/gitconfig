@@ -149,6 +149,11 @@
 "^(([A-Za-z_][A-Za-z_0-9]*([ \t*]+)?[A-Za-z_][A-Za-z_0-9]*([ \t]*::[ \t]*[^[:space:]]+)?){1,}[ \t]*\\([^;]*)$\n"\
 "^((typedef|struct|class|enum)[^;]*)$"
 
+[fetch]
+	# Often helpful, but can be an issue for very active repositories.
+	# Turn it off for individual repos, if you don't want it.
+	writeCommitGraph = true
+
 [push]
 	default = current
 	followTags = true
