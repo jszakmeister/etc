@@ -25,7 +25,15 @@ except ImportError:
     import http.server
 
     SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
-    ServerClass = http.server.ThreadingHTTPServer
+    if hasattr(http.server, "ThreadingHTTPServer"):
+        ServerClass = http.server.ThreadingHTTPServer
+    else:
+        from socketserver import ThreadingMixIn
+
+        class ThreadingHTTPServer(ThreadingMixIn, http.server.HTTPServer):
+            pass
+
+        ServerClass = ThreadingHTTPServer
 
 
 BUILTIN = "<builtin>"
