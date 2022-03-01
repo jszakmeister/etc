@@ -12,6 +12,8 @@ fi
 REF="$(git symbolic-ref --short HEAD)"
 
 case "$REF" in
+    main)
+        ;;
     master)
         ;;
     develop)
@@ -19,7 +21,7 @@ case "$REF" in
     development)
         ;;
     *)
-        die "ERROR: Not on an acceptable branch (master, develop, development)"
+        die "ERROR: Not on an acceptable branch (main, master, develop, development)"
         ;;
 esac
 
