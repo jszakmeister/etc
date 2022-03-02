@@ -73,7 +73,7 @@ CURRENT_BRANCH="$(git symbolic-ref --short HEAD)"
 # to whatever branch we have checked out, which is why we require master
 # right now.
 git branch --format="%(refname:short)" --merged "$REF" |
-    egrep -v '^(\* |[ \t]*|.*/remotes)([0-9]+\.[0-9]+\.x|master|main|develop|development|HEAD|integrate|.*(\b|_)test(\b|_).*|remotes/.*)$' |
+    egrep -v '^(\* |[ \t]*|.*/remotes)([0-9]+\.[0-9]+\.x|master|main|develop|development|dev|HEAD|integrate|.*(\b|_)test(\b|_).*|remotes/.*)$' |
     egrep -v "^$REF\$" |
     egrep -v "^$CURRENT_BRANCH\$" |
     while read -r branch
