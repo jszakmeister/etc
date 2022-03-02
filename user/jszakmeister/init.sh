@@ -493,6 +493,14 @@ then
     }
 fi
 
+if _has_executable dig
+then
+    mdns()
+    {
+        dig -p 5353 @224.0.0.251 "$@"
+    }
+fi
+
 if [ -n "$VIRTUALENVWRAPPER_PYTHON" ]
 then
     rebuild-sphinx-env()
