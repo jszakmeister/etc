@@ -273,6 +273,10 @@ then
     alias webcat="curl"
 fi
 
+# Look for strings in all parts of a file.
+_has_executable strings &&
+    alias strings="strings -"
+
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
