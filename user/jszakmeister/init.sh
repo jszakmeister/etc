@@ -386,6 +386,11 @@ then
     {
         dig +short NS "$*"
     }
+
+    mdns()
+    {
+        dig -p 5353 @224.0.0.251 "$@"
+    }
 fi
 
 delete-unused()
@@ -492,14 +497,6 @@ then
     docker-ip()
     {
         docker container inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
-    }
-fi
-
-if _has_executable dig
-then
-    mdns()
-    {
-        dig -p 5353 @224.0.0.251 "$@"
     }
 fi
 
