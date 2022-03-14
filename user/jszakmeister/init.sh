@@ -391,7 +391,7 @@ then
 
     mdns()
     {
-        dig -p 5353 @224.0.0.251 "$@"
+        dig +noall +answer -p 5353 @224.0.0.251 "$@"
     }
 fi
 
