@@ -152,6 +152,8 @@ if [ "$platform" = "darwin" ]; then
 
     alias df="df -hi"
     alias ostat="stat -f '%Mp%Lp %N'"
+    alias sstat="stat -f '%N: %z'"
+
     if _has_executable gnu-ls; then
         alias ls='gnu-ls -hFA --color=auto'
         alias ll='gnu-ls -hFl --color=auto'
@@ -198,6 +200,7 @@ if [ "$platform" = "darwin" ]; then
 
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
+    alias sstat="stat --format='%n: %s'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
     alias ll='ls -l --time-style=long-iso'
     alias df='df -h --output=source,size,used,avail,pcent,iused,iavail,ipcent,target'
@@ -226,7 +229,6 @@ fi
 alias lsvirtualenv="lsvirtualenv -b"
 alias helptags="vim '+Helptags|q'"
 alias p8="ping 8.8.8.8"
-alias sstat="stat -f '%z'"
 alias fndate="date '+%Y-%m-%d-%H-%M-%S'"
 
 _add_dir_shortcut e ~/.etc true
