@@ -382,6 +382,8 @@ fi
 
 if _has_executable dig
 then
+    alias dig="dig +noall +answer"
+
     get-soa()
     {
         dig +short NS "$*"
