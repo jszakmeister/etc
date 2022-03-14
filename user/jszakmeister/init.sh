@@ -273,6 +273,12 @@ then
     alias webcat="curl"
 fi
 
+_has_executable petname &&
+    alias petname="petname -l 10"
+
+_has_executable ssh &&
+    alias stop-ssh="ssh -O stop"
+
 # Look for strings in all parts of a file.
 _has_executable strings &&
     alias strings="strings -"
