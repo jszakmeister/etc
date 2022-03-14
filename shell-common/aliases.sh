@@ -28,7 +28,7 @@ if [ "$platform" = 'freebsd' ]; then
     alias du='du -h -d1'
     alias ps='ps auxww'
     alias ls='ls -hFGA'
-    alias ll='ls -l'
+    alias ll='ls -lT'
     alias top='top -o cpu -i 1'
 fi
 
@@ -52,7 +52,7 @@ if [ "$platform" = 'darwin' ]; then
         alias ec="$HOME/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n"
     fi
     alias ls='ls -hFGAO'
-    alias ll='ls -l'
+    alias ll='ls -lT'
     alias top='top -o cpu -i 1'
     alias arp-clear='dscacheutil -flushcache'
     alias eject='diskutil eject'
