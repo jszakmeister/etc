@@ -38,14 +38,21 @@ update_repo()
         return 0
     fi
 
-    if test ! -d "$repo_path/.git" ; then
-        return 0
+    if test -d "$repo_path/.git" ; then
+        # shellcheck disable=SC2086
+        say "Updating $repo_path..." &&
+            git "--git-dir=$repo_path/.git" "--work-tree=$repo_path" \
+                ffwd ${FFWD_OPTIONS}
+        return $?
     fi
 
-    # shellcheck disable=SC2086
-    say "Updating $repo_path..." &&
-        git "--git-dir=$repo_path/.git" "--work-tree=$repo_path" \
-            ffwd ${FFWD_OPTIONS}
+    if test -d "$repo_path/.svn" ; then
+        say "Updating $repo_path..." &&
+            svn up $repo_path
+        return $?
+    fi
+
+    return 0
 }
 
 while [ $# -gt 0 ]
