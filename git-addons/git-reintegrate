@@ -161,7 +161,7 @@ class Branch
       system(*%w[git rev-parse --quiet --verify], "#{base}^{commit}", :out => File::NULL)
       die "no such commit: #{base}" unless $?.success?
     else
-      base = 'master'
+      base = 'main'
     end
 
     @int = @ref.gsub(%r{^refs/heads/}, 'refs/int/')
@@ -186,7 +186,7 @@ class Branch
       system(*%w[git rev-parse --quiet --verify], "#{base}^{commit}", :out => File::NULL)
       die "no such commit: #{base}" unless $?.success?
     else
-      base = 'master'
+      base = 'main'
     end
 
     @int = @ref.gsub(%r{^refs/heads/}, 'refs/int/')
@@ -573,7 +573,7 @@ def status_merge(branch_to_merge = nil)
     $stderr.puts "no branch specified with 'merge' command"
     return
   end
-  $status_base ||= 'master'
+  $status_base ||= 'main'
 
   if ! system(*%w[git rev-parse --verify --quiet], "#{branch_to_merge}^{commit}", :out => File::NULL)
     state = "."
