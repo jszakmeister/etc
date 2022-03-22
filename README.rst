@@ -19,8 +19,6 @@ The repository is broken into a few different pieces:
 * git-addons/ - Contains a couple of git commands that I find myself using
   frequently.
 * python/ - A startup.py script for use with the Mac to enable readline support.
-* pair/ - Houses a script to change the author for git when doing pair
-  programming.
 
 
 Getting the Repository
