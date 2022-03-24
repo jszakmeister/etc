@@ -26,6 +26,9 @@ __etc_prepend_path "$HOME/bin"
 __etc_prepend_path "$HOME/.local/bin"
 __etc_prepend_path "$HOME/local/bin"
 
+# Support Rust's ~/.cargo/bin.
+__etc_prepend_path "$HOME/.cargo/bin"
+
 # Put user script directories on the path.
 __etc_prepend_search_paths "$ETC_LOCAL_DIR/scripts"
 __etc_prepend_search_paths "$ETC_USER_DIR/scripts"
