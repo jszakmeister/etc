@@ -165,6 +165,9 @@ this by putting the following into my ``~/.bashrc``::
               echo "Running in BASH shell."
           fi
           ;;
+      *)
+          . "$ETC_HOME/bash/bashrc"
+          ;;
   esac
 
 Then, when you login and start an interactive shell, it'll turn around and exec
