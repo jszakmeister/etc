@@ -44,11 +44,13 @@ if [ "$platform" = 'darwin' ]; then
         local python_version=$("$python_bin" -c "import sys; print '%d.%d' % sys.version_info[:2]" 2>/dev/null ||
                                "$python_bin" -c "import sys; print('{}.{}'.format(*sys.version_info[:2]))" 2>/dev/null)
         local library_path="/Library/Python/$python_version/bin"
+        local library_fw_path="/Library/Frameworks/Python.framework/Versions/$python_version/bin"
         local system_path="/System/Library/Frameworks/Python.framework/Versions/$python_version/bin"
         local user_path="$("$python_bin" -m site --user-base)/bin"
 
         __etc_prepend_path "$user_path"
         __etc_append_path "$library_path"
+        __etc_append_path "$library_fw_path"
         __etc_append_path "$system_path"
     }
 
