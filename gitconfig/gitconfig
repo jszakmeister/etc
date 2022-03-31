@@ -153,6 +153,9 @@
 	# Turn it off for individual repos, if you don't want it.
 	writeCommitGraph = true
 
+[init]
+	defaultbranch = main
+
 [push]
 	default = current
 	followTags = true
