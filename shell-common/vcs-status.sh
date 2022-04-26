@@ -83,6 +83,21 @@ _git_infer_publish_branch()
 }
 
 
+_git_determine_mainline()
+{
+    BRANCHES="development develop dev main master"
+
+    for branch in $BRANCHES
+    do
+        git rev-parse --verify "$branch" -q >/dev/null 2>&1 &&
+            echo $branch &&
+            return 0
+    done
+
+    echo master
+}
+
+
 _git_additional()
 {
     local g=$(git rev-parse --git-dir 2>/dev/null)
@@ -205,6 +220,7 @@ _vcs_status()
     function git_status()
     {
         local ref dirty count ahead behind divergent upstream g differ remote
+        local mainline="$(_git_determine_mainline)"
         local nomaster=""
 
         _has_devtool git || return 1
@@ -252,8 +268,8 @@ _vcs_status()
                 ahead="0"
                 behind="0"
             else
-                ahead=$(git rev-list --count --cherry-pick --right-only --no-merges master... 2>/dev/null || echo "0")
-                behind=$(git rev-list --count --cherry-pick --left-only --no-merges master... 2>/dev/null || echo "0")
+                ahead=$(git rev-list --count --cherry-pick --right-only --no-merges $mainline... 2>/dev/null || echo "0")
+                behind=$(git rev-list --count --cherry-pick --left-only --no-merges $mainline... 2>/dev/null || echo "0")
             fi
         else
             ahead="0"
@@ -269,7 +285,7 @@ _vcs_status()
             if [[ -n "$nomaster" ]]; then
                 differ=0
             else
-                _git_has_diverged HEAD master
+                _git_has_diverged HEAD $mainline
                 differ=$?
             fi
         else
