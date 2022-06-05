@@ -77,9 +77,14 @@ if [ "$platform" = 'darwin' ]; then
 fi
 
 # Put ccache links on the path, if they're available.
+__etc_prepend_path /opt/homebrew/opt/ccache/libexec
+__etc_prepend_path /opt/homebrew/lib/ccache
 __etc_prepend_path /usr/local/opt/ccache/libexec
 __etc_prepend_path /usr/local/lib/ccache
 __etc_prepend_path /usr/lib/ccache
+
+# Homebrew
+__etc_prepend_path /opt/homebrew/bin
 
 # It turns out there are some brain-dead apps out there that expect /usr/bin to
 # come before /usr/sbin, like mock.
