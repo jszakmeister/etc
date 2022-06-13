@@ -17,6 +17,7 @@
 [alias]
 	co = checkout
 	st = status -sb
+	sw = switch
 	ru = reset --hard @{u}
 	k = !gitk --date-order
 
