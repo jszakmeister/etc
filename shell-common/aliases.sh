@@ -33,8 +33,6 @@ if [ "$platform" = 'freebsd' ]; then
 fi
 
 if [ "$platform" = 'darwin' ]; then
-    alias twistd="/System/Library/Frameworks/Python.framework/Versions/Current/Extras/bin/twistd"
-
     alias du='du -h -d1'
     alias ps='ps auxww'
     if [ -d "$HOME/Applications/0xED.app" ]; then
