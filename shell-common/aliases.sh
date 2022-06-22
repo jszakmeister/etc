@@ -51,7 +51,7 @@ if [ "$platform" = 'darwin' ]; then
     fi
     alias ls='ls -hFGAO'
     alias ll='ls -lT'
-    alias lle='ls -@e'
+    alias lle='ll -@e'
     alias top='top -o cpu -i 1'
     alias arp-clear='dscacheutil -flushcache'
     alias eject='diskutil eject'
