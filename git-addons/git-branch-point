@@ -22,7 +22,7 @@ RAW=
 
 cmd_branch_point()
 {
-    local base_branch="master"
+    local base_branch="$(git dev-branch)"
     local branch="HEAD"
 
     if [ "$1" != "" ]; then

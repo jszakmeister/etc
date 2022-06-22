@@ -1,0 +1,22 @@
+#!/bin/sh
+# Copyright (c) 2022, John Szakmeister <john@szakmeister.net>
+
+SUBDIRECTORY_OK=1 . "$(git --exec-path)/git-sh-setup" ||
+    die "Not a git repository."
+
+find_development_branch()
+{
+    BRANCHES="development develop dev main master"
+
+    for branch in $BRANCHES
+    do
+        git rev-parse --verify "$branch" -q >/dev/null 2>&1 &&
+            echo $branch &&
+            return 0
+    done
+
+    # Return the default if not found.
+    echo "master"
+}
+
+find_development_branch

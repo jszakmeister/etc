@@ -60,22 +60,6 @@ _git_infer_publish_branch()
 }
 
 
-find_development_branch()
-{
-    BRANCHES="development develop dev main master"
-
-    for branch in $BRANCHES
-    do
-        git rev-parse --verify "$branch" -q >/dev/null 2>&1 &&
-            echo $branch &&
-            return 0
-    done
-
-    echo "ERROR: main development branch not found." 1>&2
-    return 1
-}
-
-
 cmd_missing()
 {
     local firstbranch="$1"
@@ -83,7 +67,7 @@ cmd_missing()
 
     if test -z "$firstbranch"; then
         if test -n "$FIND_DEV"; then
-            firstbranch="$(find_development_branch)"
+            firstbranch="$(git dev-branch)"
 
             if test -z "$firstbranch"; then
                 die "Can't determine main development branch."

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2015, John Szakmeister <john@szakmeister.net>
+# Copyright (c) 2015, 2022, John Szakmeister <john@szakmeister.net>
 #
 # Generate a diff from the branch point to the tip of the branch.
 #
@@ -35,7 +35,7 @@ then
     base_branch="$1"
     shift
 else
-    base_branch="master"
+    base_branch="$(git dev-branch)"
 fi
 
 if [ -n "$1" -a "${1#-*}" == "$1" ]
