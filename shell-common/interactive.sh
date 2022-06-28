@@ -8,7 +8,14 @@ fi
 if test -n "$virtualenvwrapper_path"; then
     # Cope with virtualenvwrapper being installed under Python 3 on Catalina.
     if [ -z "${virtualenvwrapper_path##*Python/3*}" ]; then
-        export VIRTUALENVWRAPPER_PYTHON="$(which python3)"
+        export VIRTUALENVWRAPPER_PYTHON="$(_find_executable python3)"
+    elif ! _has_executable python
+    then
+        if _has_executable python3
+        then
+            # Can't find python (undecorated) so, let's shoot for python3
+            export VIRTUALENVWRAPPER_PYTHON="$(_find_executable python3)"
+        fi
     fi
 
     . "${virtualenvwrapper_path}"
