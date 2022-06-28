@@ -230,7 +230,6 @@ _vcs_status()
                 return 1
         fi
 
-        git rev-parse --git-dir >& /dev/null || return 1
 
         ref="$(git symbolic-ref HEAD 2>/dev/null)" || {
                 ref=$( (
