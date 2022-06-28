@@ -83,21 +83,6 @@ _git_infer_publish_branch()
 }
 
 
-_git_determine_mainline()
-{
-    BRANCHES="development develop dev main master"
-
-    for branch in $BRANCHES
-    do
-        git rev-parse --verify "$branch" -q >/dev/null 2>&1 &&
-            echo $branch &&
-            return 0
-    done
-
-    echo master
-}
-
-
 _git_additional()
 {
     local g=$(git rev-parse --git-dir 2>/dev/null)
@@ -220,7 +205,6 @@ _vcs_status()
     function git_status()
     {
         local ref dirty count ahead behind divergent upstream g differ remote
-        local mainline="$(_git_determine_mainline)"
         local nomaster=""
 
         _has_devtool git || return 1
@@ -231,6 +215,8 @@ _vcs_status()
             return 1
         fi
 
+        # Wait to determine mainline until after we know we're in a git repo.
+        local mainline="$(git dev-branch)"
 
         ref="$(git symbolic-ref HEAD 2>/dev/null)" || {
                 ref=$( (
