@@ -226,8 +226,9 @@ _vcs_status()
         _has_devtool git || return 1
 
         g=$(git rev-parse --git-dir 2>/dev/null)
-        if [[ -z "$g" ]]; then
-                return 1
+        if [[ -z "$g" ]]
+        then
+            return 1
         fi
 
 
