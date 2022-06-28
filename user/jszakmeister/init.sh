@@ -226,6 +226,7 @@ then
     fi
 fi
 
+alias l=ll
 alias lsvirtualenv="lsvirtualenv -b"
 alias helptags="vim '+Helptags|q'"
 alias p8="ping 8.8.8.8"
@@ -248,6 +249,9 @@ else
 fi
 
 test -e ~/tmp && _make_dir_complete pdt pushd ~/tmp
+
+_has_executable git &&
+    alias gitst="git st"
 
 # Make netcat a little more friendly to use.
 _has_executable rlwrap &&
