@@ -266,6 +266,13 @@ _has_executable rlwrap &&
 _has_executable cninja &&
     alias cn="cninja"
 
+_has_executable ninja-build &&
+    export CMAKE_MAKE_PROGRAM="ninja-build" &&
+    export CMAKE_GENERATOR="Ninja"
+
+_has_executable ninja &&
+    export CMAKE_GENERATOR="Ninja"
+
 _has_executable hexdump &&
     alias hhexdump="\\hexdump -v -e '\"%10_ax:  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \"' -e'\"  \" 16/1 \"%_p\" \"\n\"'" &&
     alias dhexdump="\\hexdump -v -e '\"%10_ad:  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \"' -e'\"  \" 16/1 \"%_p\" \"\n\"'" &&
