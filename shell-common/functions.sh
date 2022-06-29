@@ -238,13 +238,13 @@ fi
         {
             CC=clang CXX=clang++ CFLAGS="$CFLAGS -Qunused-arguments" \
                 CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
-                $(_find_executable pip) "$@"
+                command $(_find_executable pip || _find_executable pip3 || echo pip) "$@"
         }
 
         function tox()
         {
             CC=clang CXX=clang++ CFLAGS="$CFLAGS -Qunused-arguments" \
                 CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
-                $(_find_executable tox) "$@"
+                command $(_find_executable tox || echo tox) "$@"
         }
     }
