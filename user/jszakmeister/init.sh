@@ -374,6 +374,12 @@ td()
     touch "$1"
 }
 
+function ssh-hosts()
+{
+    local _ssh_hosts=$(sed -ne 's/^[\t]*[Hh][Oo][Ss][Tt]\([Nn][Aa][Mm][Ee]\)\{0,1\}['"$'\t '"']\{1,\}\([^#*?]*\)\(#.*\)\{0,1\}$/\2/p' ~/.ssh/config | xargs -n 1 echo)
+    echo "$_ssh_hosts" | xargs -n 1 echo
+}
+
 if _has_executable ag; then
     ag()
     {
