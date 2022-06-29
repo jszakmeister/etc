@@ -54,6 +54,12 @@ if [ "$platform" = 'darwin' ]; then
         __etc_append_path "$system_path"
     }
 
+    # Prefer MacVim over system Vim.
+    if [ -d /Applications/MacVim.app/Contents/bin ]
+    then
+        __etc_prepend_path /Applications/MacVim.app/Contents/bin
+    fi
+
     # To get features of a newer unzip executable, if Homebrew is installed.
     __etc_prepend_path "/usr/local/opt/unzip/bin"
 
