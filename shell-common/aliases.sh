@@ -6,6 +6,7 @@ alias pd='pushd'
 _has_executable scons && alias scons='scons -u -j$(_num_cpus)'
 _has_executable make && alias make='nice -n 3 make -j$(_num_cpus)'
 _has_executable gmake && alias gmake='nice -n 3 gmake -j$(_num_cpus)'
+_has_executable ninja-build && alias ninja="nice -n 3 ninja-build"
 _has_executable ninja && alias ninja='nice -n 3 ninja'
 _has_executable cninja && {
     alias cninja='nice -n 3 cninja'
