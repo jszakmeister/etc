@@ -205,6 +205,11 @@ elif [ "$platform" = "linux" ]; then
     alias ll='ls -l --time-style=long-iso'
     alias df='df -h --output=source,size,used,avail,pcent,iused,iavail,ipcent,target'
 
+    unrpm()
+    {
+        rpm2cpio "$@" | cpio --extract --make-directories --verbose
+    }
+
     disassemble_func()
     {
         i=$(nm -S --size-sort "$2" | grep "\<$1\>"  |
@@ -286,6 +291,17 @@ _has_executable ssh &&
 # Look for strings in all parts of a file.
 _has_executable strings &&
     alias strings="strings -"
+
+if _has_executable gmake
+then
+    # alias make='nice -n 3 gmake -O -j$(_num_cpus)'
+    alias make='nice -n 3 gmake -j$(_num_cpus)'
+fi
+
+if _has_executable python3
+then
+    alias python=python3
+fi
 
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
 # in vim when running at the terminal.
