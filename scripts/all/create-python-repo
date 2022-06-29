@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+import argparse
+import logging
+import os
+import pathlib
+import sys
+
+
+log = logging.getLogger("")
+
+
+class UserError(Exception):
+    pass
+
+
+ACCEPTABLE_TYPES = [
+    ".egg",
+    ".tar",
+    ".tar.bz2",
+    ".tar.gz",
+    ".tar.xz",
+    ".whl",
+    ".zip",
+]
+
+
+def create_links(src_dir, repo_dir):
+    os.makedirs(repo_dir, exist_ok=True)
+
+    for root, dirs, files in os.walk(src_dir, followlinks=True):
+        for filename in files:
+            for t in ACCEPTABLE_TYPES:
+                if filename.endswith(t):
+                    break
+            else:
+                continue
+
+            src_path = pathlib.Path(root, filename)
+            dst_path = pathlib.Path(repo_dir, filename)
+
+            link_path = os.path.relpath(src_path, dst_path.parent)
+
+            log.debug("src:%s link:%s", src_path, link_path)
+            if dst_path.is_symlink():
+                dst_path.unlink()
+            # os.symlink(link_path, dst_path)
+            dst_path.symlink_to(link_path)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-v", "--verbose", action="count", default=0,
+                        help="emit extra debugging information")
+    parser.add_argument("--traceback", action="store_true", default=False,
+                        help="present a traceback on failure")
+    parser.add_argument("src_dir", help="directory of dir-separated packages")
+    parser.add_argument("repo_dir", help="directory of Python repo to create")
+
+    args = parser.parse_args()
+
+    # Set up logging...
+    if args.verbose == 0:
+        level = logging.WARNING
+    elif args.verbose == 1:
+        level = logging.INFO
+    else:
+        level = logging.DEBUG
+
+    logging.basicConfig(stream=sys.stderr, level=level,
+                        format="%(levelname)s: %(message)s")
+
+    try:
+        create_links(args.src_dir, args.repo_dir)
+    except Exception as e:
+        if args.traceback:
+            raise
+        sys.exit("ERROR: " + str(e))
+
+
+if __name__ == "__main__":
+    main()
