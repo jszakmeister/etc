@@ -173,6 +173,10 @@
 	# own topic.
 	chainreplyto = false
 
+[tag]
+	# Sort tags in descending order by version.
+	sort = -v:refname
+
 [tig]
 	line-graphics = utf-8
 	main-view-date = relative
