@@ -157,9 +157,18 @@ this by putting the following into my ``~/.bashrc``::
 
   case $- in
       *i*)
+          extra_args=
+          if shopt -q login_shell
+          then
+              extra_args="$extra_args --login"
+          fi
+
           if [ -e /usr/bin/zsh ]
           then
-              exec /usr/bin/zsh
+              SHELL=/usr/bin/zsh exec /usr/bin/zsh $extra_args
+          elif [ -e /bin/zsh ]
+          then
+              SHELL=/bin/zsh exec /bin/zsh $extra_args
           else
               . "$ETC_HOME/bash/bashrc"
               echo "Running in BASH shell."
