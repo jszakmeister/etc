@@ -21,6 +21,9 @@ if [ -f /usr/local/etc/bash_completion.d/git-completion.bash ]; then
 elif [ -f /etc/bash_completion.d/git ]; then
     zstyle ':completion:*:*:git:*' script \
         /etc/bash_completion.d/git
+elif [ -f /usr/share/bash-completion/completions/git ]; then
+    zstyle ':completion:*:*:git:*' script \
+        /usr/share/bash-completion/completions/git
 else
     zstyle ':completion:*:*:git:*' script "$ETC_HOME/bash/git-completion.bash"
 fi
