@@ -130,7 +130,7 @@ _has_executable colordiff &&
         {
             if test -t 1
             then
-                "$(_find_executable diff)" "$@" | colordiff | $PAGER
+                "$(_find_executable diff)" "$@" | colordiff | diff-highlight | $PAGER
             else
                 "$(_find_executable diff)" "$@"
             fi
@@ -140,7 +140,7 @@ _has_executable colordiff &&
         {
             if test -t 1
             then
-                "$(_find_executable interdiff)" "$@" | colordiff | $PAGER
+                "$(_find_executable interdiff)" "$@" | colordiff | diff-highlight | $PAGER
             else
                 "$(_find_executable interdiff)" "$@"
             fi
