@@ -144,6 +144,10 @@ source_docker_completion()
     fi
 }
 
+if [ -n "$ZSH_VERSION" ]
+then
+    export TIMEFMT="%J  %U user %S system %P cpu %*E total/elapsed"
+fi
 
 if [ "$platform" = "darwin" ]; then
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker docker dockerd
