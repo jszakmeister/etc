@@ -309,11 +309,6 @@ then
     alias make='nice -n 3 gmake -j$(_num_cpus)'
 fi
 
-if _has_executable python3
-then
-    alias python=python3
-fi
-
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
