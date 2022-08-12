@@ -226,25 +226,38 @@ if _has_devtool git; then
     fi
 fi
 
-# For clang when running under pip and tox.  This is to help prevent errors from
-# unused arguments, and to prevent accidentally selecting gcc when ccache is
-# installed, but gcc is not.
-[ "$platform" = 'darwin' ] &&
-    xcode-select -p > /dev/null 2>&1 &&
-    _has_executable cc &&
-    _run_helper cc --version 2>&1 | grep clang > /dev/null 2>&1 &&
-    {
-        function pip()
-        {
-            CC=clang CXX=clang++ CFLAGS="$CFLAGS -Qunused-arguments" \
-                CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
-                command $(_find_executable pip || _find_executable pip3 || echo pip) "$@"
-        }
+# Cope with Python and virtual environments.
 
-        function tox()
-        {
-            CC=clang CXX=clang++ CFLAGS="$CFLAGS -Qunused-arguments" \
-                CPPFLAGS="$CPPFLAGS -Qunused-arguments" \
-                command $(_find_executable tox || echo tox) "$@"
-        }
+if _has_executable pip3
+then
+    function pip()
+    {
+        if [ -z "$VIRTUAL_ENV" ]
+        then
+            if _has_executable pip3
+            then
+                command pip3 "$@"
+                return
+            fi
+        fi
+
+        command pip "$@"
     }
+fi
+
+if _has_executable python3
+then
+    function python()
+    {
+        if [ -z "$VIRTUAL_ENV" ]
+        then
+            if _has_executable python3
+            then
+                command python3 "$@"
+                return
+            fi
+        fi
+
+        command python "$@"
+    }
+fi
