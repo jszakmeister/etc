@@ -144,6 +144,18 @@ source_docker_completion()
     fi
 }
 
+# Drop the PackageKit command not found handlers.  And yes, you need to unset
+# both. :-/  Alternatively, remove the PackageKit-command-not-found package.
+if typeset -f command_not_found_handler >/dev/null
+then
+    unset -f command_not_found_handler
+fi
+
+if typeset -f command_not_found_handle >/dev/null
+then
+    unset -f command_not_found_handle
+fi
+
 if [ -n "$ZSH_VERSION" ]
 then
     export TIMEFMT="%J  %U user %S system %P cpu %*E total/elapsed"
