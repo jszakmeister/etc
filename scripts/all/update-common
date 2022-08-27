@@ -1,103 +1,240 @@
-#!/bin/bash
-die()
-{
-    echo 1>&2 "ERROR: $1"
-    exit 1
-}
+#!/usr/bin/env python3
+import argparse
+import os
+import random
+import re
+import shlex
+import subprocess
+import sys
+import threading
+import time
 
-trim()
-{
-    local var="$1"
-    var="${var#"${var%%[![:space:]]*}"}"
-    var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
-}
+from concurrent.futures import ThreadPoolExecutor
 
-if test -t 1 && type -P tput > /dev/null 2>&1; then
-    color_bold_yellow=$(tput bold;tput setaf 3)
-    color_reset=$(tput sgr0)
-else
-    color_bold_yellow=
-    color_reset=
-fi
 
-say()
-{
-    [ -z "$QUIET" ] && echo "$color_bold_yellow${1/$HOME/~}$color_reset"
-    return 0
-}
+class ScriptError(Exception):
+    pass
 
-update_repo()
-{
-    local repo_path
-    local cur_dir
 
-    repo_path="$(echo -n "$1" | sed -e "s|~|$HOME|")"
+REPOS = [
+    "~/.vim",
+    "~/.vimuser",
+    "~/.etc",
+    "~/.ssh",
+    "~/projects/etc",
+    "~/projects/jszakmeister/local-homepage",
+    "~/projects/local-homepage",
+]
 
-    if test ! -d "$repo_path" ; then
-        return 0
-    fi
 
-    if test -d "$repo_path/.git" ; then
-        # shellcheck disable=SC2086
-        say "Updating $repo_path..." &&
-            git "--git-dir=$repo_path/.git" "--work-tree=$repo_path" \
-                ffwd ${FFWD_OPTIONS}
-        return $?
-    fi
+COLOR_RESET = ""
+COLOR_PREFIX = ""
 
-    if test -d "$repo_path/.svn" ; then
-        say "Updating $repo_path..." &&
-            svn up $repo_path
-        return $?
-    fi
 
-    return 0
-}
+def init_colors(option=None):
+    if option == "none":
+        return
 
-while [ $# -gt 0 ]
-do
-    key="$1"
-    shift
+    try:
+        import colorama
+        global COLOR_RESET, COLOR_PREFIX
 
-    case $key in
-        -q)
-            FFWD_OPTIONS="$FFWD_OPTIONS -q"
-            QUIET=t
-            ;;
-        --no-remote)
-            FFWD_OPTIONS="$FFWD_OPTIONS --no-remote"
-            ;;
-        -s|--status)
-            FFWD_OPTIONS="$FFWD_OPTIONS --status"
-            ;;
-        *)
-            # unknown option
-            die "Unknown option '$key'"
-            ;;
-    esac
-done
+        COLOR_RESET = colorama.Style.RESET_ALL
+        COLOR_PREFIX = colorama.Fore.LIGHTYELLOW_EX
 
-REPOS=(~/.vim \
-       ~/.vimuser \
-       ~/.etc \
-       ~/.ssh \
-       ~/projects/etc \
-       ~/projects/jszakmeister/local-homepage \
-       ~/projects/local-homepage)
+        strip = False if option == "always" else None
+        colorama.init(strip=strip)
+    except ImportError:
+        pass
 
-for repo in "${REPOS[@]}"
-do
-    update_repo "$repo"
-done
 
-if test -f ~/.update-commonrc ; then
-    while read -r line
-    do
-        line=$(trim "$line")
+def write_line_prefixed(prefix, msg):
+    sys.stdout.write(f"{COLOR_PREFIX}[{prefix}]{COLOR_RESET} {msg}")
 
-        if [ -n "$line" ] && [[ $line != \#* ]] ; then
-            update_repo "$line"
-        fi
-    done < ~/.update-commonrc
-fi
+
+def _prefix_lines(prefix, stream):
+    for line in stream:
+        if not line:
+            break
+
+        if prefix:
+            write_line_prefixed(prefix, line)
+        else:
+            sys.stdout.write(line)
+
+
+control_re = re.compile(r"ControlSocket .* already exists, disabling multiplexing")
+
+def _filter_control_socket(stream):
+    for line in stream:
+        if control_re.match(line):
+            continue
+        yield line
+
+
+def _filter_none(stream):
+    for line in stream:
+        yield line
+
+
+def run(*args, **kwargs):
+    show_cmd = kwargs.get("show_cmd", False)
+    shell = kwargs.get("shell", False)
+    encoding = kwargs.get("encoding", "utf-8")
+    prefix = kwargs.get("prefix", "")
+    filter_lines = kwargs.get("filter", _filter_none)
+
+    if shell:
+        command = " ".join([shlex.quote(x) for x in args])
+    else:
+        command = args
+
+    if show_cmd:
+        print(" ".join(args))
+
+    check_ret = kwargs.get("check_ret", True)
+
+    p = subprocess.Popen(
+        command, shell=shell, encoding=encoding,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    t = threading.Thread(target=_prefix_lines, args=(prefix, filter_lines(p.stdout)))
+    t.start()
+
+    retcode = p.wait()
+
+    if p.stdout is not None:
+        p.stdout.close()
+    if p.stderr is not None:
+        p.stderr.close()
+
+    t.join()
+
+    if check_ret and retcode:
+        raise ScriptError("Error executing: %r (%d)" % (command, retcode))
+    return
+
+
+def run_git(*args, **kwargs):
+    path = kwargs.pop("path", None)
+
+    if path is not None:
+        if path.endswith(".git"):
+            args = ["--git-dir=%s" % path] + list(args)
+        else:
+            args = ["--git-dir=%s/.git" % path, "--work-tree=%s" % path] + list(args)
+
+    command = ["git"] + list(args)
+    return run(*command, **kwargs)
+
+
+def parse_repo_file(path):
+    repos = []
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            repos.append(line)
+    return repos
+
+
+def is_git(path):
+    if path.endswith(".git") or os.path.exists(os.path.join(path, ".git")):
+        return True
+    return False
+
+
+def is_svn(path):
+    if os.path.exists(os.path.join(path, ".svn")):
+        return True
+    return False
+
+
+def do_update(path, options=None):
+    if options is None:
+        options = tuple()
+
+    expanded_path = os.path.expanduser(path)
+
+    if not os.path.exists(expanded_path):
+        return
+
+    ### Handle Subversion
+    if is_git(expanded_path):
+        run_git("ffwd", *options, path=expanded_path,
+                prefix=os.path.basename(path), filter=_filter_control_socket)
+    elif is_svn(expanded_path):
+        run("svn", "up", path=expanded_path,
+                prefix=os.path.basename(path), filter=_filter_control_socket)
+        pass
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-q", "--quiet",
+        default=False,
+        action="store_true",
+        help="Be less verbose.")
+    parser.add_argument(
+        "-s", "--status",
+        default=False,
+        action="store_true",
+        help="Get the status.")
+    parser.add_argument(
+        "--no-remote",
+        default=False,
+        action="store_true",
+        help="Don't contact the remote repo.")
+    parser.add_argument(
+        "--traceback",
+        default=False,
+        action="store_true",
+        help="Show traceback on error."
+    )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=4,
+        help="Number of threads to launch in parallel.")
+
+    args = parser.parse_args()
+
+    init_colors()
+
+    options = []
+    if COLOR_PREFIX:
+        options.append("--color=always")
+    if args.quiet:
+        options.append("-q")
+    if args.status:
+        options.append("--status")
+    if args.no_remote:
+        options.append("--no-remote")
+
+    if args.workers < 1:
+        raise ScriptError(f"Invalid value for workers ({args.workers})")
+
+    repos = REPOS[:]
+
+    try:
+        user_file = os.path.expanduser("~/.update-commonrc")
+        if os.path.exists(user_file):
+            repos.extend(parse_repo_file(user_file))
+
+        with ThreadPoolExecutor(max_workers=args.workers) as pool:
+            for i, r in enumerate(repos):
+                pool.submit(do_update, r, options)
+
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        print(f"ERROR: {e!s}")
+        if args.traceback:
+            raise
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
