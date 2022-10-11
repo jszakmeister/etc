@@ -122,7 +122,7 @@ done
 
 if [ $# -gt 0 ]; then
     # shellcheck disable=SC2086
-    GR_NAME="$GR_NAME" "$GVIM" $extraopts --servername "$SERVER_NAME" $remote_opt "$@" > /dev/null 2>&1
+    GR_NAME="$GR_NAME" "$GVIM" $extraopts --servername "$SERVER_NAME" $remote_opt "${@%%:*}" > /dev/null 2>&1
 elif [ -z "$running" ]; then
     # shellcheck disable=SC2086
     GR_NAME="$GR_NAME" "$GVIM" $extraopts --servername "$SERVER_NAME" > /dev/null 2>&1
