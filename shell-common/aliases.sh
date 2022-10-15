@@ -20,8 +20,7 @@ if _has_executable tree; then
 elif _has_executable gio; then
     alias tree='gio tree'
 fi
-_has_executable hexdump &&
-    alias hexdump="hexdump -v -e '\"%10_ad:  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \"' -e'\"  \" 16/1 \"%_p\" \"\n\"'"
+
 _has_executable vs && alias vs='vs -new'
 
 # Always use shasum in binary mode.

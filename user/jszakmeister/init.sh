@@ -289,11 +289,6 @@ _has_executable ninja-build &&
 _has_executable ninja &&
     export CMAKE_GENERATOR="Ninja"
 
-_has_executable hexdump &&
-    alias hhexdump="\\hexdump -v -e '\"%10_ax:  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \"' -e'\"  \" 16/1 \"%_p\" \"\n\"'" &&
-    alias dhexdump="\\hexdump -v -e '\"%10_ad:  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \"' -e'\"  \" 16/1 \"%_p\" \"\n\"'" &&
-    alias hexdump="\\hexdump -v -e '\"%10_ad (%8_axh):  \" 8/1 \"%02x \" \"  \" 8/1 \"%02x \"' -e'\"  \" 16/1 \"%_p\" \"\n\"'"
-
 test -e /System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc &&
     alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
 

@@ -261,3 +261,16 @@ then
         command python "$@"
     }
 fi
+
+if _has_executable hexdump
+then
+    function hexdump()
+    {
+        if test -t 1
+        then
+            command hexdump -v -e '"%10_ad (%8_axh):  " 8/1 "%02x " "  " 8/1 "%02x "' -e'"  " 16/1 "%_p" "\n"' "$@" | ${PAGER}
+        else
+            command hexdump -v -e '"%10_ad (%8_axh):  " 8/1 "%02x " "  " 8/1 "%02x "' -e'"  " 16/1 "%_p" "\n"' "$@"
+        fi
+    }
+fi
