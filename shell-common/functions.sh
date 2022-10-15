@@ -262,6 +262,29 @@ then
     }
 fi
 
+if _has_executable colordiff
+then
+    diff()
+    {
+        if test -t 1
+        then
+            "$(_find_executable diff)" "$@" | colordiff | diff-highlight | $PAGER
+        else
+            "$(_find_executable diff)" "$@"
+        fi
+    }
+
+    interdiff()
+    {
+        if test -t 1
+        then
+            "$(_find_executable interdiff)" "$@" | colordiff | diff-highlight | $PAGER
+        else
+            "$(_find_executable interdiff)" "$@"
+        fi
+    }
+fi
+
 if _has_executable hexdump
 then
     function hexdump()
