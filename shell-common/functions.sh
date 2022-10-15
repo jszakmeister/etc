@@ -296,4 +296,77 @@ then
             command hexdump -v -e '"%10_ad (%8_axh):  " 8/1 "%02x " "  " 8/1 "%02x "' -e'"  " 16/1 "%_p" "\n"' "$@"
         fi
     }
+
+    function hexdiff()
+    {
+        local arg_a="$1"
+        local arg_b="$2"
+
+        [ ! -r "$arg_a" ] &&
+            echo 1>&2 "ERROR: $arg_a doesn't exist or is unreadable." &&
+            return 1
+        [ ! -r "$arg_b" ] &&
+            echo 1>&2 "ERROR: $arg_b doesn't exist or is unreadable." &&
+            return 1
+
+        local tmp_a="$(mktemp)"
+        local tmp_b="$(mktemp)"
+
+        hexdump "$arg_a" > "$tmp_a"
+        hexdump "$arg_b" > "$tmp_b"
+
+        diff -u --label="$arg_a" --label="$arg_b" "$tmp_a" "$tmp_b"
+        rm -f "$tmp_a" "$tmp_b"
+    }
+fi
+
+if _has_executable xmllint
+then
+    function xmldiff()
+    {
+        local arg_a="$1"
+        local arg_b="$2"
+
+        [ ! -r "$arg_a" ] &&
+            echo 1>&2 "ERROR: $arg_a doesn't exist or is unreadable." &&
+            return 1
+        [ ! -r "$arg_b" ] &&
+            echo 1>&2 "ERROR: $arg_b doesn't exist or is unreadable." &&
+            return 1
+
+        local tmp_a="$(mktemp)"
+        local tmp_b="$(mktemp)"
+
+        xmllint --format "$arg_a" > "$tmp_a"
+        xmllint --format "$arg_b" > "$tmp_b"
+
+        diff -u --label="$arg_a" --label="$arg_b" "$tmp_a" "$tmp_b"
+        rm -f "$tmp_a" "$tmp_b"
+    }
+fi
+
+
+if _has_executable objdump
+then
+    function objdiff()
+    {
+        local arg_a="$1"
+        local arg_b="$2"
+
+        [ ! -r "$arg_a" ] &&
+            echo 1>&2 "ERROR: $arg_a doesn't exist or is unreadable." &&
+            return 1
+        [ ! -r "$arg_b" ] &&
+            echo 1>&2 "ERROR: $arg_b doesn't exist or is unreadable." &&
+            return 1
+
+        local tmp_a="$(mktemp)"
+        local tmp_b="$(mktemp)"
+
+        objdump -d "$arg_a" > "$tmp_a"
+        objdump -d "$arg_b" > "$tmp_b"
+
+        diff -u --label="$arg_a" --label="$arg_b" "$tmp_a" "$tmp_b"
+        rm -f "$tmp_a" "$tmp_b"
+    }
 fi
