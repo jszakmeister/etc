@@ -16,7 +16,7 @@ _has_executable cninja && {
 _has_executable cmake3 && alias cmake='cmake'
 
 if _has_executable tree; then
-    alias tree='tree --charset=ASCII -F -v -I __pycache__'
+    alias tree='tree --charset=ASCII -F -v -I "__pycache__|build"'
 elif _has_executable gio; then
     alias tree='gio tree'
 fi
