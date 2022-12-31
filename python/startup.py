@@ -58,3 +58,20 @@ def setup_readline():
 setup_readline()
 
 del setup_readline
+
+
+def hexdump(data):
+    if isinstance(data, str):
+        data = data.encode("utf-8")
+
+    for i in range(0, len(data), 16):
+        block = data[i:i+16]
+
+        line_data_hex = (" ".join("%02x" % (x,) for x in block[0:8]) + " " +
+                         " ".join("%02x" % (x,) for x in block[8:]))
+        line_data_ascii = "".join(chr(x) if 32 <= x < 127 else "." for x in block)
+
+        if len(block) < 16:
+            line_data_hex += " " * (48 - len(line_data_hex))
+
+        print(f"{i:10d} ({i:8x}h):  {line_data_hex}    {line_data_ascii}")
