@@ -75,3 +75,17 @@ def hexdump(data):
             line_data_hex += " " * (48 - len(line_data_hex))
 
         print(f"{i:10d} ({i:8x}h):  {line_data_hex}    {line_data_ascii}")
+
+
+def errno_lookup(e):
+    import errno
+
+    try:
+        code = int(e)
+        name = errno.errorcode.get(code, "(unknown)")
+    except ValueError:
+        # We likely have a name
+        name = e.upper()
+        code = getattr(errno, name, "(unknown)")
+
+    print(f"{name}: {code}")
