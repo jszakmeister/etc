@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+import argparse
+import errno
+import sys
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("errno",
+                        help="Name or integer to lookup.",
+                        nargs="+")
+
+    args = parser.parse_args()
+
+    unknown_present = False
+
+    for e in args.errno:
+        try:
+            code = int(e)
+            name = errno.errorcode.get(code, "(unknown)")
+        except ValueError:
+            # We likely have a name
+            name = e.upper()
+            code = getattr(errno, name, "(unknown)")
+
+        print(f"{name}: {code}")
+
+        if code == "(unknown)" or name == "(unknown)":
+            unknown_present = True
+
+    if unknown_present:
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
