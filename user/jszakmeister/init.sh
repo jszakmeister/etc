@@ -1,6 +1,7 @@
 export WORKON_HOME=$HOME/.virtualenvs
 export CCACHE_CPP2=1
 export HOMEBREW_NO_EMOJI=1
+export LESS="-eFRX -Pslines %lt-%lb?Pb(%Pb\%).?m (%i of %m).  ?f%f:-."
 
 
 _etc_iterate_path()
@@ -169,6 +170,7 @@ if [ "$platform" = "darwin" ]; then
     alias df="df -hi"
     alias ostat="stat -f '%Mp%Lp %N'"
     alias sstat="stat -f '%N: %z'"
+    alias plprint="plutil -p"
 
     if _has_executable gnu-ls; then
         alias ls='gnu-ls -hFA --color=auto'
@@ -213,6 +215,17 @@ if [ "$platform" = "darwin" ]; then
     {
         PATH=/usr/bin /usr/bin/lldb "$@"
     }
+
+    # pkg-remove()
+    # {
+    #   pushd /
+    #
+    #   pkgutil --only-files --files "$1" | tr '\n' '\0' | xargs -n 1 -0 sudo rm -if &&
+    #     pkgutil --only-dirs --files "$1" | tail -r | tr '\n' '\0' | xargs -n 1 -0 sudo rmdir &&
+    #     sudo pkgutil --forget "$1"
+    #
+    #   popd
+    # }
 
 elif [ "$platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
@@ -314,6 +327,11 @@ if _has_executable gmake
 then
     # alias make='nice -n 3 gmake -O -j$(_num_cpus)'
     alias make='nice -n 3 gmake -j$(_num_cpus)'
+fi
+
+if _has_executable fcp
+then
+    alias cp=fcp
 fi
 
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
@@ -562,3 +580,6 @@ then
            sphinxcontrib-websupport guzzle_sphinx_theme
     }
 fi
+
+# Used to copy files from the last 90 days to a new location.
+# rsync -vvaEi0P --files-from=<(find . -mtime -90 -print0) . ../loc2/
