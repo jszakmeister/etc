@@ -60,6 +60,11 @@ if [ "$platform" = 'darwin' ]; then
         __etc_prepend_path /Applications/MacVim.app/Contents/bin
     fi
 
+    if [ -d "/Applications/Visual Studio Code.app/Contents/Resources/app/bin" ]
+    then
+        __etc_prepend_path "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+    fi
+
     # To get features of a newer unzip executable, if Homebrew is installed.
     __etc_prepend_path "/usr/local/opt/unzip/bin"
 
