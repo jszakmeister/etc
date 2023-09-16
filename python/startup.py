@@ -60,6 +60,17 @@ setup_readline()
 del setup_readline
 
 
+try:
+    import rich.pretty
+    from rich import inspect
+
+    rich.pretty.install()
+
+    del rich
+except ImportError:
+    pass
+
+
 def hexdump(data):
     if isinstance(data, str):
         data = data.encode("utf-8")
