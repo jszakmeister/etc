@@ -71,6 +71,26 @@ except ImportError:
     pass
 
 
+def bits(i, groups, bit_width=32):
+    fmt = f"{{:0{bit_width}b}}"
+    v = fmt.format(i)
+
+    segments = []
+    cur_pos = 0
+    for width in groups:
+        segments.append(v[cur_pos:cur_pos+width])
+        cur_pos += width
+
+    if cur_pos < bit_width:
+        segments.append(v[cur_pos:])
+
+    digits = ((bit_width + 7) // 8) * 2
+
+    fmt = f"{{:0{digits}X}}h: {{}}"
+
+    print(fmt.format(i, " ".join(segments)))
+
+
 def hexdump(data):
     if isinstance(data, str):
         data = data.encode("utf-8")
