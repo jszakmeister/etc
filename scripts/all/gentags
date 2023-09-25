@@ -80,7 +80,7 @@ ctags -R --exclude=build \
          --c-kinds=+px \
          --c++-kinds=+px \
          --fields=+iaS \
-         --extra=+qf \
+         --extras=+qf \
          -I FUNC_ATTR_MALLOC \
          -I FUNC_ATTR_ALLOC_SIZE+ \
          -I FUNC_ATTR_ALLOC_SIZE_PROD+ \
