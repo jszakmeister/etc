@@ -127,7 +127,7 @@ cmd_missing()
 
 FIND_DEV=
 
-if [ "$1" == "--dev" ]; then
+if [ "$1" = "--dev" ]; then
     FIND_DEV=t
     shift
 fi
