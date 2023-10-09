@@ -98,7 +98,7 @@ def hexdump(data):
     for i in range(0, len(data), 16):
         block = data[i:i+16]
 
-        line_data_hex = (" ".join("%02x" % (x,) for x in block[0:8]) + " " +
+        line_data_hex = (" ".join("%02x" % (x,) for x in block[0:8]) + "  " +
                          " ".join("%02x" % (x,) for x in block[8:]))
         line_data_ascii = "".join(chr(x) if 32 <= x < 127 else "." for x in block)
 
