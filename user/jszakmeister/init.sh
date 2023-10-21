@@ -423,6 +423,7 @@ if _has_executable ag; then
 fi
 
 if _has_executable rg; then
+    alias rg="rg -LS"
     rg()
     {
         local _rg_path
