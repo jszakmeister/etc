@@ -463,6 +463,58 @@ then
     }
 fi
 
+if _has_executable broot
+then
+    function br {
+        local cmd cmd_file code
+        cmd_file=$(mktemp)
+        if broot --outcmd "$cmd_file" "$@"; then
+            cmd=$(<"$cmd_file")
+            command rm -f "$cmd_file"
+            eval "$cmd"
+        else
+            code=$?
+            command rm -f "$cmd_file"
+            return "$code"
+        fi
+    }
+    alias tree=br
+fi
+
+if _has_executable eza
+then
+    if [ "$platform" = "darwin" ]
+    then
+        alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' -Foag"
+    else
+        alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' -@Foag"
+    fi
+
+    # Realias ll, since it may have the -T option in it.
+    alias ll="ls -l"
+fi
+
+if _has_executable bat
+then
+    # unset -f cat
+    export BAT_THEME="Visual Studio Dark+"
+    alias cat=bat
+fi
+
+if _has_executable btm
+then
+    alias top=btm
+elif _has_executable ptop
+then
+    alias top=ptop
+fi
+
+_has_executable xcp &&
+    alias cp="xcp -w 0"
+
+_has_executable dust &&
+    alias du="dust -rs"
+
 delete-unused()
 {
     for filename in "$@"
@@ -579,6 +631,32 @@ then
         mkvirtualenv --python=$(which python3) sphinx &&
         pip install -U Sphinx recommonmark hieroglyph sphinx_rtd_theme \
            sphinxcontrib-websupport guzzle_sphinx_theme
+    }
+fi
+
+if _has_executable 7zz
+then
+    zip-list()
+    {
+        7zz l "$@"
+    }
+elif _has_executable 7z
+then
+    zip-list()
+    {
+        7z l "$@"
+    }
+elif _has_executable 7za
+then
+    zip-list()
+    {
+        7za l "$@"
+    }
+elif _has_executable zip
+then
+    zip-list()
+    {
+        zip -sf "$@"
     }
 fi
 
