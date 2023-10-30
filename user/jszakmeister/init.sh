@@ -361,12 +361,24 @@ man()
     man "$@"
 }
 
-# I prefer having the cursor stay where it's at when searching through history.
-if [ -n "$ZSH_VERSION" ]; then
+if [ -n "$ZSH_VERSION" ]
+then
+    # I prefer having the cursor stay where it's at when searching through history.
     [ -n "${key[Up]}" ] &&
         bindkey "${key[Up]}" history-beginning-search-backward
     [ -n "${key[Down]}" ] &&
         bindkey "${key[Down]}" history-beginning-search-forward
+
+    # A better history default for me.
+    history()
+    {
+        if [ $# -eq 0 ]
+        then
+            fc -l 0
+        else
+            fc -l "$@"
+        fi
+    }
 fi
 
 if _has_executable pygmentize; then
