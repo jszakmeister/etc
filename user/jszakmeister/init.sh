@@ -490,7 +490,6 @@ then
             return "$code"
         fi
     }
-    alias tree=br
 fi
 
 if _has_executable eza
@@ -504,6 +503,7 @@ then
 
     # Realias ll, since it may have the -T option in it.
     alias ll="ls -l"
+    alias tree="ls --tree"
 fi
 
 if _has_executable bat
