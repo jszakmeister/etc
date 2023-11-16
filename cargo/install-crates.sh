@@ -30,6 +30,7 @@ then
         eza
         fcp
         git-delta
+        hyperfine
         just
         ripgrep
         rust-parallel
