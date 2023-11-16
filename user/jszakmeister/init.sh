@@ -343,24 +343,6 @@ if [ "$platform" = "darwin" ]; then
     test -t 0 && type -f stty >& /dev/null && stty discard '^-'
 fi
 
-# Use Vim as a front-end to man.
-# man()
-# {
-#     $(_find_executable man) -P cat "$@" > /dev/null && vim -c "RMan $*"
-# }
-
-man()
-{
-    env LESS_TERMCAP_mb=$'\E[01;31m' \
-    LESS_TERMCAP_md=$'\E[01;38;5;74m' \
-    LESS_TERMCAP_me=$'\E[0m' \
-    LESS_TERMCAP_se=$'\E[0m' \
-    LESS_TERMCAP_ue=$'\E[0m' \
-    LESS_TERMCAP_us=$'\E[04;38;5;146m' \
-    PAGER=less \
-    man "$@"
-}
-
 if [ -n "$ZSH_VERSION" ]
 then
     # I prefer having the cursor stay where it's at when searching through history.
@@ -511,6 +493,19 @@ then
     # unset -f cat
     export BAT_THEME="Visual Studio Dark+"
     alias cat=bat
+    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+else
+    man()
+    {
+        env LESS_TERMCAP_mb=$'\E[01;31m' \
+        LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+        LESS_TERMCAP_me=$'\E[0m' \
+        LESS_TERMCAP_se=$'\E[0m' \
+        LESS_TERMCAP_ue=$'\E[0m' \
+        LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+        PAGER=less \
+        man "$@"
+    }
 fi
 
 if _has_executable btm
