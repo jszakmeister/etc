@@ -1,63 +1,139 @@
 #!/bin/bash
 set -e
 
-if ! command -v pygmentize > /dev/null 2>&1; then
-    exit 1
-fi
-
 PYGMENTIZE="pygmentize -f 256 -O style=native,outencoding=utf-8"
+
+
+colorize()
+{
+    if has_executable pygmentize
+    then
+        ${PYGMENTIZE} "$@" 2>/dev/null
+    else
+        exit 1
+    fi
+}
+
+
+has_executable()
+{
+    if type -P "$1" > /dev/null 2>&1
+    then
+        return 0
+    fi
+
+    return 1
+}
+
+
+format_xml()
+{
+    if has_executable xmllint
+    then
+        xmllint --format - < "$1" | colorize -l xml
+    else
+        colorize "$1"
+    fi
+}
+
+
+is_binary()
+{
+    local mimetype
+    mimetype="$(file -bL --mime "$1")"
+    case "$mimetype" in
+        *charset=binary)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+
+show_binary()
+{
+    if has_executable hexdump
+    then
+        command hexdump -v -e '"%10_ad (%8_axh):  " 8/1 "%02x " "  " 8/1 "%02x "' -e'"  " 16/1 "%_p" "\n"' "$1"
+    else
+        exit 1
+    fi
+}
+
 
 case "$(basename "$1")" in
     *.zsh*)
-        ${PYGMENTIZE} -l sh "$1" 2>/dev/null
+        colorize -l sh "$1"
         ;;
     *.mk|Makefile.*|Makefile)
-        ${PYGMENTIZE} -l make "$1" 2>/dev/null
+        colorize -l make "$1"
         ;;
     Vagrantfile)
-        ${PYGMENTIZE} -l ruby "$1" 2>/dev/null
+        colorize -l ruby "$1"
         ;;
     *.patch|*.diff)
-        if command -v colordiff > /dev/null 2>&1; then
+        if has_executable colordiff
+        then
             colordiff < "$1" | diff-highlight
         else
-            ${PYGMENTIZE} "$1" 2>/dev/null | diff-highlight
+            colorize "$1" | diff-highlight
         fi
         ;;
-    CMakeLists.txt)
-        ${PYGMENTIZE} "$1" 2>/dev/null
+    CMakeLists.txt|Dockerfile)
+        colorize "$1" 2>/dev/null
         ;;
     *.txt)
         exit 1
         ;;
-    *.xml)
-        if command -v xmllint > /dev/null 2>&1; then
-            xmllint --format - < "$1" | ${PYGMENTIZE} -l xml 2>/dev/null
+    *.xml|*.mobileconfig)
+        format_xml "$1"
+        ;;
+    *.plist)
+        if [ "$(head -c 6 "$1")" = "bplist" ]
+        then
+            if has_executable plutil
+            then
+                plutil -convert xml1 -o - "$1"
+            else
+                show_binary "$1"
+            fi
         else
-            ${PYGMENTIZE} "$1" 2>/dev/null
+            format_xml "$1"
         fi
         ;;
     .etcrc*)
-        ${PYGMENTIZE} -l sh "$1" 2>/dev/null
+        colorize -l sh "$1"
         ;;
     *.*)
-        ${PYGMENTIZE} "$1" 2>/dev/null
+        if is_binary "$1"
+        then
+            show_binary "$1"
+        else
+            colorize "$1"
+        fi
         ;;
     *)
-        shebang=$(head -1 "$1")
-        shebang=${shebang/#*\/env /}
-        shebang=${shebang/#*\//}
-        case "$shebang" in
-            bash|zsh|sh)
-                ${PYGMENTIZE} -l sh "$1" 2>/dev/null
-                ;;
-            python3|python2|python)
-                ${PYGMENTIZE} -l python "$1" 2>/dev/null
-                ;;
-            *)
-                exit 1
-                ;;
-        esac
+        if is_binary "$1"
+        then
+            show_binary "$1"
+        else
+            shebang=$(head -1 "$1")
+            shebang=${shebang/#*\/env /}
+            shebang=${shebang/#*\//}
+            case "$shebang" in
+                bash|zsh|sh)
+                    colorize -l sh "$1"
+                    ;;
+                python3|python2|python)
+                    colorize -l python "$1"
+                    ;;
+                *)
+                    exit 1
+                    ;;
+            esac
+        fi
 esac
 
 exit 0
