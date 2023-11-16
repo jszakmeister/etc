@@ -522,6 +522,14 @@ _has_executable xcp &&
 _has_executable dust &&
     alias du="dust -rs"
 
+if _has_executable names
+then
+    names()
+    {
+        command names ${@:-10}
+    }
+fi
+
 delete-unused()
 {
     for filename in "$@"
