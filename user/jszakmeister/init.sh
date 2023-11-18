@@ -363,9 +363,7 @@ then
     }
 fi
 
-if _has_executable pygmentize; then
-    export LESSOPEN="|$ETC_HOME/user/jszakmeister/lessfilter.sh %s"
-fi
+export LESSOPEN="|$ETC_HOME/user/jszakmeister/lessfilter.sh %s"
 
 if [ -f "/Applications/VMware Fusion.app/Contents/Library/vmrun" ]; then
     alias vmrun="/Applications/VMware\ Fusion.app/Contents/Library/vmrun"

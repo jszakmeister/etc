@@ -130,7 +130,7 @@ case "$(basename "$1")" in
                     colorize -l python "$1"
                     ;;
                 *)
-                    exit 1
+                    colorize "$1"
                     ;;
             esac
         fi
