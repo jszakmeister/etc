@@ -74,7 +74,10 @@ case "$(basename "$1")" in
         colorize -l ruby "$1"
         ;;
     *.patch|*.diff)
-        if has_executable colordiff
+        if has_executable delta
+        then
+            delta < "$1"
+        elif has_executable colordiff
         then
             colordiff < "$1" | diff-highlight
         else
