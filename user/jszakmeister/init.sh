@@ -675,3 +675,8 @@ fi
 
 # Used to copy files from the last 90 days to a new location.
 # rsync -vvaEi0P --files-from=<(find . -mtime -90 -print0) . ../loc2/
+
+rgg()
+{
+    rg --json "$@" | delta
+}
