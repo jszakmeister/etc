@@ -8,7 +8,7 @@
 
 _jszakmeister_prompt_virtualenv() {
     if [ -n "$VIRTUAL_ENV" ]; then
-        echo -ne " ${fg_light_blue}[${fg_red}$(basename $VIRTUAL_ENV)${fg_light_blue}]${ansi_reset}"
+        echo -ne " ${fg_light_blue}[${fg_red}$(basename "$VIRTUAL_ENV")${fg_light_blue}]${ansi_reset}"
     fi
 }
 
