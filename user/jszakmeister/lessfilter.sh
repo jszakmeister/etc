@@ -54,9 +54,12 @@ is_binary()
 
 show_binary()
 {
-    if has_executable hexdump
+    if [ -n "$ETC_LESS_HEXDUMP" ]
     then
-        command hexdump -v -e '"%10_ad (%8_axh):  " 8/1 "%02x " "  " 8/1 "%02x "' -e'"  " 16/1 "%_p" "\n"' "$1"
+        $ETC_LESS_HEXDUMP "$1"
+    elif [ -x /usr/bin/hexdump ]
+    then
+        /usr/bin/hexdump -v -e '"%10_ad (%8_axh):  " 8/1 "%02x " "  " 8/1 "%02x "' -e'"  " 16/1 "%_p" "\n"' "$1"
     else
         exit 1
     fi
