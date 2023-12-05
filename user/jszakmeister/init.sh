@@ -171,6 +171,7 @@ if [ "$platform" = "darwin" ]; then
     alias ostat="stat -f '%Mp%Lp %N'"
     alias sstat="stat -f '%N: %z'"
     alias plprint="plutil -p"
+    alias dump-uuid="dwarfdump -u"
 
     if _has_executable gnu-ls; then
         alias ls='gnu-ls -hFA --color=auto'
