@@ -267,6 +267,9 @@ alias helptags="vim '+Helptags|q'"
 alias p8="ping 8.8.8.8"
 alias fndate="date '+%Y-%m-%d-%H-%M-%S'"
 
+_has_executable sqlite3 &&
+    alias sqlite=sqlite3
+
 _add_dir_shortcut e ~/.etc true
 _add_dir_shortcut e ~/projects/etc true
 _add_dir_shortcut i ~/projects/intelesys true
