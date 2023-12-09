@@ -479,7 +479,7 @@ then
     then
         alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' -Foag"
         # Realias ll since it has -e in it.
-        alias lle="ll -@"
+        alias lle="/bin/ls -hFGAOlT@e"
     else
         alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' -@Foag"
     fi
