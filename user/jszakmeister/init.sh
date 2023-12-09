@@ -162,7 +162,12 @@ then
     export TIMEFMT="%J  %U user %S system %P cpu %*E total/elapsed"
 fi
 
-if [ "$platform" = "darwin" ]; then
+if [ "$platform" = "darwin" ]
+then
+    # Bump up the number of files I can have open, since I often do crazy things
+    # that pushes that limit.
+    ulimit -n "$(sysctl -n kern.maxfilesperproc)"
+
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker docker dockerd
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker-compose docker-compose
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker-machine docker-machine
