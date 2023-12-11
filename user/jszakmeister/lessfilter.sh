@@ -132,7 +132,7 @@ case "$(basename "$1")" in
                 bash|zsh|sh)
                     colorize -l sh "$1"
                     ;;
-                python3|python2|python)
+                python3*|python2*|python)
                     colorize -l python "$1"
                     ;;
                 *)
