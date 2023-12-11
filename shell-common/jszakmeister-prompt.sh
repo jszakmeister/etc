@@ -66,7 +66,7 @@ _jszakmeister_prompt() {
         ERMT=""
     fi
 
-    if [ "${platform}" != "mingw" ]; then
+    if [ "${_etc_platform}" != "mingw" ]; then
         if [ $(id -u) -eq 0 ]; then
             user_color="${fg_bold_red}"
         fi

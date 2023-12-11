@@ -26,7 +26,7 @@ _has_executable vs && alias vs='vs -new'
 # Always use shasum in binary mode.
 _has_executable shasum && alias shasum="shasum -b"
 
-if [ "$platform" = 'freebsd' ]; then
+if [ "$_etc_platform" = 'freebsd' ]; then
     alias du='du -h -d1'
     alias ps='ps auxww'
     alias ls='ls -hFGA'
@@ -34,7 +34,7 @@ if [ "$platform" = 'freebsd' ]; then
     alias top='top -o cpu -i 1'
 fi
 
-if [ "$platform" = 'darwin' ]; then
+if [ "$_etc_platform" = 'darwin' ]; then
     alias du='du -h -d1'
     alias ps='ps auxww'
     if [ -d "$HOME/Applications/0xED.app" ]; then
@@ -61,7 +61,7 @@ if [ "$platform" = 'darwin' ]; then
     alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport'
 fi
 
-if [ "$platform" = 'linux' ] || [ "$platform" = 'mingw' ]; then
+if [ "$_etc_platform" = 'linux' ] || [ "$_etc_platform" = 'mingw' ]; then
     alias du='du -bh --max-depth=1'
     alias ps='ps -efww'
     alias ls='ls -hFA --color=auto'
@@ -100,7 +100,7 @@ fi
 alias apg='apg -M SNCL -m8 -n1 -t -a0'
 alias svnup='svn up $(find-project-root)'
 
-if [ "$platform" = "mingw" ]; then
+if [ "$_etc_platform" = "mingw" ]; then
     _grep_color=""
 else
     _grep_color="--color=auto"
@@ -109,7 +109,7 @@ fi
 # Don't descend into Subversion's admin area, or others like it.
 # Mac's bsd grep sucks... so there's no easy way to do this.
 # Also, suppress error messages.
-if [ "$platform" = 'linux' ]; then
+if [ "$_etc_platform" = 'linux' ]; then
     _grep_extra="$_grep_color -s --exclude-dir=.svn --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.bzr --exclude=tags"
 else
     _grep_extra="$_grep_color -s"

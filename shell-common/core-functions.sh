@@ -5,7 +5,7 @@ _has_executable()
 
 _has_devtool()
 {
-    if [ "$platform" = 'darwin' ]; then
+    if [ "$_etc_platform" = 'darwin' ]; then
         if ! xcode-select -p > /dev/null 2>&1 ; then
             return 1
         fi

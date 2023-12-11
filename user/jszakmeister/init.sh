@@ -162,7 +162,7 @@ then
     export TIMEFMT="%J  %U user %S system %P cpu %*E total/elapsed"
 fi
 
-if [ "$platform" = "darwin" ]
+if [ "$_etc_platform" = "darwin" ]
 then
     # Bump up the number of files I can have open, since I often do crazy things
     # that pushes that limit.
@@ -233,7 +233,7 @@ then
     #   popd
     # }
 
-elif [ "$platform" = "linux" ]; then
+elif [ "$_etc_platform" = "linux" ]; then
     alias ostat="stat -c '%a %n'"
     alias sstat="stat --format='%n: %s'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
@@ -347,7 +347,7 @@ fi
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
 
-if [ "$platform" = "darwin" ]; then
+if [ "$_etc_platform" = "darwin" ]; then
     # Allow CTRL-o to work on the Mac.
     test -t 0 && type -f stty >& /dev/null && stty discard '^-'
 fi
@@ -483,7 +483,7 @@ fi
 
 if _has_executable eza
 then
-    if [ "$platform" = "darwin" ]
+    if [ "$_etc_platform" = "darwin" ]
     then
         alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' -Foag"
         # Realias ll since it has -e in it.

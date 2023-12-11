@@ -84,7 +84,7 @@ case $- in
         fi
 
         # Ensure the prompt is in normal mode.
-        if [ "$platform" != "mingw" ] && tput rmkx > /dev/null 2>&1; then
+        if [ "$_etc_platform" != "mingw" ] && tput rmkx > /dev/null 2>&1; then
             PROMPT_COMMAND="tput rmkx"
         fi
 

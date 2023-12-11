@@ -13,7 +13,7 @@ __etc_append_path()
 
 __etc_prepend_search_paths()
 {
-    __etc_prepend_path "$1/$platform"
+    __etc_prepend_path "$1/$_etc_platform"
     __etc_prepend_path "$1/all"
 }
 
@@ -37,7 +37,7 @@ __etc_prepend_search_paths "$ETC_HOME/user/$ETC_USER/scripts"
 __etc_prepend_path "$ETC_HOME/git-addons"
 __etc_prepend_search_paths "$ETC_HOME/scripts"
 
-if [ "$platform" = 'darwin' ]; then
+if [ "$_etc_platform" = 'darwin' ]; then
     _update_python_paths()
     {
         local python_bin="$1"
@@ -151,7 +151,7 @@ if [ "$TERM" != "dumb" -a "$TERM" != "cygwin" ]; then
   fi
 fi
 
-if [ "$platform" == "darwin" -o "$platform" == "linux" ]; then
+if [ "$_etc_platform" == "darwin" -o "$_etc_platform" == "linux" ]; then
     if [ -e "$ETC_HOME/python/startup.py" ]; then
         export PYTHONSTARTUP="$ETC_HOME/python/startup.py"
     fi
@@ -164,7 +164,7 @@ export HISTIGNORE="&:exit"
 export MINICOM='-c on'
 
 # Setup up TMPDIR correctly when SSH'd into your machine.
-if [ "$platform" = "darwin" ]; then
+if [ "$_etc_platform" = "darwin" ]; then
     # SSH sessions don't have this properly set.  As a result, you can't connect
     # to tmux instances started in a local shell.  This resolves that issue.
     test -z "$TMPDIR" &&

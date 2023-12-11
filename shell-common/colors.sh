@@ -26,7 +26,7 @@ fg_bold_magenta="${_start_ansi}$(echo -ne "\033[1;35m")${_end_ansi}"
 fg_bold_cyan="${_start_ansi}$(echo -ne "\033[1;36m")${_end_ansi}"
 fg_bold_white="${_start_ansi}$(echo -ne "\033[1;37m")${_end_ansi}"
 
-if [ "$platform" == "mingw" ]; then
+if [ "$_etc_platform" == "mingw" ]; then
     # Default to bolding under Windows
     fg_light_black="${fg_bold_black}"
     fg_light_red="${fg_bold_red}"

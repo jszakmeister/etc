@@ -170,7 +170,7 @@ find-domain-controllers()
     fi
 
 
-    if [ "$platform" = 'linux' ]
+    if [ "$_etc_platform" = 'linux' ]
     then
         OPTIONS="+nocookie"
     fi
