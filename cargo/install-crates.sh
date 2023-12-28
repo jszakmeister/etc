@@ -28,7 +28,6 @@ then
         bottom
         broot
         eza
-        fcp
         git-delta
         hyperfine
         just
