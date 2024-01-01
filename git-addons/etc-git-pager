@@ -1,0 +1,52 @@
+#!/bin/bash -e
+
+# For use with etc's gitconfig.  This way we can adapt how we page some of the
+# data, depending on the tools available.
+
+_has_executable()
+{
+    type -P "$@" > /dev/null 2>&1
+}
+
+FORCE_COLOR=
+
+if [ -t 1 ]
+then
+    FORCE_COLOR=t
+fi
+
+case "$1" in
+    diff)
+        if _has_executable delta
+        then
+            delta
+        elif _has_executable bat
+        then
+            bat --style plain
+        else
+            diff-highlight | less
+        fi
+        ;;
+
+    show)
+        if _has_executable bat
+        then
+            bat --style plain
+        else
+            diff-highlight | less
+        fi
+        ;;
+
+    log)
+        if _has_executable bat
+        then
+            bat ${FORCE_COLOR:+--color=always} -l gitlog --style plain | diff-highlight | less
+        else
+            diff-highlight | less
+        fi
+        ;;
+
+    *)
+        diff-highlight | less
+        ;;
+esac
