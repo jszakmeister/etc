@@ -1,40 +1,99 @@
 #!/bin/bash
+
+
+die()
+{
+    echo 1>&2 "ERROR: $@"
+    exit 1
+}
+
+
+INSTALL_DEV=
+
+
 PACKAGES_TO_INSTALL='
+    aria2
+    bat
+    colordiff
+    eza
+    gawk
+    grep
+    httpie
+    libdvdcss
+    md5sha1sum
+    netcat
+    nmap
+    openjdk
+    openssh
+    patchutils
+    pstree
+    px
+    readline
+    ripgrep
+    rlwrap
+    rsync
+    sd
+    tmux
+    topgrade
+    tree
+    watch
+    wget
+    xz
+'
+
+DEV_PACKAGES_TO_INSTALL='
     asciidoc
     autoconf
     automake
     ccache
-    colordiff
-    gawk
-    gettext
-    grep
-    httpie
-    libdvdcss
+    cmake
+    git
+    git-delta
+    git-gui
+    gpp
+    graphviz
+    grc
+    hyperfine
+    just
     libtool
-    md5sha1sum
     minicom
     nasm
-    netcat
     ninja
-    nmap
-    patchutils
+    packer
     pkg-config
     quilt
-    rsync
-    the_silver_searcher
-    tig
-    tmux
-    tree
-    wget
+    shellcheck
+    universal-ctags
+    xcodes
     xmlto
     xmltoman
-    xz
 '
 
-for package in ${PACKAGES_TO_INSTALL}; do
+if test -n "$1"
+then
+    while [ "$1" != "" ]
+    do
+        case $1 in
+            --with-dev)
+                INSTALL_DEV=t
+                ;;
+            *)
+                die "Unknown option: $1"
+                ;;
+        esac
+        shift
+    done
+fi
+
+for package in ${PACKAGES_TO_INSTALL}
+do
     brew install ${package}
 done
 
-brew install ctags --keep-ctags
-brew install homebrew/dupes/openssh --with-keychain-support --with-ldns
-brew install zmq --universal --with-pgm
+if [ "$INSTALL_DEV" = "t" ]
+then
+    for package in ${DEV_PACKAGES_TO_INSTALL}
+    do
+        brew install ${package}
+    done
+fi
