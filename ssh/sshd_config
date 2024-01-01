@@ -12,3 +12,24 @@ UseDNS no
 # Use something other than the default port (22).
 # Replace 1234 with something more reasonable.
 Port 1234
+
+# Only allow public key authentication outside the network.
+Match address *,!192.168.0.*
+	# Public Key authentication only.
+	PubkeyAuthentication yes
+
+	# Disable s/key passwords.
+	ChallengeResponseAuthentication no
+
+	# Disable tunneled clear text passwords.
+	PasswordAuthentication no
+
+	# Disable host-based authentication.
+	HostbasedAuthentication no
+
+	# Turn off others too.
+	GSSAPIAuthentication no
+	KerberosAuthentication no
+
+	# No empty passwords either.
+	PermitEmptyPasswords no
