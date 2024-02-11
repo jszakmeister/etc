@@ -480,11 +480,11 @@ if _has_executable eza
 then
     if [ "$_etc_platform" = "darwin" ]
     then
-        alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' -Foag"
+        alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' --classify=auto -oag"
         # Realias ll since it has -e in it.
         alias lle="/bin/ls -hFGAOlT@e"
     else
-        alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' -@Foag"
+        alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' --classify=auto -@oag"
     fi
 
     # Realias ll, since it may have the -T option in it.
