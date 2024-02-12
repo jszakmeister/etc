@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+# Don't run on directories.
+if [ -d "$1" ]
+then
+    exit 1
+fi
+
+
 PYGMENTIZE="pygmentize -f 256 -O style=native,outencoding=utf-8"
 
 
