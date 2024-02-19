@@ -145,9 +145,7 @@
 	# separate line than the function name.  This will match anything
 	# that looks like a function in column 1.  It seems like a good
 	# trade-off though.
-	xfuncname = "!^[ \t]*[A-Za-z_][A-Za-z_0-9]*:.*$\n"\
-"^(([A-Za-z_][A-Za-z_0-9]*([ \t*]+)?[A-Za-z_][A-Za-z_0-9]*([ \t]*::[ \t]*[^[:space:]]+)?){1,}[ \t]*\\([^;]*)$\n"\
-"^((typedef|struct|class|enum)[^;]*)$"
+	xfuncname = "!^[ \t]*[A-Za-z_][A-Za-z_0-9]*:.*$\n^(([A-Za-z_][A-Za-z_0-9]*([ \t*]+)?[A-Za-z_][A-Za-z_0-9]*([ \t]*::[ \t]*[^[:space:]]+)?){1,}[ \t]*\\([^;]*)$\n^((typedef|struct|class|enum)[^;]*)$"
 
 [fetch]
 	# Often helpful, but can be an issue for very active repositories.
