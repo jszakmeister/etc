@@ -1,0 +1,219 @@
+#!/usr/bin/python3
+import argparse
+import json
+import os
+import shutil
+import sqlite3
+import sys
+
+from datetime import datetime
+from pathlib import Path
+
+
+try:
+    import platformdirs
+except ImportError:
+    sys.exit("Must install platformdirs to run this script")
+
+
+FILES_TO_BACKUP = [
+    "Bookmarks",
+    "Custom Dictionary.txt",
+]
+
+KEYWORDS_TO_FILTER = set([
+    "google.com",
+    "bing.com",
+    "duckduckgo.com",
+    "escosia.org",
+    "yahoo.com",
+])
+
+
+class ScriptError(Exception):
+    pass
+
+
+def copy_backup_data(chrome_dir, backup_dir):
+    for filename in FILES_TO_BACKUP:
+        src_path = chrome_dir / filename
+        dst_path = backup_dir / filename
+
+        if src_path.exists():
+            shutil.copy2(src_path, dst_path)
+
+
+def open_web_data(chrome_dir, read_only=True):
+    web_data_path = chrome_dir / "Web Data"
+    if not web_data_path.exists():
+        raise RuntimeError("Web Data database not found")
+
+    uri = f"file:{web_data_path!s}"
+    if read_only:
+        uri = uri + "?mode=ro"
+
+    conn = sqlite3.connect(uri, uri=True)
+    conn.row_factory = sqlite3.Row
+
+    return conn
+
+
+def get_search_engines(chrome_dir):
+    conn = open_web_data(chrome_dir)
+    cur = conn.cursor()
+
+    data = []
+    for row in cur.execute("select keyword,short_name,url from keywords"):
+        keyword, short_name, url = row
+        if keyword in KEYWORDS_TO_FILTER:
+            continue
+        # if keyword.endswith(...):
+        #     continue
+        data.append((keyword, short_name, url))
+
+    return data
+
+
+def backup_search_engines(chrome_dir, backup_dir):
+    data = get_search_engines(chrome_dir)
+
+    string_data = json.dumps(data)
+    backup_path = backup_dir / "Search Engines.json"
+    with backup_path.open("w+", encoding="UTF-8") as f:
+        f.write(string_data)
+
+
+def build_backup_path(path):
+    return path / datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+
+
+def cmd_dump_search(args):
+    data = get_search_engines(args.chrome_dir)
+    for entry in data:
+        print(f"%14s  %28s  %s" % entry)
+
+
+def cmd_backup_data(args):
+    if args.path is None:
+        raise ScriptError("Must specify a backup folder")
+
+    if not args.path.is_dir():
+        raise ScriptError(
+            f"'{args.path!s}' is not a directory or does not exist")
+
+    backup_dir = build_backup_path(args.path)
+    backup_dir.mkdir(parents=True, exist_ok=True)
+
+    copy_backup_data(args.chrome_dir, backup_dir)
+    backup_search_engines(args.chrome_dir, backup_dir)
+
+
+def cmd_restore_search(args):
+    conn = open_web_data(chrome_dir, read_only=False)
+    restore_file = args.path / "Search Engines.json"
+
+    # Parse JSON data.
+    with restore_file.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    conn = sqlite3.open(web_data_path)
+    conn.row_factory = sqlite3.Row
+
+    cur = conn.cursor()
+
+    for entry in data:
+        keyword = entry[0]
+        if keyword in KEYWORDS_TO_FILTER:
+            continue
+
+        print(f"Inserting entry for {keyword} {entry}...")
+        cur.execute(
+            "INSERT INTO keywords (keyword,short_name,url,favicon_url) VALUES (?,?,?,'')",
+            entry)
+
+    conn.commit()
+
+
+def find_chrome_dir_win32(chrome_dir):
+    # In Windows, we could have a roaming profile if it's part of a domain.
+    # Start there first.
+    if chrome_dir is not None:
+        return chrome_dir / "User Data" / "Default"
+
+    for root in (platformdirs.user_data_path(raoming=True),
+                 platformdirs.user_data_path()):
+        root = root / "Google" / "Chrome" / "User Data" / "Default"
+
+        if root.exists():
+            return root
+
+    raise RuntimeError("Couldn't determine Chrome config location!")
+
+
+def find_chrome_dir(chrome_dir):
+    if sys.platform.startswith("win32"):
+        return find_chrome_dir_win32(chrome_dir)
+
+    if chrome_dir is None:
+        chrome_dir = platformdirs.user_data_path() / "Google" / "Chrome"
+
+    if sys.platform.startswith("darwin") or sys.platform.startswith("linux"):
+        return chrome_dir / "Default"
+
+    raise RuntimeError("Couldn't determine Chrome config location!")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Backs up and restores various Chrome settings")
+    parser.add_argument(
+        "--traceback",
+        help="Show full traceback on error",
+        default=False,
+        action="store_true")
+    parser.add_argument(
+        "--dump-search",
+        help="Print search engines to the console",
+        default=False,
+        action="store_true")
+    parser.add_argument(
+        "--restore-search",
+        help="Restore search engines from backup",
+        default=False,
+        action="store_true")
+    parser.add_argument(
+        "--chrome-dir",
+        help="Path to Chrome's top-level config area.  Defaults to searching "
+             "automatically",
+        default=None,
+        type=Path)
+    parser.add_argument(
+        "path",
+        help="Path to backup directory or directory to restore from if "
+             "--restore-search is passed",
+        nargs="?",
+        default=None,
+        type=Path)
+
+    args = parser.parse_args()
+
+    try:
+        if args.chrome_dir is None:
+            args.chrome_dir = find_chrome_dir(args.chrome_dir)
+
+        if args.restore_search:
+            cmd_restore_search(args)
+        elif args.dump_search:
+            cmd_dump_search(args)
+        else:
+            cmd_backup_data(args)
+    except Exception as e:
+        print(f"ERROR: {e!s}", file=sys.stderr)
+        if args.traceback:
+            raise
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
+
