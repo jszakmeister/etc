@@ -424,7 +424,7 @@ if _has_executable ag; then
 fi
 
 if _has_executable rg; then
-    alias rg="rg -LS"
+    alias rg="rg -LS --hyperlink-format vscode"
     rg()
     {
         local _rg_path
@@ -494,14 +494,14 @@ then
 
     # Realias ll, since it may have the -T option in it.
     alias ll="ls -l"
-    alias tree="ls --tree"
+    alias tree='ls --tree -I"__pycache__|build|.git|.fingerprint|target|*.sw?|.?*"'
 fi
 
 if _has_executable bat
 then
     # unset -f cat
     export BAT_THEME="Visual Studio Dark+"
-    alias cat=bat
+    alias cat="bat --style=numbers,grid"
     export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
     if [ -n "$ZSH_VERSION" ]
@@ -525,7 +525,8 @@ fi
 
 if _has_executable btm
 then
-    alias top=btm
+    alias top="btm --color=gruvbox"
+    alias btop="btm -b -n"
 elif _has_executable ptop
 then
     alias top=ptop
@@ -537,6 +538,9 @@ _has_executable xcp &&
 _has_executable dust &&
     alias du="dust -rs"
 
+_has_executable dysk &&
+    alias dysk="dysk -s mount"
+
 if _has_executable names
 then
     names()
@@ -544,6 +548,9 @@ then
         command names ${@:-10}
     }
 fi
+
+_has_executable hwatch &&
+    alias watch="hwatch -n 1 --color"
 
 delete-unused()
 {
@@ -622,7 +629,7 @@ then
 
         for cert in "$@"
         do
-            openssl x509 -noout -text -in "$cert"
+            openssl x509 -noout -text -fingerprint -in "$cert"
         done
 
         return 0
@@ -696,4 +703,9 @@ fi
 rgg()
 {
     rg --json "$@" | delta
+}
+
+public-ip()
+{
+     dig +short txt ch whoami.cloudflare @1.0.0.1
 }
