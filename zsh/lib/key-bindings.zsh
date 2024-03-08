@@ -74,6 +74,19 @@ bindkey '^X^E' edit-command-line
 
 bindkey -s "\C-o\C-o" "^E | less^M"
 
+if _has_executable sk
+then
+    sk_widget()
+    {
+        LBUFFER="${LBUFFER}$( (fd --unrestricted || find .) | sk )"
+        local ret=$?
+        zle reset-prompt
+        return $ret
+    }
+    zle -N sk_widget
+    bindkey "^P^P" sk_widget
+fi
+
 # Allow Alt-m to be used to grab a previous argument.  For instance,
 # $ git status
 # Alt-. Alt-m would result in 'git'
