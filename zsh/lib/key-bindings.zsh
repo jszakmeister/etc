@@ -76,15 +76,15 @@ bindkey -s "\C-o\C-o" "^E | less^M"
 
 if _has_executable sk
 then
-    sk_widget()
+    __etc_sk_widget()
     {
-        LBUFFER="${LBUFFER}$( (fd --unrestricted || find .) | sk )"
+        LBUFFER="${LBUFFER}$( (${SKIM_DEFAULT_COMMAND:-fd --unrestricted || find .}) | sk )"
         local ret=$?
         zle reset-prompt
         return $ret
     }
-    zle -N sk_widget
-    bindkey "^P^P" sk_widget
+    zle -N __etc_sk_widget
+    bindkey "^P^P" __etc_sk_widget
 fi
 
 # Allow Alt-m to be used to grab a previous argument.  For instance,
