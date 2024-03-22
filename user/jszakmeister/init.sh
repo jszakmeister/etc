@@ -222,6 +222,11 @@ then
         PATH=/usr/bin /usr/bin/lldb "$@"
     }
 
+    platform-details()
+    {
+        system_profiler SPSoftwareDataType SPHardwareDataType SPStorageDataType "$@"
+    }
+
     # pkg-remove()
     # {
     #   pushd /
