@@ -8,25 +8,30 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("errno",
                         help="Name or integer to lookup.",
-                        nargs="+")
+                        nargs="*")
 
     args = parser.parse_args()
 
     unknown_present = False
 
-    for e in args.errno:
-        try:
-            code = int(e)
-            name = errno.errorcode.get(code, "(unknown)")
-        except ValueError:
-            # We likely have a name
-            name = e.upper()
-            code = getattr(errno, name, "(unknown)")
+    if len(args.errno) == 0:
+        for code, name in sorted(errno.errorcode.items(),
+                                 key=lambda x: (x[1], x[0])):
+            print(f"{name}: {code}")
+    else:
+        for e in args.errno:
+            try:
+                code = int(e)
+                name = errno.errorcode.get(code, "(unknown)")
+            except ValueError:
+                # We likely have a name
+                name = e.upper()
+                code = getattr(errno, name, "(unknown)")
 
-        print(f"{name}: {code}")
+            print(f"{name}: {code}")
 
-        if code == "(unknown)" or name == "(unknown)":
-            unknown_present = True
+            if code == "(unknown)" or name == "(unknown)":
+                unknown_present = True
 
     if unknown_present:
         sys.exit(1)
