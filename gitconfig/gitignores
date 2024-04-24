@@ -29,6 +29,8 @@
 
 .*
 !.git[a-z]*
+!.gitattributes
+!.gitignore
 tags
 TAGS
 tar-me.sh
