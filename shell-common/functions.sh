@@ -21,13 +21,29 @@ find-project-root()
 search-up-tree()
 {
     local tmp_path="$(pwd)"
+    local require_file=
+
+    if [ "$1" == "--file" ]
+    then
+        require_file=t
+        shift
+    fi
+
     while [[ "$tmp_path" != "/" ]];
     do
         for file in "$@"
         do
-            if [ -e "$tmp_path/$file" ]; then
-                echo "$tmp_path/$file"
-                return
+            if [ -e "$tmp_path/$file" ]
+            then
+                if [ -z "$require_file" ]
+                then
+                    echo "$tmp_path/$file"
+                    return
+                elif [ -n "$require_file" -a -f "$tmp_path/$file" ]
+                then
+                    echo "$tmp_path/$file"
+                    return
+                fi
             fi
         done
 
@@ -108,7 +124,7 @@ function egrep()
 
 buildall()
 {
-    local buildall_exec="$(search-up-tree buildall buildall.sh)"
+    local buildall_exec="$(search-up-tree --file buildall buildall.sh)"
 
     if [ -z "$buildall_exec" ]
     then
