@@ -163,6 +163,20 @@ then
     export TIMEFMT="%J  %U user %S system %P cpu %*E total/elapsed"
 fi
 
+if _has_executable mcfly
+then
+    export MCFLY_FUZZY=2
+    export MCFLY_RESULTS=50
+
+    if [[ "$SHELL" = */zsh ]]
+    then
+        eval "$(mcfly init zsh)"
+    elif [[ "$SHELL" = */bash ]]
+    then
+        eval "$(mcfly init bash)"
+    fi
+fi
+
 if [ "$_etc_platform" = "darwin" ]
 then
     # Bump up the number of files I can have open, since I often do crazy things
