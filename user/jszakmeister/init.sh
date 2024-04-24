@@ -242,6 +242,11 @@ then
         system_profiler SPSoftwareDataType SPHardwareDataType SPStorageDataType "$@"
     }
 
+    cpuinfo()
+    {
+        sysctl -a machdep.cpu
+    }
+
     # pkg-remove()
     # {
     #   pushd /
@@ -289,6 +294,11 @@ elif [ "$_etc_platform" = "linux" ]; then
             objdump -S -M intel -d --start-address="0x$start" \
                 --stop-address="0x$end" "$2"
         done
+    }
+
+    cpuinfo()
+    {
+        cat /proc/cpuinfo
     }
 fi
 
