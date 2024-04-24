@@ -43,6 +43,12 @@ append_path()
     fi
 }
 
+_etc_prepend_script_dir()
+{
+    export PATH="$(prepend_path "$PATH" "$1/$_etc_platform:$1/all")"
+    echo "$PATH"
+}
+
 __etc_source_user_file()
 {
     test -s "$ETC_LOCAL_DIR/$1" &&
