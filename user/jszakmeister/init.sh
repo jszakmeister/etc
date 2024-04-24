@@ -1,6 +1,7 @@
 export WORKON_HOME=$HOME/.virtualenvs
 export CCACHE_CPP2=1
 export HOMEBREW_NO_EMOJI=1
+export USE_EMOJI=no
 export LESS="-eFRX -Pslines %lt-%lb?Pb(%Pb\%).?m (%i of %m).  ?f%f:-."
 
 
