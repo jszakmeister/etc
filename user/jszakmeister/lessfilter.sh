@@ -22,6 +22,17 @@ colorize()
 }
 
 
+ssh_colorize()
+{
+    if has_executable bat
+    then
+        bat --color=always -pp --language="SSH Config" "$1"
+    else
+        exit 1
+    fi
+}
+
+
 has_executable()
 {
     if type -P "$1" > /dev/null 2>&1
@@ -40,6 +51,20 @@ format_xml()
         xmllint --format - < "$1" | colorize -l xml
     else
         colorize "$1"
+    fi
+}
+
+
+format_json()
+{
+    if has_executable jaq
+    then
+        jaq --color=never . < "$1" | colorize -l json
+    elif has_executable jq
+    then
+        jq . < "$1" | colorize -l json
+    else
+        colorize -l json "$1"
     fi
 }
 
@@ -73,80 +98,101 @@ show_binary()
 }
 
 
-case "$(basename "$1")" in
-    *.zsh*)
-        colorize -l sh "$1"
-        ;;
-    *.mk|Makefile.*|Makefile)
-        colorize -l make "$1"
-        ;;
-    Vagrantfile)
-        colorize -l ruby "$1"
-        ;;
-    *.patch|*.diff)
-        if has_executable delta
-        then
-            delta < "$1"
-        elif has_executable colordiff
-        then
-            colordiff < "$1" | diff-highlight
-        else
-            colorize "$1" | diff-highlight
-        fi
-        ;;
-    CMakeLists.txt|Dockerfile)
-        colorize "$1" 2>/dev/null
-        ;;
-    *.txt)
-        exit 1
-        ;;
-    *.xml|*.mobileconfig)
-        format_xml "$1"
-        ;;
-    *.plist)
-        if [ "$(head -c 6 "$1")" = "bplist" ]
-        then
-            if has_executable plutil
-            then
-                plutil -convert xml1 -o - "$1"
-            else
-                show_binary "$1"
-            fi
-        else
-            format_xml "$1"
-        fi
-        ;;
-    .etcrc*)
-        colorize -l sh "$1"
-        ;;
-    *.*)
-        if is_binary "$1"
-        then
-            show_binary "$1"
-        else
-            colorize "$1"
-        fi
+_handled=t
+
+case "$1" in
+    **/.ssh/config)
+        ssh_colorize "$1"
         ;;
     *)
-        if is_binary "$1"
-        then
-            show_binary "$1"
-        else
-            shebang=$(head -1 "$1")
-            shebang=${shebang/#*\/env /}
-            shebang=${shebang/#*\//}
-            case "$shebang" in
-                bash|zsh|sh)
-                    colorize -l sh "$1"
-                    ;;
-                python3*|python2*|python)
-                    colorize -l python "$1"
-                    ;;
-                *)
-                    colorize "$1"
-                    ;;
-            esac
-        fi
+        _handled=
+        ;;
 esac
+
+if [ -z "$_handled" ]
+then
+    case "$(basename "$1")" in
+        *.zsh*)
+            colorize -l sh "$1"
+            ;;
+        *.mk|Makefile.*|Makefile)
+            colorize -l make "$1"
+            ;;
+        Vagrantfile)
+            colorize -l ruby "$1"
+            ;;
+        *.patch|*.diff)
+            if has_executable delta
+            then
+                delta < "$1"
+            elif has_executable colordiff
+            then
+                colordiff < "$1" | diff-highlight
+            else
+                colorize "$1" | diff-highlight
+            fi
+            ;;
+        CMakeLists.txt|Dockerfile)
+            colorize "$1" 2>/dev/null
+            ;;
+        *.txt)
+            exit 1
+            ;;
+        *.xml|*.mobileconfig)
+            format_xml "$1"
+            ;;
+        *.plist)
+            if [ "$(head -c 6 "$1")" = "bplist" ]
+            then
+                if has_executable plutil
+                then
+                    plutil -convert xml1 -o - "$1"
+                else
+                    show_binary "$1"
+                fi
+            else
+                format_xml "$1"
+            fi
+            ;;
+        .etcrc*|.etcenv*)
+            colorize -l sh "$1"
+            ;;
+        *.json)
+            format_json "$1"
+            ;;
+        ssh_config)
+            ssh_colorize "$1"
+            ;;
+        *.*)
+            if is_binary "$1"
+            then
+                show_binary "$1"
+            else
+                colorize "$1"
+            fi
+            ;;
+        *)
+            if is_binary "$1"
+            then
+                show_binary "$1"
+            else
+                shebang=$(head -1 "$1")
+                shebang=${shebang/#*\/env /}
+                shebang=${shebang/#*\//}
+                case "$shebang" in
+                    bash|zsh|sh)
+                        colorize -l sh "$1"
+                        ;;
+                    python3*|python2*|python)
+                        colorize -l python "$1"
+                        ;;
+                    *)
+                        colorize "$1"
+                        ;;
+                esac
+            fi
+    esac
+
+fi
 
 exit 0
