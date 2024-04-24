@@ -576,6 +576,9 @@ then
     alias top=ptop
 fi
 
+_has_executable shasum && ! _has_executable sha256sum &&
+    alias sha256sum="shasum -a 256"
+
 _has_executable xcp &&
     alias cp="xcp -w 0"
 
