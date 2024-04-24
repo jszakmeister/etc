@@ -173,7 +173,7 @@ then
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker-compose docker-compose
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker-machine docker-machine
 
-    alias df="df -hi"
+    alias df="df --si -i"
     alias ostat="stat -f '%Mp%Lp %N'"
     alias sstat="stat -f '%N: %z'"
     alias plprint="plutil -p"
@@ -244,7 +244,21 @@ elif [ "$_etc_platform" = "linux" ]; then
     alias sstat="stat --format='%n: %s'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
     alias ll='ls -l --time-style=long-iso'
-    alias df='df -h --output=source,size,used,avail,pcent,iused,iavail,ipcent,target'
+
+    if _has_executable dysk
+    then
+        df()
+        {
+            if test -t 1
+            then
+                dysk "$@"
+            else
+                command df --si --output=source,size,used,avail,pcent,iused,iavail,ipcent,target "$@"
+            fi
+        }
+    else
+        alias df='df -h --output=source,size,used,avail,pcent,iused,iavail,ipcent,target'
+    fi
 
     unrpm()
     {
