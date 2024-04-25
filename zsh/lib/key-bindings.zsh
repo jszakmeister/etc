@@ -78,7 +78,7 @@ if _has_executable sk
 then
     __etc_sk_widget()
     {
-        LBUFFER="${LBUFFER}$( (${SKIM_DEFAULT_COMMAND:-fd --unrestricted || find .}) | sk )"
+        LBUFFER="${LBUFFER}$( (${SKIM_DEFAULT_COMMAND:-fd --unrestricted || find .}) | sk ) "
         local ret=$?
         zle reset-prompt
         return $ret
