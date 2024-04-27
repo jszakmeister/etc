@@ -192,7 +192,6 @@ then
                 esac
             fi
     esac
-
 fi
 
 exit 0
