@@ -127,6 +127,14 @@
 [include]
 	path = ~/.gituser
 
+[interactive]
+	difffilter = etc-git-pager difffilter
+
+[delta]
+	navigate = true
+	light = false
+	line-numbers = true
+
 [diff]
 	# Does rename detection during diff operation
 	renames = copies
