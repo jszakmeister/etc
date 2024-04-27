@@ -16,6 +16,15 @@ then
 fi
 
 case "$1" in
+    difffilter)
+        if _has_executable delta
+        then
+            delta --color-only
+        else
+            cat
+        fi
+        ;;
+
     diff)
         if _has_executable delta
         then
