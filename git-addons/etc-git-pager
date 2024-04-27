@@ -28,7 +28,7 @@ case "$1" in
     diff)
         if _has_executable delta
         then
-            delta
+            delta -n
         elif _has_executable bat
         then
             bat --style plain
