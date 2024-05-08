@@ -744,6 +744,11 @@ then
     }
 fi
 
+if _has_executable rsync
+then
+    alias local-rsync="rsync -a --info=progress2 --inplace"
+fi
+
 # Used to copy files from the last 90 days to a new location.
 # rsync -vvaEi0P --files-from=<(find . -mtime -90 -print0) . ../loc2/
 
