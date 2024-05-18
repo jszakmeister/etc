@@ -276,7 +276,7 @@ elif [ "$_etc_platform" = "linux" ]; then
             fi
         }
     else
-        alias df='df -h --output=source,size,used,avail,pcent,iused,iavail,ipcent,target'
+        alias df='df --si --output=source,size,used,avail,pcent,iused,iavail,ipcent,target'
     fi
 
     unrpm()
