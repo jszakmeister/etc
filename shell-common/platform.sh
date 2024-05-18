@@ -18,7 +18,7 @@ elif [ "$_etc_platform" = 'linux' ]
 then
     function _num_cpus()
     {
-        grep -c ^processor /proc/cpuinfo
+        nproc
     }
 else
     function _num_cpus()
