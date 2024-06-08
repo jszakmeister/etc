@@ -204,6 +204,12 @@ then
         export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
     fi
 
+    if test -x /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport
+    then
+        # See https://nuxx.net/blog/2023/10/20/command-line-802-11-monitor-mode-on-macos-sonoma-14-0/
+        alias airport="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport"
+    fi
+
     clear-dns-cache()
     {
         sudo killall -HUP mDNSResponder
