@@ -120,6 +120,11 @@ __pycache__
 
 # VSCode
 .vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
 *.code-workspace
 
 # Node.js/NPM
@@ -127,5 +132,9 @@ package-lock.json
 
 # CMake
 CMakeUserPresets.json
+
+# Rust
+**/*.rs.bk
+target/
 
 *.backup
