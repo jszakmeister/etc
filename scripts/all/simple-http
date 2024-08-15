@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import argparse
-import distutils.spawn
 import logging
 import os
+import shutil
 import socket
 import subprocess
 import sys
@@ -245,13 +245,13 @@ def parse_address_port(address_port):
 
 
 def find_executable(name):
-    return distutils.spawn.find_executable(name)
+    return shutil.which(name)
 
 
 def find_webserver():
     path = None
     for webserver in ["caddy", "ngnix"]:
-        path = distutils.spawn.find_executable(webserver)
+        path = find_executable(webserver)
         if path:
             return webserver, path
 
