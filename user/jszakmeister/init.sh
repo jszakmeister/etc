@@ -768,3 +768,29 @@ public-ip()
 {
      dig +short txt ch whoami.cloudflare @1.0.0.1
 }
+
+
+quick-compile()
+{
+    # Maybe add -Wstrict-prototypes -Wmissing-prototypes -Werror=implicit-function-declaration \
+    #   -Wbad-function-cast -Wnested-externs -std=c99
+    ${CC:-cc} -Wall -Wextra -Wpointer-arith -Wcast-qual -Wwrite-strings -Wshadow -Wcast-align -Winline -Wrendundant-decls "$@"
+}
+
+
+quick-compile-clang()
+{
+    CC=clang quick-compile "$@"
+}
+
+
+print-pcap()
+{
+    if [ $# -eq 0 ]
+    then
+        echo "[usage] print-pcap /path/to/pcap"
+        return 2
+    fi
+
+    tcpdump -qns 0 -X -r "$1"
+}
