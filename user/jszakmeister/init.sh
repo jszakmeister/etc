@@ -391,7 +391,10 @@ _has_executable strings &&
 if _has_executable gmake
 then
     # alias make='nice -n 3 gmake -O -j$(_num_cpus)'
-    alias make='nice -n 3 gmake -j$(_num_cpus)'
+    alias make='nice -n 3 gmake --output-sync=line -j$(_num_cpus)'
+elif _has_executable make
+then
+    alias make='nice -n 3 make --output-sync=line -j$(_num_cpus)'
 fi
 
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
