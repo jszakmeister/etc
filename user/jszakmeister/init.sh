@@ -210,6 +210,11 @@ then
         alias airport="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport"
     fi
 
+    if test -x "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dyldinfo"
+    then
+        alias dyldinfo="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dyldinfo"
+    fi
+
     clear-dns-cache()
     {
         sudo killall -HUP mDNSResponder
