@@ -501,6 +501,18 @@ if _has_executable rg; then
             "$_rg_path" "$@"
         fi
     }
+
+    rgg()
+    {
+        if test -t 1
+        then
+            rg --json "$@" | delta
+        else
+            rg "$@"
+        fi
+    }
+
+    alias rgn="rgg -uuu"
 fi
 
 if _has_executable curl
@@ -766,11 +778,6 @@ fi
 
 # Used to copy files from the last 90 days to a new location.
 # rsync -vvaEi0P --files-from=<(find . -mtime -90 -print0) . ../loc2/
-
-rgg()
-{
-    rg --json "$@" | delta
-}
 
 public-ip()
 {
