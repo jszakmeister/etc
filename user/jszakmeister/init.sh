@@ -565,7 +565,11 @@ then
 
     # Realias ll, since it may have the -T option in it.
     alias ll="ls -l"
-    alias tree='ls --tree -I"__pycache__|build|.git|.fingerprint|target|*.sw?|.?*"'
+
+    if ! _has_executable tree
+    then
+        alias tree='ls --tree -I"__pycache__|build|.git|.fingerprint|target|*.sw?|.?*"'
+    fi
 fi
 
 if _has_executable bat
