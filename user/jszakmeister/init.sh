@@ -560,7 +560,8 @@ then
         # Realias ll since it has -e in it.
         alias lle="/bin/ls -hFGAOlT@e"
     else
-        alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' --classify=auto -@oag"
+        alias ls="eza --group-directories-first --time-style '+%Y-%m-%d %H:%M:%S' --classify=auto -oag"
+        alias lle="ls -l@"
     fi
 
     # Realias ll, since it may have the -T option in it.
