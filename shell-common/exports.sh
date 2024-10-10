@@ -95,7 +95,19 @@ __etc_prepend_path /usr/local/lib/ccache
 __etc_prepend_path /usr/lib/ccache
 
 # Homebrew
-__etc_prepend_path /opt/homebrew/bin
+if [ -d /opt/homebrew/bin ]
+then
+    __etc_prepend_path /opt/homebrew/bin
+    __etc_prepend_path /opt/homebrew/sbin
+elif [ -d ~/.linuxbrew ]
+then
+    __etc_prepend_path "$HOME/.linuxbrew/bin"
+    __etc_prepend_path "$HOME/.linuxbrew/sbin"
+elif [ -d /home/linuxbrew/.linuxbrew ]
+then
+    __etc_prepend_path /home/linuxbrew/.linuxbrew/bin
+    __etc_prepend_path /home/linuxbrew/.linuxbrew/sbin
+fi
 
 # It turns out there are some brain-dead apps out there that expect /usr/bin to
 # come before /usr/sbin, like mock.
