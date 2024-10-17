@@ -20,6 +20,7 @@
 *.pl		text diff=perl whitespace=trailing-space,space-before-tab,tab-in-indent
 *.php		text diff=php whitespace=trailing-space,space-before-tab,tab-in-indent
 *.rb		text diff=ruby whitespace=trailing-space,space-before-tab,tab-in-indent
+*.rs		text diff=rust whitespace=trailing-space,space-before-tab,tab-in-indent
 
 *.dsp		eol=crlf
 *.dsw		eol=crlf
