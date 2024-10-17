@@ -327,9 +327,6 @@ alias helptags="vim '+Helptags|q'"
 alias p8="ping 8.8.8.8"
 alias fndate="date '+%Y-%m-%d-%H-%M-%S'"
 
-_has_executable sqlite3 &&
-    alias sqlite=sqlite3
-
 _add_dir_shortcut d ~/Downloads true
 _add_dir_shortcut e ~/.etc true
 _add_dir_shortcut e ~/projects/etc true
@@ -348,6 +345,9 @@ else
 fi
 
 test -e ~/tmp && _make_dir_complete pdt pushd ~/tmp
+
+_has_executable sqlite3 &&
+    alias sqlite=sqlite3
 
 _has_executable git &&
     alias gitst="git st"
