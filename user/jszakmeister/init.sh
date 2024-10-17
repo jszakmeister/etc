@@ -397,6 +397,10 @@ then
     alias make='nice -n 3 make --output-sync=line -j$(_num_cpus)'
 fi
 
+_has_executable fd &&
+    alias fdg="fd --glob"
+
+
 # Turn off xon/xoff flow control.  This also allows the use of CTRL-Q and CTRL-S
 # in vim when running at the terminal.
 test -t 0 && type -f stty >& /dev/null && stty -ixon -ixoff
