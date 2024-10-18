@@ -284,9 +284,9 @@ Some of my favorite are:
   really for zsh users... it'll create a directory alias, ``~p`` in this case,
   that you can use to reference that folder on the command line.
 
-* ``_has_executable`` is a safe way to detect whether an executable is on the
+* ``_etc_has_executable`` is a safe way to detect whether an executable is on the
   path.  There's not a good POSIX portable way of doing this (each shell has
-  it's own way), so ``_has_executable`` was developed to provide this since I
+  it's own way), so ``_etc_has_executable`` was developed to provide this since I
   bounce between both zsh and bash environments.
 
 * ``md`` - Makes a directory and then changes into it.

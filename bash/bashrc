@@ -52,7 +52,7 @@ function _make_dir_complete()
     complete -o nospace -F $prgname $aliasname
 }
 
-function _find_executable()
+function _etc_find_executable()
 {
     type -P "$@"
 }
@@ -79,8 +79,8 @@ case $- in
             . "$ETC_HOME/bash/git-completion.bash"
         fi
 
-        if _has_executable aws_completer; then
-            complete -C "$(_find_executable aws_completer)" aws
+        if _etc_has_executable aws_completer; then
+            complete -C "$(_etc_find_executable aws_completer)" aws
         fi
 
         # Ensure the prompt is in normal mode.

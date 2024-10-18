@@ -3,28 +3,28 @@ alias em='emacs -nw'
 alias ec='emacsclient -n'
 alias pd='pushd'
 
-_has_executable scons && alias scons='scons -u -j$(_num_cpus)'
-_has_executable make && alias make='nice -n 3 make -j$(_num_cpus)'
-_has_executable gmake && alias gmake='nice -n 3 gmake -j$(_num_cpus)'
-_has_executable ninja-build && alias ninja="nice -n 3 ninja-build"
-_has_executable ninja && alias ninja='nice -n 3 ninja'
-_has_executable cninja && {
+_etc_has_executable scons && alias scons='scons -u -j$(_num_cpus)'
+_etc_has_executable make && alias make='nice -n 3 make -j$(_num_cpus)'
+_etc_has_executable gmake && alias gmake='nice -n 3 gmake -j$(_num_cpus)'
+_etc_has_executable ninja-build && alias ninja="nice -n 3 ninja-build"
+_etc_has_executable ninja && alias ninja='nice -n 3 ninja'
+_etc_has_executable cninja && {
     alias cninja='nice -n 3 cninja'
     alias cn=cninja
 }
 
-_has_executable cmake3 && alias cmake='cmake'
+_etc_has_executable cmake3 && alias cmake='cmake'
 
-if _has_executable tree; then
+if _etc_has_executable tree; then
     alias tree='tree --charset=ASCII -F -v -I "__pycache__|build"'
-elif _has_executable gio; then
+elif _etc_has_executable gio; then
     alias tree='gio tree'
 fi
 
-_has_executable vs && alias vs='vs -new'
+_etc_has_executable vs && alias vs='vs -new'
 
 # Always use shasum in binary mode.
-_has_executable shasum && alias shasum="shasum -b"
+_etc_has_executable shasum && alias shasum="shasum -b"
 
 if [ "$_etc_platform" = 'freebsd' ]; then
     alias du='du -h -d1'
@@ -67,16 +67,16 @@ if [ "$_etc_platform" = 'linux' ] || [ "$_etc_platform" = 'mingw' ]; then
     alias ls='ls -hFA --color=auto'
     alias ll='ls -l'
     alias top='top -d 1'
-    if _has_executable xsel; then
+    if _etc_has_executable xsel; then
         alias pbcopy='xsel --clipboard --input'
         alias pbpaste='xsel --clipboard --output'
-    elif _has_executable xclip; then
+    elif _etc_has_executable xclip; then
         alias pbcopy='xclip -selection clipboard'
         alias pbpaste='xclip -selection clipboard -o'
     fi
-    if _has_executable gio; then
+    if _etc_has_executable gio; then
         alias open="gio open"
-    elif _has_executable xdg-open; then
+    elif _etc_has_executable xdg-open; then
         alias open="xdg-open"
     elif [ "$DESKTOP_SESSION" = "gnome" ]; then
         alias open="gnome-open"
@@ -141,7 +141,7 @@ alias od='od -A x'
 alias traceroute='traceroute -n -w 2'
 alias netcat=nc
 
-if _has_executable svnwrap; then
+if _etc_has_executable svnwrap; then
     alias svn=svnwrap
 
     svndiff()

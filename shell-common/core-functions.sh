@@ -1,6 +1,6 @@
-_has_executable()
+_etc_has_executable()
 {
-    _find_executable "$@" > /dev/null 2>&1
+    _etc_find_executable "$@" > /dev/null 2>&1
 }
 
 _has_devtool()
@@ -11,7 +11,7 @@ _has_devtool()
         fi
     fi
 
-    _find_executable "$@" > /dev/null 2>&1
+    _etc_find_executable "$@" > /dev/null 2>&1
 }
 
 _run_helper()
@@ -76,4 +76,16 @@ _add_dir_shortcut()
         _make_dir_complete "pd$shortcut" pushd "$shortcut_path" &&
         [ -n "$3" ] && [ -n "$ZSH_VERSION" ] &&
         hash -d "$shortcut=$shortcut_path"
+}
+
+
+# Compatibility shims.  Remove at some point.
+_has_executable()
+{
+    _etc_has_executable "$@"
+}
+
+__find_executable()
+{
+    _etc_find_executable "$@"
 }

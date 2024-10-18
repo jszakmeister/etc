@@ -47,7 +47,7 @@ function _make_dir_complete()
     compdef "_path_files -/ -W \"$realpath\"" "$aliasname"
 }
 
-function _find_executable()
+function _etc_find_executable()
 {
     whence -p "$@"
 }

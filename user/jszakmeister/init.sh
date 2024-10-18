@@ -163,7 +163,7 @@ then
     export TIMEFMT="%J  %U user %S system %P cpu %*E total/elapsed"
 fi
 
-if _has_executable mcfly
+if _etc_has_executable mcfly
 then
     export MCFLY_FUZZY=2
     export MCFLY_RESULTS=50
@@ -193,7 +193,7 @@ then
     alias plprint="plutil -p"
     alias dump-uuid="dwarfdump -u"
 
-    if _has_executable gnu-ls; then
+    if _etc_has_executable gnu-ls; then
         alias ls='gnu-ls -hFA --color=auto'
         alias ll='gnu-ls -hFl --color=auto'
     fi
@@ -275,7 +275,7 @@ elif [ "$_etc_platform" = "linux" ]; then
     alias clear-arp="sudo ip -s -s neighbor flush all"
     alias ll='ls -l --time-style=long-iso'
 
-    if _has_executable dysk
+    if _etc_has_executable dysk
     then
         df()
         {
@@ -346,58 +346,58 @@ fi
 
 test -e ~/tmp && _make_dir_complete pdt pushd ~/tmp
 
-_has_executable sqlite3 &&
+_etc_has_executable sqlite3 &&
     alias sqlite=sqlite3
 
-_has_executable git &&
+_etc_has_executable git &&
     alias gitst="git st"
 
 # Make netcat a little more friendly to use.
-_has_executable rlwrap &&
-    _has_executable nc &&
-    alias nc="rlwrap '$(_find_executable nc)'"
+_etc_has_executable rlwrap &&
+    _etc_has_executable nc &&
+    alias nc="rlwrap '$(_etc_find_executable nc)'"
 
-_has_executable cninja &&
+_etc_has_executable cninja &&
     alias cn="cninja"
 
-_has_executable ninja-build &&
+_etc_has_executable ninja-build &&
     export CMAKE_MAKE_PROGRAM="ninja-build" &&
     export CMAKE_GENERATOR="Ninja"
 
-_has_executable ninja &&
+_etc_has_executable ninja &&
     export CMAKE_GENERATOR="Ninja"
 
 test -e /System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc &&
     alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
 
-if _has_executable wget
+if _etc_has_executable wget
 then
     alias webcat="wget -qO-"
-elif _has_executable curl
+elif _etc_has_executable curl
 then
     alias webcat="curl"
 fi
 
-_has_executable petname &&
+_etc_has_executable petname &&
     alias petname="petname -l 10"
 
-_has_executable ssh &&
+_etc_has_executable ssh &&
     alias stop-ssh="ssh -O stop"
 
 # Look for strings in all parts of a file.
-_has_executable strings &&
+_etc_has_executable strings &&
     alias strings="strings -"
 
-if _has_executable gmake
+if _etc_has_executable gmake
 then
     # alias make='nice -n 3 gmake -O -j$(_num_cpus)'
     alias make='nice -n 3 gmake --output-sync=line -j$(_num_cpus)'
-elif _has_executable make
+elif _etc_has_executable make
 then
     alias make='nice -n 3 make --output-sync=line -j$(_num_cpus)'
 fi
 
-_has_executable fd &&
+_etc_has_executable fd &&
     alias fdg="fd --glob"
 
 
@@ -459,7 +459,7 @@ td()
 
 grw()
 {
-    gr "$(_find_executable "$1")"
+    gr "$(_etc_find_executable "$1")"
 }
 
 function ssh-hosts()
@@ -468,10 +468,10 @@ function ssh-hosts()
     echo "$_ssh_hosts" | xargs -n 1 echo
 }
 
-if _has_executable ag; then
+if _etc_has_executable ag; then
     ag()
     {
-        local _ag_path="$(_find_executable ag)"
+        local _ag_path="$(_etc_find_executable ag)"
         local _pager_options
 
         # Let ctrl-c pass kill less.
@@ -486,14 +486,14 @@ if _has_executable ag; then
     }
 fi
 
-if _has_executable rg; then
+if _etc_has_executable rg; then
     alias rg="rg -LS --hyperlink-format vscode"
     rg()
     {
         local _rg_path
         local _pager_options
 
-        _rg_path="$(_find_executable rg)"
+        _rg_path="$(_etc_find_executable rg)"
 
         # Let ctrl-c pass kill less.
         [ "$PAGER" = "less" ] && _pager_options="-K"
@@ -519,12 +519,12 @@ if _has_executable rg; then
     alias rgn="rgg -uuu"
 fi
 
-if _has_executable curl
+if _etc_has_executable curl
 then
     alias curl-json="curl -H 'Accept: application/json'"
 fi
 
-if _has_executable dig
+if _etc_has_executable dig
 then
     alias dig="dig +noall +answer"
 
@@ -539,7 +539,7 @@ then
     }
 fi
 
-if _has_executable broot
+if _etc_has_executable broot
 then
     function br {
         local cmd cmd_file code
@@ -556,7 +556,7 @@ then
     }
 fi
 
-if _has_executable eza
+if _etc_has_executable eza
 then
     if [ "$_etc_platform" = "darwin" ]
     then
@@ -571,13 +571,13 @@ then
     # Realias ll, since it may have the -T option in it.
     alias ll="ls -l"
 
-    if ! _has_executable tree
+    if ! _etc_has_executable tree
     then
         alias tree='ls --tree -I"__pycache__|build|.git|.fingerprint|target|*.sw?|.?*"'
     fi
 fi
 
-if _has_executable bat
+if _etc_has_executable bat
 then
     # unset -f cat
     export BAT_THEME="Visual Studio Dark+"
@@ -603,28 +603,31 @@ else
     }
 fi
 
-if _has_executable btm
+if _etc_has_executable btop
 then
-    alias top="btm --color=gruvbox"
+    alias top=btop
+elif _etc_has_executable btm
+then
+    alias top="btm -b -n"
     alias btop="btm -b -n"
-elif _has_executable ptop
+elif _etc_has_executable ptop
 then
     alias top=ptop
 fi
 
-_has_executable shasum && ! _has_executable sha256sum &&
+_etc_has_executable shasum && ! _etc_has_executable sha256sum &&
     alias sha256sum="shasum -a 256"
 
-_has_executable xcp &&
+_etc_has_executable xcp &&
     alias cp="xcp -w 0"
 
-_has_executable dust &&
+_etc_has_executable dust &&
     alias du="dust -rs"
 
-_has_executable dysk &&
+_etc_has_executable dysk &&
     alias dysk="dysk -s mount"
 
-if _has_executable names
+if _etc_has_executable names
 then
     names()
     {
@@ -632,7 +635,7 @@ then
     }
 fi
 
-_has_executable hwatch &&
+_etc_has_executable hwatch &&
     alias watch="hwatch -n 1 --color"
 
 delete-unused()
@@ -691,7 +694,7 @@ hash-dir()
 # Disable slow keys...
 # Not sure if this persists or not.
 #
-# if _has_executable xkbset; then
+# if _etc_has_executable xkbset; then
 #     xkbset -sl
 # fi
 
@@ -700,7 +703,7 @@ aws-public-ip()
     aws --output text ec2 describe-instances --query 'Reservations[0].Instances[0].PublicIpAddress' --instance-ids "$@"
 }
 
-if _has_executable openssl
+if _etc_has_executable openssl
 then
     dump-cert()
     {
@@ -719,7 +722,7 @@ then
     }
 fi
 
-if _has_executable gem
+if _etc_has_executable gem
 then
     GEM_HOME="$HOME/.gem"
 
@@ -734,7 +737,7 @@ then
     unset dir
 fi
 
-if _has_executable docker
+if _etc_has_executable docker
 then
     docker-ip()
     {
@@ -754,25 +757,25 @@ then
     }
 fi
 
-if _has_executable 7zz
+if _etc_has_executable 7zz
 then
     zip-list()
     {
         7zz l "$@"
     }
-elif _has_executable 7z
+elif _etc_has_executable 7z
 then
     zip-list()
     {
         7z l "$@"
     }
-elif _has_executable 7za
+elif _etc_has_executable 7za
 then
     zip-list()
     {
         7za l "$@"
     }
-elif _has_executable zip
+elif _etc_has_executable zip
 then
     zip-list()
     {
@@ -780,7 +783,7 @@ then
     }
 fi
 
-if _has_executable rsync
+if _etc_has_executable rsync
 then
     alias local-rsync="rsync -a --info=progress2 --inplace"
 fi

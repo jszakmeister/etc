@@ -73,10 +73,10 @@ if [ "$_etc_platform" = 'darwin' ]; then
     # user's location, which should be picked up by adding ~/.local/bin to the
     # path).  So we compute it manually.  Also, we do a bit of a dance to cope
     # with Python 3 being the default python implementation.
-    if _has_executable python3; then
+    if _etc_has_executable python3; then
         _update_python_paths python3
     fi
-    if _has_executable python; then
+    if _etc_has_executable python; then
         _update_python_paths python
     fi
 
@@ -151,7 +151,7 @@ export GDKUSEXFT=1
 # but it doesn't hurt for Linux either, IIRC
 export TTFPATH=/usr/X11/lib/X11/fonts/truetype
 
-export EDITOR=$(_find_executable vim)
+export EDITOR=$(_etc_find_executable vim)
 
 # Add a default LS_COLORS
 if [ "$TERM" != "dumb" -a "$TERM" != "cygwin" ]; then

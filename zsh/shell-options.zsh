@@ -28,8 +28,8 @@ else
     zstyle ':completion:*:*:git:*' script "$ETC_HOME/bash/git-completion.bash"
 fi
 
-if _has_executable aws_zsh_completer.sh; then
-    . "$(_find_executable aws_zsh_completer.sh)"
+if _etc_has_executable aws_zsh_completer.sh; then
+    . "$(_etc_find_executable aws_zsh_completer.sh)"
 fi
 
 autoload colors

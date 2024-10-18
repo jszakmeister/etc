@@ -1,4 +1,4 @@
-virtualenvwrapper_path=$(_find_executable virtualenvwrapper.sh)
+virtualenvwrapper_path=$(_etc_find_executable virtualenvwrapper.sh)
 
 if test -z "$virtualenvwrapper_path"
 then
@@ -12,13 +12,13 @@ then
     then
         # Cope with virtualenvwrapper being installed under Python 3 on Catalina.
         if [ -z "${virtualenvwrapper_path##*Python/3*}" ]; then
-            export VIRTUALENVWRAPPER_PYTHON="$(_find_executable python3)"
-        elif ! _has_executable python
+            export VIRTUALENVWRAPPER_PYTHON="$(_etc_find_executable python3)"
+        elif ! _etc_has_executable python
         then
-            if _has_executable python3
+            if _etc_has_executable python3
             then
                 # Can't find python (undecorated) so, let's shoot for python3
-                export VIRTUALENVWRAPPER_PYTHON="$(_find_executable python3)"
+                export VIRTUALENVWRAPPER_PYTHON="$(_etc_find_executable python3)"
             fi
         fi
     fi

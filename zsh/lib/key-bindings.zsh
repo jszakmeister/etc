@@ -74,7 +74,7 @@ bindkey '^X^E' edit-command-line
 
 bindkey -s "\C-o\C-o" "^E | less^M"
 
-if _has_executable sk
+if _etc_has_executable sk
 then
     __etc_sk_widget()
     {

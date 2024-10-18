@@ -67,11 +67,11 @@ md()
     cd "$1"
 }
 
-if _has_executable gdb
+if _etc_has_executable gdb
 then
     function gdb()
     {
-        local gdb_path=$(_find_executable gdb)
+        local gdb_path=$(_etc_find_executable gdb)
         if "$gdb_path" 2>&1 --version | head -n 1 | grep "Apple version" > /dev/null; then
             "$gdb_path" -x "$ETC_HOME/gdb/darwin.gdb" "$@"
         else
@@ -84,7 +84,7 @@ fi
 # file.
 function grep()
 {
-    local _grep_path="$(_find_executable grep)"
+    local _grep_path="$(_etc_find_executable grep)"
     local _pager_options
     local _grep_options
 
@@ -105,7 +105,7 @@ function grep()
 # file.
 function egrep()
 {
-    local _egrep_path="$(_find_executable egrep)"
+    local _egrep_path="$(_etc_find_executable egrep)"
     local _pager_options
     local _egrep_options
 
@@ -194,7 +194,7 @@ find-domain-controllers()
     dig $DNS_SERVER $OPTIONS -t SRV _ldap._tcp.$1
 }
 
-if _has_executable nohup; then
+if _etc_has_executable nohup; then
     # Runs a command and detaches it from the terminal.  It also silences stdout
     # and stderr, getting rid of debugging from many GTK related projects.
     function run_detached()
@@ -206,14 +206,14 @@ fi
 # Some git-related setup for completion.
 
 if _has_devtool git; then
-    if _has_executable git-ffwd; then
+    if _etc_has_executable git-ffwd; then
         function _git_ffwd()
         {
             __gitcomp_nl "$(__git_remotes)"
         }
     fi
 
-    if _has_executable git-ff || \
+    if _etc_has_executable git-ff || \
             git config --get alias.ff > /dev/null 2>&1; then
         function _git_ff()
         {
@@ -221,14 +221,14 @@ if _has_devtool git; then
         }
     fi
 
-    if _has_executable git-missing; then
+    if _etc_has_executable git-missing; then
         function _git_missing()
         {
             __gitcomp_nl "$(__git_refs)"
         }
     fi
 
-    if _has_executable git-branch-diff; then
+    if _etc_has_executable git-branch-diff; then
         function _git_branch_diff()
         {
             case "$cur" in
@@ -244,13 +244,13 @@ fi
 
 # Cope with Python and virtual environments.
 
-if _has_executable pip3
+if _etc_has_executable pip3
 then
     function pip()
     {
         if [ -z "$VIRTUAL_ENV" ]
         then
-            if _has_executable pip3
+            if _etc_has_executable pip3
             then
                 command pip3 "$@"
                 return
@@ -261,13 +261,13 @@ then
     }
 fi
 
-if _has_executable python3
+if _etc_has_executable python3
 then
     function python()
     {
         if [ -z "$VIRTUAL_ENV" ]
         then
-            if _has_executable python3
+            if _etc_has_executable python3
             then
                 command python3 "$@"
                 return
@@ -278,15 +278,15 @@ then
     }
 fi
 
-if _has_executable colordiff
+if _etc_has_executable colordiff
 then
     diff()
     {
         if test -t 1
         then
-            "$(_find_executable diff)" "$@" | colordiff | diff-highlight | $PAGER
+            "$(_etc_find_executable diff)" "$@" | colordiff | diff-highlight | $PAGER
         else
-            "$(_find_executable diff)" "$@"
+            "$(_etc_find_executable diff)" "$@"
         fi
     }
 
@@ -294,14 +294,14 @@ then
     {
         if test -t 1
         then
-            "$(_find_executable interdiff)" "$@" | colordiff | diff-highlight | $PAGER
+            "$(_etc_find_executable interdiff)" "$@" | colordiff | diff-highlight | $PAGER
         else
-            "$(_find_executable interdiff)" "$@"
+            "$(_etc_find_executable interdiff)" "$@"
         fi
     }
 fi
 
-if _has_executable hexdump
+if _etc_has_executable hexdump
 then
     function hexdump()
     {
@@ -336,7 +336,7 @@ then
     }
 fi
 
-if _has_executable xmllint
+if _etc_has_executable xmllint
 then
     function xmldiff()
     {
@@ -362,7 +362,7 @@ then
 fi
 
 
-if _has_executable objdump
+if _etc_has_executable objdump
 then
     function objdiff()
     {
