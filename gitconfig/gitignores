@@ -28,7 +28,6 @@
 */.cvsignore
 
 .*
-!.git[a-z]*
 !.gitattributes
 !.gitignore
 tags
