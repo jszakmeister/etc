@@ -525,9 +525,9 @@ if _etc_has_executable rg; then
     {
         if test -t 1
         then
-            rg --json "$@" | delta
+            rg --json "$@" 2>/dev/null | delta
         else
-            rg "$@"
+            rg "$@" 2>/dev/null
         fi
     }
 
