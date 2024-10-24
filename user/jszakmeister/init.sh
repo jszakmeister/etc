@@ -258,6 +258,21 @@ then
         sysctl -a machdep.cpu
     }
 
+    local-ip()
+    {
+        local res
+
+        for iface in $(ifconfig -l)
+        do
+            res="$(ipconfig getifaddr $iface)"
+            if [ -n "$res" ]
+            then
+                echo "$iface: $res"
+            fi
+        done
+    }
+
+
     # pkg-remove()
     # {
     #   pushd /
