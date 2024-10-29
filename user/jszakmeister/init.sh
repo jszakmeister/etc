@@ -332,8 +332,13 @@ if test -d ~/projects/jszakmeister/local-bin
 then
     if ! _etc_path_insert_after ~/projects/jszakmeister/local-bin ~/.local/bin
     then
-        PATH="$HOME/projects/jszakmeister/local-bin:$PATH"
+        export PATH="$HOME/projects/jszakmeister/local-bin:$PATH"
     fi
+fi
+
+if test -d /opt/homebrew/opt/bison/bin
+then
+    export PATH="/opt/homebrew/opt/bison/bin:$PATH"
 fi
 
 alias l=ll
