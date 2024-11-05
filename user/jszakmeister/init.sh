@@ -372,6 +372,9 @@ _etc_has_executable sqlite3 &&
 _etc_has_executable git &&
     alias gitst="git st"
 
+_etc_has_executable just &&
+    alias j=just
+
 # Make netcat a little more friendly to use.
 _etc_has_executable rlwrap &&
     _etc_has_executable nc &&
