@@ -602,6 +602,7 @@ then
     # unset -f cat
     export BAT_THEME="Visual Studio Dark+"
     alias cat="bat --style=numbers,grid"
+    alias pcat="bat --plain"
     export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
     if [ -n "$ZSH_VERSION" ]
