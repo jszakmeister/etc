@@ -1,1 +1,3 @@
 --map-syntax "Justfile:Makefile"
+--ignored-suffix ".in"
+--tabs 0
