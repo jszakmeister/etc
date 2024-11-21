@@ -1,0 +1,72 @@
+#!/bin/bash -e
+
+die()
+{
+    echo 1>&2 "ERROR: $*"
+    exit 1
+}
+
+find-project-root()
+{
+    local last_found="$(pwd)"
+    local tmp_path="$(pwd)"
+
+    while [[ "$tmp_path" != "/" ]];
+    do
+        if [ -e "$tmp_path/cookiecutter.json" ]
+        then
+            echo "$tmp_path"
+            return
+        fi
+
+        tmp_path="$(dirname "$tmp_path")"
+    done
+}
+
+PROJECT_ROOT="$(find-project-root)"
+
+if [ -z "$PROJECT_ROOT" ]
+then
+    die "Couldn't find top-level cookiecutter.json"
+fi
+
+cd "$PROJECT_ROOT"
+
+SOURCE_DIR="$(basename "$PROJECT_ROOT")"
+ZIP_FILENAME="$SOURCE_DIR"
+
+if [ $# -gt 0 ]
+then
+    ZIP_FILENAME="$1"
+fi
+
+if [ -z "$ZIP_FILENAME" ]
+then
+    die "Couldn't set zip filename."
+fi
+
+# Ensure it ends with .zip.
+if [[ "$ZIP_FILENAME" != *.zip ]]
+then
+    # Append the suffix if it's missing
+    ZIP_FILENAME="$ZIP_FILENAME.zip"
+fi
+
+if [[ "$ZIP_FILENAME" == */* ]]
+then
+  die "zip filename contains a slash."
+fi
+
+if [ -e .git ]
+then
+    (cd .. &&
+        rm -f "$SOURCE_DIR/$ZIP_FILENAME" &&
+        IFS=$'\n' &&
+        zip "$SOURCE_DIR/$ZIP_FILENAME" "$SOURCE_DIR" $(git --git-dir="$SOURCE_DIR/.git" ls-files --format="$SOURCE_DIR/%(path)"))
+else
+    (cd .. &&
+        rm -f "$SOURCE_DIR/$ZIP_FILENAME" &&
+        zip -r "$SOURCE_DIR/$ZIP_FILENAME" "$SOURCE_DIR" --exclude "$SOURCE_DIR/$ZIP_FILENAME" '*/.*.sw?' '*/.sw?' '*/.git' '*/.git/*')
+fi
+
+echo  "Cookiecutter full path: $PWD/$ZIP_FILENAME"
