@@ -63,7 +63,8 @@ esac
 if [[ "$OS" == "darwin" && "$SKIP_GUI_CHECK" == "" ]]; then
     if test -z "$SECURITYSESSIONID" \
         -a "$TERM_PROGRAM" != "Apple_Terminal" \
-        -a "$TERM_PROGRAM" != "iTerm.app" ; then
+        -a "$TERM_PROGRAM" != "iTerm.app" \
+        -a "$TERM_PROGRAM" != "WezTerm" ; then
         echo >&2 "No GUI available"
         exit 1
     fi
