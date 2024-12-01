@@ -1,103 +1,227 @@
-#!/bin/bash
-die()
-{
-    echo 1>&2 "ERROR: $1"
-    exit 1
+#!/usr/bin/env python3
+import argparse
+import logging
+import shutil
+import subprocess
+import sys
+
+from glob import glob
+from pathlib import Path
+from pprint import pprint
+
+
+UPDATE_COMMONRC = Path("~/.update-commonrc").expanduser()
+DEFAULT_REPOS = [
+    "~/.vim",
+    "~/.vimuser",
+    "~/.etc",
+    "~/.ssh",
+    "~/projects/etc",
+    "~/projects/jszakmeister/local-homepage",
+    "~/projects/local-homepage)",
+]
+
+
+FFWD_OPTIONS = []
+
+
+GIT_PRESENT = False
+SVN_PRESENT = False
+
+
+COLORS = {
+    "yellow": "",
+    "reset": "",
 }
 
-trim()
-{
-    local var="$1"
-    var="${var#"${var%%[![:space:]]*}"}"
-    var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
-}
 
-if test -t 1 && type -P tput > /dev/null 2>&1; then
-    color_bold_yellow=$(tput bold;tput setaf 3)
-    color_reset=$(tput sgr0)
-else
-    color_bold_yellow=
-    color_reset=
-fi
+def setup_say():
+    tput_path = shutil.which("tput")
+    if tput_path and sys.stdout.isatty():
+        COLORS["yellow"] = "".join(
+            [
+                run(tput_path, "bold"),
+                run(tput_path, "setaf", "3"),
+             ]
+        )
+        COLORS["reset"] = run(tput_path, "sgr0")
 
-say()
-{
-    [ -z "$QUIET" ] && echo "$color_bold_yellow${1/$HOME/~}$color_reset"
-    return 0
-}
 
-update_repo()
-{
-    local repo_path
-    local cur_dir
+def say(msg):
+    print(f"{COLORS['yellow']}{msg}{COLORS['reset']}")
 
-    repo_path="$(echo -n "$1" | sed -e "s|~|$HOME|")"
 
-    if test ! -d "$repo_path" ; then
-        return 0
-    fi
+def run(*args, **kwargs):
+    show_cmd = kwargs.get('show_cmd', False)
+    shell = kwargs.get('shell', False)
+    encoding = kwargs.get('encoding', 'utf-8')
 
-    if test -d "$repo_path/.git" ; then
-        # shellcheck disable=SC2086
-        say "Updating $repo_path..." &&
-            git "--git-dir=$repo_path/.git" "--work-tree=$repo_path" \
-                ffwd ${FFWD_OPTIONS}
-        return $?
-    fi
+    if shell:
+        command = ' '.join([shlex.quote(x) for x in args])
+    else:
+        command = args
 
-    if test -d "$repo_path/.svn" ; then
-        say "Updating $repo_path..." &&
-            svn up $repo_path
-        return $?
-    fi
+    if show_cmd:
+        print(' '.join(args))
 
-    return 0
-}
+    check_ret = kwargs.get('check_ret', True)
 
-while [ $# -gt 0 ]
-do
-    key="$1"
-    shift
+    p = subprocess.Popen(
+        command, shell=shell, encoding=encoding,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-    case $key in
-        -q)
-            FFWD_OPTIONS="$FFWD_OPTIONS -q"
-            QUIET=t
-            ;;
-        --no-remote)
-            FFWD_OPTIONS="$FFWD_OPTIONS --no-remote"
-            ;;
-        -s|--status)
-            FFWD_OPTIONS="$FFWD_OPTIONS --status"
-            ;;
-        *)
-            # unknown option
-            die "Unknown option '$key'"
-            ;;
-    esac
-done
+    output = p.communicate()
+    retcode = p.poll()
+    if check_ret and retcode:
+        raise ScriptError("Error executing: %r (%d, %s)" % (command, retcode, output))
 
-REPOS=(~/.vim \
-       ~/.vimuser \
-       ~/.etc \
-       ~/.ssh \
-       ~/projects/etc \
-       ~/projects/jszakmeister/local-homepage \
-       ~/projects/local-homepage)
+    return output[0]
 
-for repo in "${REPOS[@]}"
-do
-    update_repo "$repo"
-done
 
-if test -f ~/.update-commonrc ; then
-    while read -r line
-    do
-        line=$(trim "$line")
+def run_git(*args, **kwargs):
+    path = kwargs.pop('path', None)
 
-        if [ -n "$line" ] && [[ $line != \#* ]] ; then
-            update_repo "$line"
-        fi
-    done < ~/.update-commonrc
-fi
+    if path is not None:
+        path = str(path)
+
+        if path.endswith('.git'):
+            args = ['--git-dir=%s' % path] + list(args)
+        else:
+            args = ['--git-dir=%s/.git' % path, '--work-tree=%s' % path] + list(args)
+
+    command = ['git'] + list(args)
+    return run(*command, **kwargs).strip()
+
+
+def format_path(path):
+    home = str(Path.home())
+
+    if str(path).startswith(home):
+        return str(path).replace(home, "~", 1)
+
+    return str(path)
+
+
+def update_repo(path):
+    git_path = path / ".git"
+    svn_path = path / ".svn"
+
+    formatted_path = format_path(path)
+
+    if git_path.exists():
+        say(f"Updating {formatted_path}...")
+        # It's a git repo, so update via `git ffwd`...
+        run_git("ffwd", *FFWD_OPTIONS, path=path)
+
+    elif svn_path.exists():
+        say(f"Updating {formatted_path}...")
+        run("svn", "up", path)
+
+
+
+def update(repo_list):
+    for repo_entry in repo_list:
+        repos = [Path(repo_entry).expanduser()]
+
+        for repo in repos:
+            update_repo(repo)
+
+
+def expand_entry(entry):
+    p = entry.expanduser()
+
+    results = []
+
+    for possible_path in glob(str(p)):
+        results.append(possible_path)
+
+    return results
+
+
+def check_relative(paths):
+    for entry in paths:
+        if not entry.expanduser().is_absolute():
+            raise ValueError(
+                f"No relative entries in ~/.update-commonrc: {entry!s}")
+
+
+def do_update(args):
+    global FFWD_OPTIONS
+
+    if not args.remote_update:
+        FFWD_OPTIONS.append("--no-remote")
+
+    if args.status:
+        FFWD_OPTIONS.append("--status")
+
+    # Process the rc file...
+    extra_repos = []
+    if UPDATE_COMMONRC.exists():
+        extra_repos = list(
+            filter(
+                lambda entry: "" if entry.lstrip().startswith("#") else entry.strip(),
+                UPDATE_COMMONRC.read_text().splitlines()))
+
+    all_repos = set()
+    all_repos.update(Path(x) for x in DEFAULT_REPOS)
+    all_repos.update(Path(x) for x in extra_repos)
+
+    check_relative(all_repos)
+
+    all_repos_expanded = set()
+    for entry in all_repos:
+        all_repos_expanded.update(expand_entry(entry))
+
+    all_repos_expanded = sorted(all_repos_expanded)
+
+    update(all_repos_expanded)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--traceback",
+        default=False,
+        action="store_true",
+        help="Print traceback of error.")
+    parser.add_argument(
+        "--no-remote",
+        default=True,
+        action="store_false",
+        dest="remote_update",
+        help="Don't update from the remote.  Just attempt to fast-forward "
+             "locally.  (git only)")
+    parser.add_argument(
+        "-s", "--status",
+        default=False,
+        action="store_true",
+        help="Show status information instead of fast-forwarding. (git -only)")
+
+    args = parser.parse_args()
+
+    global GIT_PRESENT
+    global SVN_PRESENT
+
+    if shutil.which("git"):
+        GIT_PRESENT = True
+
+    if shutil.which("svn"):
+        SVN_PRESENT = True
+
+    setup_say()
+
+    try:
+        do_update(args)
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        if args.traceback:
+            raise
+
+        print(f"ERROR: {e!s}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
