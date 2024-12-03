@@ -148,6 +148,9 @@ def check_relative(paths):
 def do_update(args):
     global FFWD_OPTIONS
 
+    if args.quiet:
+        FFWD_OPTIONS.append("-q")
+
     if not args.remote_update:
         FFWD_OPTIONS.append("--no-remote")
 
@@ -185,6 +188,11 @@ def main():
         default=False,
         action="store_true",
         help="Print traceback of error.")
+    parser.add_argument(
+        "-q", "--quiet",
+        default=False,
+        action="store_true",
+        help="Have less output.  (git-only)")
     parser.add_argument(
         "--no-remote",
         default=True,
