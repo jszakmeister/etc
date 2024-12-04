@@ -23,10 +23,12 @@ DEFAULT_REPOS = [
 
 
 FFWD_OPTIONS = []
-
+SVN_OPTIONS = []
 
 GIT_PRESENT = False
 SVN_PRESENT = False
+
+QUIET = False
 
 
 COLORS = {
@@ -48,6 +50,9 @@ def setup_say():
 
 
 def say(msg):
+    if QUIET:
+        return
+
     print(f"{COLORS['yellow']}{msg}{COLORS['reset']}")
 
 
@@ -115,7 +120,7 @@ def update_repo(path):
 
     elif svn_path.exists():
         say(f"Updating {formatted_path}...")
-        run("svn", "up", path)
+        run("svn", "up", *SVN_OPTIONS, path)
 
 
 
@@ -146,10 +151,12 @@ def check_relative(paths):
 
 
 def do_update(args):
-    global FFWD_OPTIONS
+    global FFWD_OPTIONS, SVN_OPTIONS, QUIET
 
     if args.quiet:
         FFWD_OPTIONS.append("-q")
+        SVN_OPTIONS.append("-q")
+        QUIET = True
 
     if not args.remote_update:
         FFWD_OPTIONS.append("--no-remote")
@@ -192,7 +199,7 @@ def main():
         "-q", "--quiet",
         default=False,
         action="store_true",
-        help="Have less output.  (git-only)")
+        help="Have less output.")
     parser.add_argument(
         "--no-remote",
         default=True,
