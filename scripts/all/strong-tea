@@ -1,0 +1,98 @@
+#!/usr/bin/python3
+from __future__ import print_function
+
+import argparse
+import os
+import os.path
+import sys
+import time
+
+
+if sys.platform == "darwin":
+    import subprocess
+
+    def disable_screensaver():
+        subprocess.run(["/usr/bin/caffeinate", "-d"],
+                       stdout=subprocess.DEVNULL)
+
+elif sys.platform.startswith("linux"):
+    def disable_screensaver():
+        import dbus
+
+        for interface_name in ("org.freedesktop.ScreenSaver",
+                               "org.mate.ScreenSaver"):
+            try:
+                bus = dbus.SessionBus()
+                saver = bus.get_object(interface_name, "/ScreenSaver")
+                saver_int = dbus.Interface(
+                    saver, dbus_interface=interface_name)
+            except dbus.exceptions.DBusException:
+                # Interface not found, try the next one.
+                continue
+
+            cookie = saver_int.Inhibit("abc", "abc")
+
+            try:
+                while True:
+                    time.sleep(10.0)
+            except KeyboardInterrupt:
+                saver_int.UnInhibit(cookie)
+
+            return
+
+        else:
+            raise RuntimeError("Don't know how to control the screen saver in "
+                               "this version of Linux.")
+
+elif sys.platform == "win32":
+    import ctypes
+
+    def disable_screensaver():
+        try:
+            while True:
+                ctypes.windll.kernel32.SetThreadExecutionState(0x80000003)
+                time.sleep(10.0)
+        except KeyboardInterrupt:
+            pass
+
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000000)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--traceback",
+        default=False,
+        action="store_true",
+        help="Print traceback of error.")
+
+    args = parser.parse_args()
+
+    try:
+        if sys.platform.startswith("linux"):
+            try:
+                import dbus
+            except ImportError:
+                if sys.version_info[0] > 2 and os.path.exists("/usr/bin/python2.7"):
+                    # re-exec with Python 2.7
+                    args = [__file__, __file__] + sys.argv[1:]
+                    os.execv("/usr/bin/python2.7", args)
+                else:
+                    raise RuntimeError("dbus package not available.  Please "
+                                       "install it to use this utility.")
+
+        disable_screensaver()
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        if args.traceback:
+            raise
+
+        # We avoid f-strings since it's possible this will run under Python 2.7.
+        print("ERROR:", str(e), file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
