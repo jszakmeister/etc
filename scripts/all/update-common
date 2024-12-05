@@ -64,6 +64,7 @@ def run(*args, **kwargs):
     show_cmd = kwargs.get('show_cmd', False)
     shell = kwargs.get('shell', False)
     encoding = kwargs.get('encoding', 'utf-8')
+    capture = kwargs.get('capture', True)
 
     if shell:
         command = ' '.join([shlex.quote(x) for x in args])
@@ -75,16 +76,24 @@ def run(*args, **kwargs):
 
     check_ret = kwargs.get('check_ret', True)
 
+    if capture:
+        stdout = subprocess.PIPE
+    else:
+        stdout = None
+
     p = subprocess.Popen(
         command, shell=shell, encoding=encoding,
-        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        stdout=stdout, stderr=subprocess.STDOUT)
 
+    # There will be no data if we're not capturing.
     output = p.communicate()
+
     retcode = p.poll()
     if check_ret and retcode:
-        raise ScriptError("Error executing: %r (%d, %s)" % (command, retcode, output))
+        raise ScriptError("Error executing: %r (%d):\n%s" % (
+            command, retcode, output[0]))
 
-    return output[0]
+    return output[0] or ""
 
 
 def run_git(*args, **kwargs):
@@ -120,11 +129,11 @@ def update_repo(path):
     if git_path.exists():
         say(f"Updating {formatted_path}...")
         # It's a git repo, so update via `git ffwd`...
-        run_git("ffwd", *FFWD_OPTIONS, path=path)
+        run_git("ffwd", *FFWD_OPTIONS, path=path, check_ret=False, capture=False)
 
     elif svn_path.exists():
         say(f"Updating {formatted_path}...")
-        run("svn", "up", *SVN_OPTIONS, path)
+        run("svn", "up", *SVN_OPTIONS, path, check_ret=False, capture=False)
 
 
 
