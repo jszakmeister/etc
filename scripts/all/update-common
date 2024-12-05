@@ -37,6 +37,10 @@ COLORS = {
 }
 
 
+class ScriptError(Exception):
+    pass
+
+
 def setup_say():
     tput_path = shutil.which("tput")
     if tput_path and sys.stdout.isatty():
