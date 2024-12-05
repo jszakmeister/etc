@@ -1,5 +1,6 @@
 # Add a line like the following to your .bashrc:
 #  export PYTHONSTARTUP="$ETC_HOME/python/startup.py"
+from __future__ import print_function
 
 
 def setup_readline():
@@ -71,8 +72,10 @@ except ImportError:
     pass
 
 
+# Gotta keep things Python 2.7 compatible for now.
+
 def bits(i, groups, bit_width=32):
-    fmt = f"{{:0{bit_width}b}}"
+    fmt = "{{:0{bit_width}b}}".format(bit_width=bit_width)
     v = fmt.format(i)
 
     segments = []
@@ -86,7 +89,7 @@ def bits(i, groups, bit_width=32):
 
     digits = ((bit_width + 7) // 8) * 2
 
-    fmt = f"{{:0{digits}X}}h: {{}}"
+    fmt = "{{:0{digits}X}}h: {{}}".format(digits=digits)
 
     print(fmt.format(i, " ".join(segments)))
 
@@ -96,7 +99,7 @@ def hexdump(data):
         data = data.encode("utf-8")
 
     for i in range(0, len(data), 16):
-        block = data[i:i+16]
+        block = bytearray(data[i:i+16])
 
         line_data_hex = (" ".join("%02x" % (x,) for x in block[0:8]) + "  " +
                          " ".join("%02x" % (x,) for x in block[8:]))
@@ -105,7 +108,10 @@ def hexdump(data):
         if len(block) < 16:
             line_data_hex += " " * (48 - len(line_data_hex))
 
-        print(f"{i:10d} ({i:8x}h):  {line_data_hex}    {line_data_ascii}")
+        line = "{i:10d} ({i:8x}h):  {line_data_hex}    {line_data_ascii}".format(
+            i=i, line_data_hex=line_data_hex, line_data_ascii=line_data_ascii)
+
+        print(line)
 
 
 def errno_lookup(e):
@@ -119,4 +125,4 @@ def errno_lookup(e):
         name = e.upper()
         code = getattr(errno, name, "(unknown)")
 
-    print(f"{name}: {code}")
+    print("{name}: {code}".format(name=name, code=code))
