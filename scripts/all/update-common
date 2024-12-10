@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import logging
+import os
 import shutil
 import subprocess
 import sys
@@ -28,7 +29,13 @@ SVN_OPTIONS = []
 GIT_PRESENT = False
 SVN_PRESENT = False
 
+IS_MINGW = False
+
 QUIET = False
+
+# Will hold a path for helping to expand `~`.  We do this because working with
+# MINGW introduces some problems in environments like Git Bash.
+HOME = None
 
 
 COLORS = {
@@ -58,6 +65,30 @@ def say(msg):
         return
 
     print(f"{COLORS['yellow']}{msg}{COLORS['reset']}")
+
+    if IS_MINGW:
+        sys.stdout.flush()
+
+
+def resolve_home():
+    global HOME
+
+    home = os.getenv("HOME")
+
+    if not home:
+        home = Path("~").expanduser()
+
+    elif sys.platform == "win32" and IS_MINGW:
+        output = run("cmd", "/c", "echo", "home", capture=True).strip()
+        if not output:
+            raise ScriptError(
+                "Unable to determine location of home directory from $HOME")
+        home = Path(output)
+
+    else:
+        home = Path(home)
+
+    HOME = home
 
 
 def run(*args, **kwargs):
@@ -146,11 +177,16 @@ def update(repo_list):
 
 
 def expand_entry(entry):
-    p = entry.expanduser()
+    # We do it this way because MINGW and standard Windows Python don't
+    # necessarily play well together.  In particular, and user's HOME directory
+    # can be different than what `.expanduser()` returns.  So we do the
+    # expansion ourselves.
+    if entry.parts[0] == "~":
+        entry = HOME.joinpath(*entry.parts[1:])
 
     results = []
 
-    for possible_path in glob(str(p)):
+    for possible_path in glob(str(entry)):
         results.append(possible_path)
 
     return results
@@ -158,7 +194,9 @@ def expand_entry(entry):
 
 def check_relative(paths):
     for entry in paths:
-        if not entry.expanduser().is_absolute():
+        if entry.parts[0] == "~":
+            continue
+        elif not entry.is_absolute():
             raise ValueError(
                 f"No relative entries in ~/.update-commonrc: {entry!s}")
 
@@ -230,6 +268,7 @@ def main():
 
     global GIT_PRESENT
     global SVN_PRESENT
+    global IS_MINGW
 
     if shutil.which("git"):
         GIT_PRESENT = True
@@ -237,9 +276,14 @@ def main():
     if shutil.which("svn"):
         SVN_PRESENT = True
 
+    if os.getenv("MINGW_PREFIX"):
+        IS_MINGW = True
+
     setup_say()
 
     try:
+        resolve_home()
+
         do_update(args)
     except KeyboardInterrupt:
         pass
