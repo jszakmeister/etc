@@ -1,131 +1,3 @@
-export WORKON_HOME=$HOME/.virtualenvs
-export CCACHE_CPP2=1
-export HOMEBREW_NO_EMOJI=1
-export USE_EMOJI=no
-export LESS="-eFRX -Pslines %lt-%lb?Pb(%Pb\%).?m (%i of %m).  ?f%f:-."
-
-
-_etc_iterate_path()
-{
-    # If an argument is provided, only provide paths that have that filename
-    # in them.
-
-    local filename
-    if [ $# -eq 0 ]
-    then
-        filename=
-    else
-        filename="$1"
-    fi
-
-    (
-        IFS=:
-        set -f
-        for dir in $PATH
-        do
-            dir=${dir:-.}
-            [ -x "${dir%/}/$filename" ] && printf "%s\n" "$dir"
-        done
-    )
-}
-
-
-_etc_is_path_present()
-{
-    local path_to_find
-    path_to_find="$1"
-
-    # shellcheck disable=SC2119
-    while read -r dir
-    do
-        if [ "$path_to_find" = "$dir" ]
-        then
-            return 0
-        fi
-    done < <(_etc_iterate_path)
-
-    return 1
-}
-
-
-_etc_path_insert_before_after()
-{
-    local path_to_add="$1"
-    local dir_to_match="$2"
-    local before_after="$3"
-    local new_path=""
-
-    if [ -z "$path_to_add" ] ||  [ -z "$dir_to_match" ]
-    then
-        return 1
-    fi
-
-    if _etc_is_path_present "$path_to_add"
-    then
-        return 0
-    fi
-
-    if ! _etc_is_path_present "$dir_to_match"
-    then
-        return 1
-    fi
-
-    # Insert the new path.
-    # shellcheck disable=SC2119
-    while read -r dir
-    do
-        if [ -z "$before_after" ] && [ "$dir_to_match" = "$dir" ]
-        then
-            new_path="$(append_path "$new_path" "$path_to_add")"
-        fi
-
-        new_path="$(append_path "$new_path" "$dir")"
-
-        if [ -n "$before_after" ] && [ "$dir_to_match" = "$dir" ]
-        then
-            new_path="$(append_path "$new_path" "$path_to_add")"
-        fi
-    done < <(_etc_iterate_path)
-
-    PATH="$new_path"
-}
-
-
-_etc_path_insert_before()
-{
-    _etc_path_insert_before_after "$1" "$2" ""
-}
-
-
-_etc_path_insert_after()
-{
-    _etc_path_insert_before_after "$1" "$2" t
-}
-
-
-_etc_path_remove()
-{
-    local path_to_remove="$1"
-    local new_path=
-
-    if [ -z "$path_to_remove" ]
-    then
-        return 1
-    fi
-
-    # shellcheck disable=SC2119
-    while read -r dir
-    do
-        if [ "$path_to_remove" != "$dir" ]
-        then
-            new_path=$(append_path "$new_path" "$dir")
-        fi
-    done < <(_etc_iterate_path)
-
-    PATH="$new_path"
-}
-
-
 source_docker_completion()
 {
     if [ -n "$BASH_VERSION" ]; then
@@ -179,10 +51,6 @@ fi
 
 if [ "$_etc_platform" = "darwin" ]
 then
-    # Bump up the number of files I can have open, since I often do crazy things
-    # that pushes that limit.
-    ulimit -n "$(sysctl -n kern.maxfilesperproc)"
-
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker docker dockerd
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker-compose docker-compose
     source_docker_completion /Applications/Docker.app/Contents/Resources/etc/docker-machine docker-machine
@@ -193,16 +61,12 @@ then
     alias plprint="plutil -p"
     alias dump-uuid="dwarfdump -u"
 
-    if _etc_has_executable gnu-ls; then
+    if _etc_has_executable gnu-ls
+    then
         alias ls='gnu-ls -hFA --color=auto'
         alias ll='gnu-ls -hFl --color=auto'
     fi
     alias clear-arp="sudo arp -a -d"
-
-    if test -d "/Applications/VMware Fusion.app"
-    then
-        export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
-    fi
 
     if test -x /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport
     then
@@ -283,8 +147,8 @@ then
     #
     #   popd
     # }
-
-elif [ "$_etc_platform" = "linux" ]; then
+elif [ "$_etc_platform" = "linux" ]
+then
     alias ostat="stat -c '%a %n'"
     alias sstat="stat --format='%n: %s'"
     alias clear-arp="sudo ip -s -s neighbor flush all"
@@ -328,19 +192,6 @@ elif [ "$_etc_platform" = "linux" ]; then
     }
 fi
 
-if test -d ~/projects/jszakmeister/local-bin
-then
-    if ! _etc_path_insert_after ~/projects/jszakmeister/local-bin ~/.local/bin
-    then
-        export PATH="$HOME/projects/jszakmeister/local-bin:$PATH"
-    fi
-fi
-
-if test -d /opt/homebrew/opt/bison/bin
-then
-    export PATH="/opt/homebrew/opt/bison/bin:$PATH"
-fi
-
 alias l=ll
 alias lsvirtualenv="lsvirtualenv -b"
 alias helptags="vim '+Helptags|q'"
@@ -356,9 +207,11 @@ _add_dir_shortcut p ~/projects true
 _add_dir_shortcut v ~/.vim true
 _add_dir_shortcut v ~/vimfiles true
 
-if test -d ~/.vimuser; then
+if test -d ~/.vimuser
+then
     _add_dir_shortcut vu ~/.vimuser true
-elif test -d ~/_vimuser; then
+elif test -d ~/_vimuser
+then
     _add_dir_shortcut vu ~/_vimuser true
 else
     _add_dir_shortcut vu ~/.vim/user/jszakmeister true
@@ -382,13 +235,6 @@ _etc_has_executable rlwrap &&
 
 _etc_has_executable cninja &&
     alias cn="cninja"
-
-_etc_has_executable ninja-build &&
-    export CMAKE_MAKE_PROGRAM="ninja-build" &&
-    export CMAKE_GENERATOR="Ninja"
-
-_etc_has_executable ninja &&
-    export CMAKE_GENERATOR="Ninja"
 
 test -e /System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc &&
     alias jsc="/System/Library/Frameworks/JavaScriptCore.framework/Resources/jsc"
@@ -845,3 +691,25 @@ print-pcap()
 
     tcpdump -qns 0 -X -r "$1"
 }
+
+# if _etc_has_exectuable fzf
+# then
+#     if [ -n "$BASH_VERSION" ]
+#     then
+#         eval "$(fzf --bash)"
+#     elif [ -n "$ZSH_VERSION" ]
+#     then
+#         source <(fzf --zsh)
+#     fi
+# fi
+
+if _etc_has_executable zoxide
+then
+    if [ -n "$BASH_VERSION" ]
+    then
+        eval "$(zoxide init zsh)"
+    elif [ -n "$ZSH_VERSION" ]
+    then
+        eval "$(zoxide init zsh)"
+    fi
+fi
