@@ -31,18 +31,13 @@ fi
 
 unset _ETC_SAVED_PATH
 
-. "$ETC_HOME/zsh/shell-options.zsh"
-
-. "$ETC_HOME/shell-common/interactive.sh"
-
 for config_file ($ETC_HOME/zsh/lib/*.zsh) source $config_file
 
 source "$ETC_HOME/zsh/themes/${ZSH_THEME:-jszakmeister}.zsh-theme"
 
-test -f "$ETC_HOME/user/$ETC_USER/init.sh" &&
-    . "$ETC_HOME/user/$ETC_USER/init.sh"
+. "$ETC_HOME/zsh/shell-options.zsh"
 
-__etc_source_user_file interactive.sh
+. "$ETC_HOME/shell-common/interactive.sh"
 
 test -f "$HOME/.etcrc" && . "$HOME/.etcrc"
 

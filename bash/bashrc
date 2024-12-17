@@ -58,13 +58,12 @@ function _etc_find_executable()
 }
 
 . "$ETC_HOME/shell-common/noninteractive.sh"
-__etc_source_user_file noninteractive.sh
+
 test -f "$HOME/.etcenv" && . "$HOME/.etcenv"
 
 case $- in
     *i*)
         # In an interactive shell
-        . "$ETC_HOME/shell-common/interactive.sh"
         . "$ETC_HOME/bash/pickjdk.sh"
         . "$ETC_HOME/bash/shell-options.sh"
         . "$ETC_HOME/bash/bash_completion.sh"
@@ -90,10 +89,7 @@ case $- in
 
         source "$ETC_HOME/bash/themes/${BASH_THEME:-jszakmeister}.bash-theme"
 
-        test -f "$ETC_HOME/user/$ETC_USER/init.sh" &&
-            . "$ETC_HOME/user/$ETC_USER/init.sh"
-
-        __etc_source_user_file interactive.sh
+        . "$ETC_HOME/shell-common/interactive.sh"
 
         test -f "$HOME/.etcrc" && . "$HOME/.etcrc"
         ;;
