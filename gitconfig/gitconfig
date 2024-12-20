@@ -171,6 +171,9 @@
 	show = etc-git-pager show
 	log = etc-git-pager log
 
+[pull]
+	rebase = true
+
 [push]
 	default = current
 	followTags = true
