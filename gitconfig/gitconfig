@@ -184,6 +184,9 @@
 	# own topic.
 	chainreplyto = false
 
+[submodule]
+	recurse = true
+
 [tag]
 	# Sort tags in descending order by version.
 	sort = -v:refname
