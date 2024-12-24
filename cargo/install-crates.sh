@@ -9,6 +9,8 @@ platform="$(uname -s | tr '[:upper:]' '[:lower:]')"
 
 # Maybe filter some of these off if Brew is available, such as bat?
 CRATES=(
+    bandwhich
+    cargo-edit
     cargo-update
     dtool
     du-dust
