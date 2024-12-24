@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-_has_executable()
+has_executable()
 {
     type -P "$@" > /dev/null 2>&1
 }
@@ -21,7 +21,7 @@ CRATES=(
 )
 
 # If we have brew, use the brew versions instead.
-if ! _has_executable brew
+if ! has_executable brew
 then
     CRATES+=(
         bat
