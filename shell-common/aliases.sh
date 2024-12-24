@@ -59,6 +59,8 @@ if [ "$_etc_platform" = 'darwin' ]; then
     alias eject='diskutil eject'
     alias flush-dns='dscacheutil -flushcache'
     alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport'
+
+    _etc_has_executable gtar && alias tar=gtar
 fi
 
 if [ "$_etc_platform" = 'linux' ] || [ "$_etc_platform" = 'mingw' ]; then
