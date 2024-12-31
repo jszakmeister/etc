@@ -95,7 +95,7 @@ function grep()
 
     if test -t 1
     then
-        "$_grep_path" "$@" $_grep_options | $PAGER $_pager_options
+        (set -o pipefail; "$_grep_path" "$@" $_grep_options | $PAGER $_pager_options)
     else
         "$_grep_path" "$@"
     fi
@@ -116,7 +116,7 @@ function egrep()
 
     if test -t 1
     then
-        "$_egrep_path" "$@" $_egrep_options | $PAGER $_pager_options
+        (set -o pipefail; "$_egrep_path" "$@" $_egrep_options | $PAGER $_pager_options)
     else
         "$_egrep_path" "$@"
     fi
@@ -284,7 +284,7 @@ then
     {
         if test -t 1
         then
-            "$(_etc_find_executable diff)" "$@" | colordiff | diff-highlight | $PAGER
+            (set -o pipefail; "$(_etc_find_executable diff)" "$@" | colordiff | diff-highlight | $PAGER)
         else
             "$(_etc_find_executable diff)" "$@"
         fi
@@ -294,7 +294,7 @@ then
     {
         if test -t 1
         then
-            "$(_etc_find_executable interdiff)" "$@" | colordiff | diff-highlight | $PAGER
+            (set -o pipefail; "$(_etc_find_executable interdiff)" "$@" | colordiff | diff-highlight | $PAGER)
         else
             "$(_etc_find_executable interdiff)" "$@"
         fi
@@ -307,7 +307,7 @@ then
     {
         if test -t 1
         then
-            command hexdump -v -e '"%10_ad (%8_axh):  " 8/1 "%02x " "  " 8/1 "%02x "' -e'"  " 16/1 "%_p" "\n"' "$@" | ${PAGER}
+            (set -o pipefail; command hexdump -v -e '"%10_ad (%8_axh):  " 8/1 "%02x " "  " 8/1 "%02x "' -e'"  " 16/1 "%_p" "\n"' "$@" | ${PAGER})
         else
             command hexdump -v -e '"%10_ad (%8_axh):  " 8/1 "%02x " "  " 8/1 "%02x "' -e'"  " 16/1 "%_p" "\n"' "$@"
         fi
@@ -332,7 +332,11 @@ then
         hexdump "$arg_b" > "$tmp_b"
 
         diff -u --label="$arg_a" --label="$arg_b" "$tmp_a" "$tmp_b"
+        local res=$?
+
         rm -f "$tmp_a" "$tmp_b"
+
+        return $res
     }
 fi
 
@@ -357,7 +361,11 @@ then
         xmllint --format "$arg_b" > "$tmp_b"
 
         diff -u --label="$arg_a" --label="$arg_b" "$tmp_a" "$tmp_b"
+        local res=$?
+
         rm -f "$tmp_a" "$tmp_b"
+
+        return $res
     }
 fi
 
@@ -383,6 +391,10 @@ then
         objdump -d "$arg_b" > "$tmp_b"
 
         diff -u --label="$arg_a" --label="$arg_b" "$tmp_a" "$tmp_b"
+        local res=$?
+
         rm -f "$tmp_a" "$tmp_b"
+
+        return $res
     }
 fi
