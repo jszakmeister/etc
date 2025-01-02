@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+import argparse
+import sys
+
+
+STYLES = {
+    "h": "{{:x}}h",
+    "H": "{{:X}}h",
+    "0h": "{{:0{width}x}}h",
+    "0H": "{{:0{width}X}}h",
+    "x": "0x{{:x}}",
+    "X": "0x{{:X}}",
+    "0x": "0x{{:0{width}x}}",
+    "0X": "0x{{:0{width}X}}",
+}
+
+
+def format_num(fmt, num, width=None):
+    if width is None:
+        if 0 <= num < 0x100:
+            width = 2
+        elif 0x100 <= num < 0x10000:
+            width = 4
+        elif 0x10000 <= num < 0x100000000:
+            width = 8
+        elif 0x100000000 <= num < 0x10000000000000000:
+            width = 16
+        else:
+            width = 32
+    else:
+        width = width * 2
+
+    fmt = fmt.format(width=width)
+    return fmt.format(num)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--style",
+        help="Style to use when outputting hex format.",
+        default=None,
+        choices=["0x", "0X", "x", "X", "0h", "0H", "h", "H"])
+    parser.add_argument(
+        "--width",
+        help="Integer width to use (in bytes).  Only matters when using a style with a leading 0.",
+        default=None,
+        choices=[1, 2, 4, 8],
+        type=int)
+    parser.add_argument(
+        "nums",
+        help="Numbers to convert.",
+        nargs="+",
+    )
+
+    args = parser.parse_args()
+
+    fmt_raw = STYLES[args.style or "h"]
+
+    if len(args.nums) == 1:
+        output = "{v}"
+    else:
+        output = "{num}: {v}"
+
+    try:
+        for num in args.nums:
+            v = format_num(fmt_raw, int(num), width=args.width)
+
+            print(output.format(num=num, v=v))
+
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        print(f"ERROR: {e!s}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
