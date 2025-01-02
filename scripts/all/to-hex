@@ -55,7 +55,7 @@ def main():
 
     args = parser.parse_args()
 
-    fmt_raw = STYLES[args.style or "h"]
+    fmt_raw = STYLES[args.style or "H"]
 
     if len(args.nums) == 1:
         output = "{v}"
