@@ -57,7 +57,9 @@ _jszakmeister_prompt() {
     local host="${HOSTNAME}"
     host="${host:=${HOST}}"
 
-    if [ -n "$SSH_TTY" ]; then
+    # We use SSH_CONNECTION because some environments, like within VS Code,
+    # SSH_TTY is not set on the remote end.
+    if [ -n "$SSH_CONNECTION" ]; then
         # We're remoted
         SRMT="${fg_no_bold_white}{"
         ERMT="${fg_no_bold_white}}"
