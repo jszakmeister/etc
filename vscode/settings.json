@@ -1,0 +1,93 @@
+{
+  "[python]": {
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.detectIndentation": false,
+    "editor.formatOnType": true,
+    "editor.indentSize": 4,
+    "editor.wordBasedSuggestions": "off"
+  },
+  "[rust]": {
+    "editor.detectIndentation": false,
+    "editor.formatOnType": true,
+    "editor.indentSize": 4
+  },
+  "[search-result]": {
+    "editor.lineNumbers": "off"
+  },
+  "editor.experimental.asyncTokenization": true,
+  "editor.fontFamily": "Hack, 'DejaVu Sans Mono', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontSize": 16,
+  "editor.indentSize": 4,
+  "editor.inlayHints.enabled": "offUnlessPressed",
+  "editor.lineNumbers": "on",
+  "editor.minimap.enabled": false,
+  "editor.mouseWheelScrollSensitivity": 2.5,
+  "editor.rulers": [
+    80
+  ],
+  "editor.tabSize": 8,
+  "explorer.excludeGitIgnore": true,
+  "extensions.ignoreRecommendations": true,
+  "files.exclude": {
+    "**/*.bin": true,
+    "**/*.bin.*": true,
+    "**/*.egg-info": true,
+    "**/*.out": true,
+    "**/*.patch": true,
+    "**/*.py[co]": true,
+    "**/*.whl": true,
+    "**/*.zip": true,
+    "**/.*.sw?": true,
+    "**/.depend": true,
+    "**/.lvimrc": true,
+    "**/__pycache__": true,
+    "**/out*.txt": true,
+    "**/tags": true,
+    "**/tmp*": true
+  },
+  "files.insertFinalNewline": true,
+  "guides.sendUsagesAndStats": false,
+  "print.fontSize": "11pt",
+  "redhat.telemetry.enabled": false,
+  "rust-analyzer.inlayHints.typeHints.enable": false,
+  "rust-analyzer.lens.implementations": false,
+  "terminal.external.osxExec": "iTerm.app",
+  "terminal.integrated.allowChords": false,
+  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.persistentSessionScrollback": 10000,
+  "terminal.integrated.scrollback": 1000000,
+  "trailing-spaces.deleteModifiedLinesOnly": true,
+  "trailing-spaces.trimOnSave": true,
+  "vim.insertModeKeyBindingsNonRecursive": [
+    {
+      "before": [
+        "<C-p>"
+      ],
+      "commands": [
+        "workbench.action.showFiles"
+      ]
+    }
+  ],
+  "vim.leader": ",",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": [
+        "<C-p>"
+      ],
+      "commands": [
+        "workbench.action.quickOpen"
+      ]
+    }
+  ],
+  "vim.statusBarColors.commandlineinprogress": "",
+  "vim.useSystemClipboard": true,
+  "window.density.editorTabHeight": "compact",
+  "workbench.colorCustomizations": {
+    "[Default Dark Modern]": {
+      "editorInlayHint.foreground": "#505050"
+    }
+  },
+  "workbench.editor.showTabs": "single",
+  "workbench.startupEditor": "none",
+  "zenMode.hideLineNumbers": false
+}

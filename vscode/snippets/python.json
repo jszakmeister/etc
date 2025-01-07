@@ -1,0 +1,38 @@
+{
+	// Place your snippets for python here. Each snippet is defined under a snippet name and has a prefix, body and
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the
+	// same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+	"add hexdump impl": {
+		"prefix": "add-hexdump",
+		"body": [
+                        "def hexdump(data):",
+                        "    if isinstance(data, str):",
+                        "        data = data.encode(\"utf-8\")",
+                        "",
+                        "    for i in range(0, len(data), 16):",
+                        "        block = data[i:i+16]",
+                        "",
+                        "        line_data_hex = (\" \".join(\"%02x\" % (x,) for x in block[0:8]) + \"  \" +",
+                        "                         \" \".join(\"%02x\" % (x,) for x in block[8:]))",
+                        "        line_data_ascii = \"\".join(chr(x) if 32 <= x < 127 else \".\" for x in block)",
+                        "",
+                        "        if len(block) < 16:",
+                        "            line_data_hex += \" \" * (48 - len(line_data_hex))",
+                        "",
+                        "        print(f\"{i:10d} ({i:8x}h):  {line_data_hex}    {line_data_ascii}\")",
+                        "",
+                        "",
+                        "$0",
+		]
+	}
+}
