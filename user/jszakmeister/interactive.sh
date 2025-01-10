@@ -190,6 +190,17 @@ then
     {
         cat /proc/cpuinfo
     }
+
+    clear-dns-cache()
+    {
+        if systemctl is-enabled systemd-resolved.service --quiet > /dev/null 2>&1
+        then
+            sudo resolvectl flush-caches
+        else
+            # Assume dnsmasq is running?
+            sudo killall -HUO dnsmasq
+        fi
+    }
 fi
 
 alias l=ll
