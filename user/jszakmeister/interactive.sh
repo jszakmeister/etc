@@ -198,7 +198,7 @@ then
             sudo resolvectl flush-caches
         else
             # Assume dnsmasq is running?
-            sudo killall -HUO dnsmasq
+            sudo killall -HUP dnsmasq
         fi
     }
 fi
