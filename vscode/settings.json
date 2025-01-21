@@ -22,6 +22,7 @@
   "editor.lineNumbers": "on",
   "editor.minimap.enabled": false,
   "editor.mouseWheelScrollSensitivity": 2.5,
+  "editor.renderFinalNewline": "dimmed",
   "editor.rulers": [
     80
   ],
