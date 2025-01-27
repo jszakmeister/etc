@@ -1,3 +1,15 @@
+# I need to cope with environments where I cannot change the shell in the
+# traditional way.  This ensures SHELL gets correctly.
+if _etc_has_executable zsh
+then
+    alias zsh='SHELL="$(_etc_find_executable zsh)" zsh'
+fi
+
+if _etc_has_executable bash
+then
+    alias bash='SHELL="$(_etc_find_executable bash)" bash'
+fi
+
 source_docker_completion()
 {
     if [ -n "$BASH_VERSION" ]; then
