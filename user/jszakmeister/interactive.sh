@@ -473,8 +473,8 @@ if _etc_has_executable bat
 then
     # unset -f cat
     export BAT_THEME="Visual Studio Dark+"
-    alias cat="bat --style=numbers,grid"
-    alias pcat="bat --plain"
+    alias cat="bat --plain"
+    alias ppc="bat --style=header,numbers,grid"
     export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
     if [ -n "$ZSH_VERSION" ]
@@ -483,6 +483,9 @@ then
         alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
     fi
 else
+    # My setup will get us close to the same functionality, so fall back to less.
+    alias ppc="less"
+
     man()
     {
         env LESS_TERMCAP_mb=$'\E[01;31m' \
