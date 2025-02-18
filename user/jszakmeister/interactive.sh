@@ -493,7 +493,7 @@ else
         LESS_TERMCAP_me=$'\E[0m' \
         LESS_TERMCAP_se=$'\E[0m' \
         LESS_TERMCAP_ue=$'\E[0m' \
-        LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+        LESS_TERMCAP_us=$'\E[03;38;5;146m' \
         PAGER=less \
         man "$@"
     }
