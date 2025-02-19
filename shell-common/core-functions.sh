@@ -78,6 +78,29 @@ _add_dir_shortcut()
         hash -d "$shortcut=$shortcut_path"
 }
 
+# Helper to find whether a particular argument or string is present.
+# The first argument is the string to search for, and the remaining arguments
+# are the ones to search.
+_etc_contains()
+{
+    if [ "$#" -lt 2 ]
+    then
+        return 1
+    fi
+
+    local _search="$1"
+    shift
+
+    for arg in "$@"
+    do
+        if [ "$arg" = "$_search" ]
+        then
+            return 0
+        fi
+    done
+
+    return 1
+}
 
 # Compatibility shims.  Remove at some point.
 _has_executable()

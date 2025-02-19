@@ -87,13 +87,16 @@ function grep()
     local _grep_path="$(_etc_find_executable grep)"
     local _pager_options
     local _grep_options
+    local _quiet
 
     # Let ctrl-c pass kill less.
     [ "$PAGER" = "less" ] && _pager_options="-K"
 
     test -n "$_grep_color" && _grep_options="--color=always"
 
-    if test -t 1
+    _etc_contains "-q" "$@" && _quiet=t
+
+    if test -t 1 && test -z "$_quiet"
     then
         (set -o pipefail; "$_grep_path" "$@" $_grep_options | $PAGER $_pager_options)
     else
@@ -108,13 +111,16 @@ function egrep()
     local _egrep_path="$(_etc_find_executable egrep)"
     local _pager_options
     local _egrep_options
+    local _quiet
 
     # Let ctrl-c pass kill less.
     [ "$PAGER" = "less" ] && _pager_options="-K"
 
     test -n "$_grep_color" && _egrep_options="--color=always"
 
-    if test -t 1
+    _etc_contains "-q" "$@" && _quiet=t
+
+    if test -t 1 && test -z "$_quiet"
     then
         (set -o pipefail; "$_egrep_path" "$@" $_egrep_options | $PAGER $_pager_options)
     else
