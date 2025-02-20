@@ -534,6 +534,9 @@ fi
 _etc_has_executable hwatch &&
     alias watch="hwatch -n 1 --color"
 
+_etc_has_executable yank-cli &&
+    alias yank=yank-cli
+
 delete-unused()
 {
     for filename in "$@"
