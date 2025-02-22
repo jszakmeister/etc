@@ -700,7 +700,7 @@ quick-compile()
 {
     # Maybe add -Wstrict-prototypes -Wmissing-prototypes -Werror=implicit-function-declaration \
     #   -Wbad-function-cast -Wnested-externs -std=c99
-    ${CC:-cc} -Wall -Wextra -Wpointer-arith -Wcast-qual -Wwrite-strings -Wshadow -Wcast-align -Winline -Wrendundant-decls "$@"
+    ${CC:-cc} -Wall -Wextra -Wpointer-arith -Wcast-qual -Wwrite-strings -Wshadow -Wcast-align -Winline -Wredundant-decls "$@"
 }
 
 
