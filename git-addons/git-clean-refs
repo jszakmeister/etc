@@ -1,0 +1,30 @@
+#!/bin/bash -e
+source "$(git --exec-path)/git-sh-setup" ||
+    die "ERROR: Not a git repository."
+
+if [ "$(is_bare_repository)" = false ] ||
+    [ "$(git config --local remote.origin.mirror)" != true ] ||
+    [ "$(git config --local remote.origin.fetch)" != "+refs/*:refs/*" ]
+then
+    die "ERROR: This is only meant for mirrored repos."
+fi
+
+if [ "$1" = "--rename-master" ]
+then
+    if git show ref --quiet --verify refs/heads/master
+    then
+        echo "[rename] master to main..."
+        git branch -m master main
+    fi
+fi
+
+# for ref in $(git for-each-ref --format='%(refname)' refs/merge-requests refs/pipelines refs/pull refs/reviewable refs/remotes)
+# do
+#     echo "[remove] $ref"
+#     git update-ref -d "$ref"
+# done
+
+# This is *way* faster than the above when a lot of refs are involved.  The
+# downside: no progress output.
+git for-each-ref --format='delete %(refname)' refs/merge-requests refs/pipelines refs/pull refs/reviewable refs/remotes |
+    git update-ref --stdin
