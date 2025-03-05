@@ -4,7 +4,7 @@ source "$(git --exec-path)/git-sh-setup" ||
 
 if [ "$(is_bare_repository)" = false ] ||
     [ "$(git config --local remote.origin.mirror)" != true ] ||
-    [ "$(git config --local remote.origin.fetch)" != "+refs/*:refs/*" ]
+    [ "$(git config get --local --all remote.origin.fetch | grep -v '\^')" != "+refs/*:refs/*" ]
 then
     die "ERROR: This is only meant for mirrored repos."
 fi
