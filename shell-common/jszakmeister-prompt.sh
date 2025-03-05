@@ -8,7 +8,7 @@
 
 _jszakmeister_prompt_virtualenv() {
     if [ -n "$VIRTUAL_ENV" ]; then
-        echo -ne " ${fg_light_blue}[${fg_red}$(basename "$VIRTUAL_ENV")${fg_light_blue}]${ansi_reset}"
+        echo -n " ${fg_light_blue}[${fg_red}$(basename "$VIRTUAL_ENV")${fg_light_blue}]${ansi_reset}"
     fi
 }
 
@@ -25,10 +25,10 @@ _jszakmeister_prompt_title() {
 
     case "$TERM" in
     xterm*|rxvt*)
-        echo -ne "\033]0;${USER}@${host%%.*}:${PWD/#$HOME/~}\007"
+        echo -ne "\033]0;${USER//\\/\\\\}@${host%%.*}:${PWD/#$HOME/~}\007"
         ;;
     screen)
-        echo -ne "\033_${USER}@${host%%.*}:${PWD/#$HOME/~}\007"
+        echo -ne "\033_${USER//\\/\\\\}@${host%%.*}:${PWD/#$HOME/~}\007"
         ;;
     *)
         ;;
@@ -151,7 +151,10 @@ _jszakmeister_prompt() {
         topline="${topline//\\[/}"
         topline="${topline//\\]/}"
     fi
-    echo -e "$topline"
+
+    # Be careful... `echo -e` could convert usernames with the domain in them
+    # into their counterparts.  For instance, \r => carriage return.
+    echo "$topline"
 }
 
 JSZAKMEISTER_PROMPT_PS1="${fg_light_blue}::${ansi_reset} "
