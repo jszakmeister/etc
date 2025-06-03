@@ -1,3 +1,5 @@
+. "$ETC_HOME/shell-common/noninteractive.sh"
+
 virtualenvwrapper_path=$(_etc_find_executable virtualenvwrapper.sh)
 
 if test -z "$virtualenvwrapper_path"
