@@ -1,5 +1,5 @@
 bind -e
 python.*:bind \\t rl_complete
 lldb:bind \\t lldb_complete
-bind "\e[A" ed-prev-history
-bind "\e[B" ed-next-history
+bind "\e[A" ed-search-prev-history
+bind "\e[B" ed-search-next-history
