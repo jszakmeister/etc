@@ -54,6 +54,11 @@ if [ "$_etc_platform" = 'darwin' ]; then
         __etc_append_path "$system_path"
     }
 
+    if [ -d /Applications/CMake.app/Contents/bin ]
+    then
+        __etc_prepend_path /Applications/CMake.app/Contents/bin
+    fi
+
     # Prefer MacVim over system Vim.
     if [ -d /Applications/MacVim.app/Contents/bin ]
     then
