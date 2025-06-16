@@ -229,6 +229,7 @@ _add_dir_shortcut j ~/projects/jszakmeister true
 _add_dir_shortcut p ~/projects true
 _add_dir_shortcut v ~/.vim true
 _add_dir_shortcut v ~/vimfiles true
+_add_dir_shortcut tmp ~/tmp true
 
 if test -d ~/.vimuser
 then
@@ -240,7 +241,10 @@ else
     _add_dir_shortcut vu ~/.vim/user/jszakmeister true
 fi
 
-test -e ~/tmp && _make_dir_complete pdt pushd ~/tmp
+pdt() {
+    pushd .
+    cdt
+}
 
 _etc_has_executable sqlite3 &&
     alias sqlite=sqlite3
