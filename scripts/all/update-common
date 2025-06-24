@@ -158,13 +158,20 @@ def update_repo(path):
     formatted_path = format_path(path)
 
     if git_path.exists():
-        say(f"Updating {formatted_path}...")
         # It's a git repo, so update via `git ffwd`...
-        run_git("ffwd", *FFWD_OPTIONS, path=path, check_ret=False, capture=False)
+        if GIT_PRESENT:
+            say(f"Updating {formatted_path}...")
+            run_git("ffwd", *FFWD_OPTIONS, path=path, check_ret=False, capture=False)
+        else:
+            say(f"Skipping {formatted_path} (git not installed).")
 
     elif svn_path.exists():
-        say(f"Updating {formatted_path}...")
-        run("svn", "up", *SVN_OPTIONS, path, check_ret=False, capture=False)
+        # It's a subversion repo, so update via `svn up`...
+        if SVN_PRESENT:
+            say(f"Updating {formatted_path}...")
+            run("svn", "up", *SVN_OPTIONS, path, check_ret=False, capture=False)
+        else:
+            say(f"Skipping {formatted_path} (svn not installed).")
 
 
 
