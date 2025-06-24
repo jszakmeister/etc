@@ -6,41 +6,70 @@ from __future__ import print_function
 def setup_readline():
     try:
         import readline, atexit, os, rlcompleter, sys
+    except ImportError:
+        return
 
-        if 'libedit' in readline.__doc__:
-            is_libedit = True
-        else:
-            # System Python on Mac's lie about being readline.  They're really
-            # libedit.
-            is_libedit = False
-            if sys.platform == 'darwin' and 'Apple' in sys.version:
-                if readline.__file__.startswith(
-                        '/System/Library/Frameworks/Python.framework/'):
-                    is_libedit = True
+    if 'libedit' in readline.__doc__:
+        is_libedit = True
+    else:
+        # System Python on Mac's lie about being readline.  They're really
+        # libedit.
+        is_libedit = False
+        if sys.platform == 'darwin' and 'Apple' in sys.version:
+            if readline.__file__.startswith(
+                    '/System/Library/Frameworks/Python.framework/'):
+                is_libedit = True
+
+    def gethistoryfile():
+        if not sys.flags.ignore_environment:
+            history = os.environ.get("PYTHON_HISTORY")
+            if history:
+                return history
 
         suffix = '-' + '.'.join(str(x) for x in sys.version_info[:2])
         suffix += (is_libedit and "-el") or "-rl"
-        historypath = os.path.expanduser("~/.pyhistory" + suffix)
-        editrcpath = os.path.expanduser("~/.editrc")
-        inputrcpath = os.path.expanduser("~/.inputrc")
+        return os.path.expanduser("~/.pyhistory" + suffix)
+
+    def configure_readline():
+        old_hook = getattr(configure_readline, "_old_hook", None)
 
         if is_libedit:
-            if not os.path.exists(editrcpath):
-                readline.parse_and_bind("bind ^[[A ed-search-prev-history")
-                readline.parse_and_bind("bind ^[[B ed-search-next-history")
+            rcpath = os.path.expanduser("~/.editrc")
 
+            readline.parse_and_bind("bind ^R em-inc-search-prev")
+            readline.parse_and_bind("bind ^S em-inc-search-next")
+            readline.parse_and_bind("bind ^[[A ed-search-prev-history")
+            readline.parse_and_bind("bind ^[[B ed-search-next-history")
+            readline.parse_and_bind("bind ^[OA ed-search-prev-history")
+            readline.parse_and_bind("bind ^[OB ed-search-next-history")
             readline.parse_and_bind("bind ^I rl_complete")
-        else:
-            if not os.path.exists(inputrcpath):
-                readline.parse_and_bind(r'"\e[A": history-search-backward')
-                readline.parse_and_bind(r'"\e[B": history-search-forward')
 
+        else:
+            rcpath = os.path.expanduser("~/.inputrc")
+
+            readline.parse_and_bind(r'"\C-r": reverse-search-history')
+            readline.parse_and_bind(r'"\C-s": forward-search-history')
+            readline.parse_and_bind(r'"\e[A": history-search-backward')
+            readline.parse_and_bind(r'"\e[B": history-search-forward')
             readline.parse_and_bind("tab: complete")
 
-        def save_history(historypath=historypath):
-            import readline
-            if readline.get_current_history_length():
-                readline.write_history_file(historypath)
+        import site
+        if getattr(site, "gethistoryfile", None) is not None:
+            # Use my version of gethistoryfile()...
+            site.gethistoryfile = gethistoryfile
+
+        if sys.version_info[:2] >= (3, 13) and old_hook is not None:
+            # Python 3.13 gained a fancy REPL and we've already customized what
+            # we needed.  Let the old hook finish the work.
+            old_hook()
+            return
+
+        try:
+            readline.read_init_file(rcpath)
+        except OSError:
+            pass
+
+        historypath = gethistoryfile()
 
         if os.path.exists(historypath):
             try:
@@ -51,13 +80,29 @@ def setup_readline():
                 # error.
                 pass
 
+        def save_history(historypath=historypath):
+            if readline.get_current_history_length():
+                try:
+                    readline.write_history_file(historypath)
+                except OSError:
+                    pass
+
         atexit.register(save_history)
 
-    except ImportError:
-        pass
+    if sys.version_info[:2] >= (3, 4):
+        # Wait until later.  We either do this or we need to delete hook and run
+        # immediately.  The default hook will trump our settings, and we don't
+        # want that.  This is more complicated for Python >=3.13, so we have
+        # some specialized logic in the hook for that, and requires the ability
+        # to run the old hook.
+        configure_readline._old_hook = getattr(sys, "__interactivehook__", None)
+        sys.__interactivehook__ = configure_readline
+    else:
+        # Run it now.
+        configure_readline()
+
 
 setup_readline()
-
 del setup_readline
 
 
