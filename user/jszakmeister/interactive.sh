@@ -91,6 +91,11 @@ then
         alias dyldinfo="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dyldinfo"
     fi
 
+    if ! _etc_has_executable lsusb
+    then
+        alias lsusb="system_profiler SPUSBDataType"
+    fi
+
     clear-dns-cache()
     {
         sudo killall -HUP mDNSResponder
