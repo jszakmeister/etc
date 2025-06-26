@@ -1,3 +1,10 @@
+if [ -n "$_etc_interactive_sourced" ]
+then
+    return
+fi
+
+_etc_interactive_sourced=1
+
 . "$ETC_HOME/shell-common/noninteractive.sh"
 
 virtualenvwrapper_path=$(_etc_find_executable virtualenvwrapper.sh)

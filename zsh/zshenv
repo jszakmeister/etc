@@ -53,7 +53,7 @@ function _etc_find_executable()
 }
 
 . "$ETC_HOME/shell-common/noninteractive.sh"
-__etc_source_user_file noninteractive.sh
+
 test -f "$HOME/.etcenv" && . "$HOME/.etcenv"
 
 # Save off the path, since we may need to restore it later in zshrc.
