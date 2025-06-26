@@ -374,7 +374,8 @@ if _etc_has_executable ag; then
 fi
 
 if _etc_has_executable rg; then
-    alias rg="rg -LS --hyperlink-format vscode"
+    alias rg="rg -LS 2>/dev/null"
+
     rg()
     {
         local _rg_path
