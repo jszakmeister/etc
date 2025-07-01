@@ -615,6 +615,22 @@ then
 
         return 0
     }
+
+    dump-rsa()
+    {
+        if [ $# -eq 0 ]
+        then
+            echo 1>&2 "ERROR: Specify a certificate to examine in PEM format."
+            return 1
+        fi
+
+        for cert in "$@"
+        do
+            openssl rsa -noout -text -in "$cert"
+        done
+
+        return 0
+    }
 fi
 
 if _etc_has_executable gem
