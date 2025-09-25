@@ -13,6 +13,7 @@ __etc_append_path()
 
 __etc_prepend_search_paths()
 {
+    __etc_prepend_path "$1/$_etc_platform/$(uname -m)"
     __etc_prepend_path "$1/$_etc_platform"
     __etc_prepend_path "$1/all"
 }
