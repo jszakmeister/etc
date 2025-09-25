@@ -43,9 +43,21 @@ append_path()
     fi
 }
 
+_etc_prepend_dir()
+{
+    if [ -d "$1" ]
+    then
+        export PATH="$(prepend_path "$PATH" "$1")"
+    fi
+}
+
 _etc_prepend_script_dir()
 {
-    export PATH="$(prepend_path "$PATH" "$1/$_etc_platform:$1/all")"
+    # These will end up reversed and we want the most specific to be the first
+    # path in the list.
+    _etc_prepend_dir "$1/all"
+    _etc_prepend_dir "$1/$_etc_platform"
+    _etc_prepend_dir "$1/$_etc_platform/$(uname -m)"
 }
 
 __etc_source_user_file()
