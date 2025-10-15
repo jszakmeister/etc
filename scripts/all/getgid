@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+import argparse
+import grp
+import sys
+
+
+def print_entry(group_name: str, group_id: int, show_group: bool):
+    if show_group:
+        print(f"{group_name}: {group_id}")
+    else:
+        print(f"{group_id}")
+
+
+def resolve_names(args):
+    for group_name in args.group_names:
+        try:
+            entry = grp.getgrnam(group_name)
+            print_entry(entry.gr_name, entry.gr_gid, args.show_names)
+
+        except KeyError:
+            if not args.ignore_errors:
+                raise RuntimeError(f"group '{group_name}' not found")
+
+            print_entry(group_name, -1, args.show_names)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--traceback",
+        default=False,
+        action="store_true",
+        help="Print traceback of error"
+    )
+
+    parser.add_argument(
+        "--ignore-errors",
+        default=False,
+        action="store_true",
+        help="Ignore name resolution errors.  -1 will be shown as the gid for unresolved groups"
+    )
+
+    parser.add_argument(
+        "--show-names",
+        default=False,
+        action="store_true",
+        help="Show group name along with the group id"
+    )
+
+    parser.add_argument(
+        "group_names",
+        nargs="+",
+        help="Group names to convert to group ids"
+    )
+
+    args = parser.parse_args()
+
+    try:
+        resolve_names(args)
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        if args.traceback:
+            raise
+
+        print(f"ERROR: {e!s}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
