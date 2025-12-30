@@ -4,9 +4,15 @@ SUBDIRECTORY_OK=1 source "$(git --exec-path)/git-sh-setup" ||
 
 DRY_RUN=
 
-if [ "$1" = "-n" ]
+if [ "$1" = "-n" ] || [ "$1" = "--dry-run" ]
 then
     DRY_RUN=echo
+    shift
+fi
+
+if [ $# -ne 0 ]
+then
+    die "ERROR: Unknown option(s): $@"
 fi
 
 REF="$(git symbolic-ref --short HEAD)"
