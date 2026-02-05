@@ -12,8 +12,9 @@ if sys.platform == "darwin":
     import subprocess
 
     def disable_screensaver():
-        subprocess.run(["/usr/bin/caffeinate", "-d"],
-                       stdout=subprocess.DEVNULL)
+        while True:
+            subprocess.run(["/usr/bin/caffeinate", "-u", "-t", "3600"],
+                           stdout=subprocess.DEVNULL)
 
 elif sys.platform.startswith("linux"):
     def disable_screensaver():
