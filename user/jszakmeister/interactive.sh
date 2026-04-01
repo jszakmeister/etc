@@ -237,6 +237,11 @@ pdt() {
     cdt
 }
 
+find-exe()
+{
+    find -L "$@" -perm +ugo+x -type f -or -type l
+}
+
 _etc_has_executable sqlite3 &&
     alias sqlite=sqlite3
 
