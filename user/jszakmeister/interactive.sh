@@ -232,7 +232,8 @@ else
     _add_dir_shortcut vu ~/.vim/user/jszakmeister true
 fi
 
-pdt() {
+pdt()
+{
     pushd .
     cdt
 }
