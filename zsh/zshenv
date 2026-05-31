@@ -25,13 +25,13 @@ function _make_dir_complete()
         return 1
     fi
 
-    local aliasname=$1
+    local aliasname="$1"
 
-    if type $aliasname >/dev/null 2>&1; then
-        echo "Error: can't overwrite previously defined command \"$1\"" 1>&2
+    if type "$aliasname" >/dev/null 2>&1; then
+        echo "Error: can't overwrite previously defined command \"$aliasname\"" 1>&2
         return 1
     fi
-    if [ ! -d $3 ]; then
+    if [ ! -d "$3" ]; then
         echo "Error: \"$3\" doesn't point to a directory" 1>&2
         return 1
     fi
@@ -41,9 +41,9 @@ function _make_dir_complete()
     local realpath=$(pwd -P)
     cd - >/dev/null 2>&1
 
-    FUNC="$aliasname () { $2 \"$dirname/\$@\" }"
+    FUNC="$aliasname () { \"$2\" \"$dirname/\$@\" }"
 
-    eval $FUNC
+    eval "$FUNC"
     compdef "_path_files -/ -W \"$realpath\"" "$aliasname"
 }
 
